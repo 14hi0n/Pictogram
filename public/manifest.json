@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Pictogram",
-    "version": "1.0.0",
-    "version_name": "1.0.0-alpha",
+    "version": "1.0.1",
+    "version_name": "1.0.1-alpha",
     "description": "тест. только danbooru и pixiv",
     "homepage_url": "https://github.com/14hi0n/Pictogram",
     "options_page": "option.html",

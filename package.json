@@ -1,6 +1,6 @@
 {
     "name": "pictogram-extension",
-    "version": "0.5.0",
+    "version": "1.0.1",
     "license": "AGPL-3.0-or-later",
     "description": "A simple and efficient Chrome browser extension that streamlines the process of sending art to your Telegram channel through a Telegram bot. Quickly forward art from various sources directly to your Telegram channel with just one click.",
     "private": true,
