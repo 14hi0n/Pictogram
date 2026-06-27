@@ -1,0 +1,69 @@
+@import 'vars';
+@import 'fonts';
+@import 'reset';
+@import 'utils';
+@import 'icons';
+
+body {
+	background-color: $background-color;
+	color: $text-color;
+}
+
+.container {
+	width: $container-max-width;
+	min-width: $container-min-width;
+	margin: 0 auto;
+	padding: 0 15px;
+}
+
+.page {
+	margin: 15px 0;
+	&__wrapper {
+		border: 1px solid $main-border-color;
+		border-radius: $border-radius;
+		display: flex;
+		flex-direction: column;
+		min-height: calc(100vh - 30px);
+		padding: 15px 15px;
+	}
+	&__main {
+		flex-grow: 1;
+	}
+}
+
+.content-block {
+	flex-grow: 1;
+}
+
+.button {
+	background-color: $primary-color;
+	color: $text-color;
+	border-radius: $border-radius;
+	height: 40px;
+	font-size: 16px;
+	padding: 0 15px;
+	&:disabled {
+		background-color: $disabled-color;
+		color: $text-disabled-color;
+	}
+}
+
+.input {
+	background-color: $input-background-color;
+	border-radius: $border-radius;
+	width: 100%;
+	padding: 15px 15px;
+	box-shadow: inset 0 0 0 1px $input-border-color;
+	&:focus {
+		box-shadow: inset 0 0 0 2px $primary-color;
+	}
+}
+
+a {
+	color: $primary-color;
+	border-bottom: 1px solid $primary-color;
+}
+
+.w100 {
+	width: 100%;
+}

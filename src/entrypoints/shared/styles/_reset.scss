@@ -1,0 +1,78 @@
+/* Общий сброс стилей */
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Убираем стандартные стили ссылок */
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Убираем стандартные стили списков */
+ul,
+ol {
+	list-style: none;
+}
+
+/* Сброс для изображений */
+img {
+	max-width: 100%;
+	display: block;
+}
+
+/* Сброс для форм */
+button,
+input,
+textarea,
+select {
+	font: inherit; /* Наследуем шрифт от родителя */
+	color: inherit;
+	border: none; /* Убираем границы */
+	background: none; /* Убираем фон */
+	padding: 0;
+	outline: none; /* Убираем обводку */
+	box-shadow: none; /* Убираем тени */
+	appearance: none; /* Отключаем специфические стили браузера */
+}
+
+/* Сброс для кнопок */
+button {
+	cursor: pointer; /* Указываем указатель */
+	border: none;
+}
+
+/* Сброс для таблиц */
+table {
+	border-collapse: collapse; /* Убираем двойные границы */
+	border-spacing: 0;
+}
+
+/* Сброс для заголовков и параграфов */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+	font-size: inherit; /* Наследуем размер шрифта */
+	font-weight: normal; /* Сбрасываем жирность */
+}
+
+/* Корневые стили */
+html {
+	font-size: 16px; /* Базовый размер шрифта */
+	line-height: 1.5; /* Комфортная высота строки */
+	-webkit-text-size-adjust: 100%; /* Для устранения проблем в iOS */
+}
+
+body {
+	margin: 0;
+	font-family: 'Roboto', Arial, sans-serif;
+	font-weight: normal;
+}

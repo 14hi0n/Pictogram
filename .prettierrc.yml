@@ -1,0 +1,15 @@
+printWidth: 120
+tabWidth: 4
+useTabs: true
+singleQuote: true
+trailingComma: none
+bracketSpacing: true
+arrowParens: always
+endOfLine: auto
+
+overrides:
+  - files: ['*.ts', '*.jsx']
+    options:
+      trailingComma: es5
+      parser: typescript
+      semi: true
