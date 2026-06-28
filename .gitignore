@@ -2,10 +2,7 @@
 /node_modules
 /build
 /release
-/.codegpt
 /coverage
 
 npm-debug.log*
 .DS_Store
-
-.codegpt

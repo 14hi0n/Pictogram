@@ -7,7 +7,7 @@ import { buildCaption, PostMeta } from '@/utils/telegram/buildCaption';
 import { Channel } from '@/models/Channel';
 import { PostSettings, defaultPostSettings } from '@/models/PostSettings';
 import { TagItem } from '@/models/TagItem';
-import { MediaCandidate, MediaCandidateType } from '@/models/MediaCandidate';
+import { MediaCandidate, MediaCandidateType, MediaSource } from '@/models/MediaCandidate';
 import { MediaResolver } from './MediaResolver';
 
 function resolveItemTemplate(settings: PostSettings, channelDefaultTemplate: string): string {
@@ -230,9 +230,10 @@ export class TelegramMediaSender {
 			mediaType === MediaType.Animation ? 'gif' : 'photo';
 
 		// Infer source from URL for backward-compat items added before mediaCandidates was introduced
-		let source: 'pixiv' | 'danbooru' | 'generic' = 'generic';
+		let source: MediaSource = 'generic';
 		if (mediaUrl.includes('pximg.net')) source = 'pixiv';
 		else if (mediaUrl.includes('cdn.donmai.us')) source = 'danbooru';
+		else if (mediaUrl.includes('static.zerochan.net')) source = 'zerochan';
 
 		return [{ url: mediaUrl, type, source, priority: 1 }];
 	}

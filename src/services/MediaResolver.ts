@@ -1,4 +1,4 @@
-import { MediaCandidate, MediaCandidateType, MediaSource, ValidatedMedia } from '@/models/MediaCandidate';
+import { MediaCandidate, MediaSource, ValidatedMedia } from '@/models/MediaCandidate';
 
 type ProbeOutcome =
 	| { status: 'valid'; contentType: string }
@@ -54,6 +54,11 @@ export class MediaResolver {
 
 		if (source === 'pixiv') {
 			// pximg.net requires Referer header forbidden in service workers — skip HTTP validation.
+			return { status: 'valid', contentType: 'image/jpeg' };
+		}
+
+		if (source === 'zerochan') {
+			// static.zerochan.net has hotlink protection — HEAD from service worker gets 403.
 			return { status: 'valid', contentType: 'image/jpeg' };
 		}
 

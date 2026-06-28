@@ -1,4 +1,4 @@
-export type MediaSource = 'pixiv' | 'danbooru' | 'generic';
+export type MediaSource = 'pixiv' | 'danbooru' | 'zerochan' | 'generic';
 export type MediaCandidateType = 'photo' | 'video' | 'gif';
 
 /** One candidate URL for a media item, with priority and source context. */
