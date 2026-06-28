@@ -62,7 +62,7 @@
 
 			<!-- Список: одиночные карточки и группы -->
 			<div class="queue__list">
-				<template v-for="entry in queue" :key="entry.id">
+				<template v-for="entry in displayQueue" :key="entry.id">
 					<QueueGroupCard
 						v-if="isGroupItem(entry)"
 						:item="entry"
@@ -132,6 +132,9 @@ const selectedIds = ref<Set<string>>(new Set());
 
 // IDs элементов, которые сейчас в процессе отправки (per-item loading guard)
 const sendingIds = reactive(new Set<string>());
+
+// Очередь в обратном порядке (новые сверху) — только для отображения
+const displayQueue = computed(() => [...queue.value].reverse());
 
 // Все включённые элементы (одиночные + группы) — для кнопки «Отправить всё»
 const enabledItems = computed(() => queue.value.filter((e) => e.enabled));
