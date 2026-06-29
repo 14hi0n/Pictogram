@@ -22,8 +22,8 @@ if (typeof chrome.sidePanel !== 'undefined') {
 // Слушаем клик всегда: срабатывает если openPanelOnActionClick не активен
 chrome.action.onClicked.addListener(async (tab) => {
 	if (typeof chrome.sidePanel === 'undefined') {
-		// Мобильный браузер — открываем вкладку
-		chrome.tabs.create({ url: 'sidepanel.html' });
+		// Мобильный браузер — переходим на существующую вкладку или открываем новую
+		openOrFocusMobileTab();
 		return;
 	}
 	// Десктоп: sidePanel теперь в permissions — запрос разрешения не нужен
@@ -65,7 +65,7 @@ chrome.runtime.onMessage.addListener(
 						chrome.tabs.create({ url: 'sidepanel.html' });
 					});
 				} else {
-					chrome.tabs.create({ url: 'sidepanel.html' });
+					openOrFocusMobileTab();
 				}
 				sendResponse({ ok: true });
 				return false;
@@ -126,6 +126,20 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 chrome.runtime.onStartup.addListener(async () => {
 	await restoreBadge();
 });
+
+async function openOrFocusMobileTab(): Promise<void> {
+	const url = chrome.runtime.getURL('sidepanel.html');
+	const existing = await chrome.tabs.query({ url });
+	if (existing.length > 0) {
+		const tab = existing[0];
+		await chrome.tabs.update(tab.id!, { active: true });
+		if (tab.windowId !== undefined && typeof chrome.windows !== 'undefined') {
+			chrome.windows.update(tab.windowId, { focused: true }).catch(() => {});
+		}
+	} else {
+		chrome.tabs.create({ url });
+	}
+}
 
 /**
  * Восстанавливает бейдж иконки на основе текущей длины очереди.
