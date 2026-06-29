@@ -32,9 +32,10 @@ export class ZeroChan implements BaseProvider {
 			thumbnailUrl = img?.src;
 			mediaUrl = anchor.href || this.getFullUrl();
 		} else {
-			// Mobile: три картинки [пред., текущая, след.] в #large > ul;
-			// текущая — второй элемент. img.src = 600px превью, полный файл — из кнопки скачивания
-			const img = document.querySelector<HTMLImageElement>('#large ul li:nth-child(2) img') ?? undefined;
+			// Mobile: три картинки [пред., текущая, след.] в #large > ul.
+			// Предыдущее/следующее изображения имеют alt="Previous"/"Next" и не имеют title.
+			// Текущее изображение единственное, у которого есть title с размерами файла.
+			const img = document.querySelector<HTMLImageElement>('#large ul img[title]') ?? undefined;
 			element = img;
 			thumbnailUrl = img?.src;
 			const downloadBtn = document.querySelector<HTMLAnchorElement>('a.download-button[href]');

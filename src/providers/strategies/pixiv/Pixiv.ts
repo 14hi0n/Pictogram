@@ -34,9 +34,11 @@ export class Pixiv implements SPAProvider {
 
 	public findAnchorElement(): Element | null {
 		const selectors = [
-			'main figure img',
-			'figure img',
-			'main img[src*="pximg.net"]',
+			'main figure img',              // Desktop: artwork in figure inside main
+			'figure img',                   // Desktop: artwork figure without main
+			'main img[src*="pximg.net"]',   // Desktop: any pximg image inside main
+			'img.work-thumb',               // Mobile: main artwork thumbnail
+			'img[data-tx]',                 // Mobile: image with artwork-ID data attribute
 			'canvas',
 		];
 		for (const sel of selectors) {
@@ -65,21 +67,46 @@ export class Pixiv implements SPAProvider {
 	 *   Map surviving images to URL list by DOM order — Pixiv always renders pages
 	 *   top-to-bottom in the same order as the page index.
 	 */
+	/**
+	 * Returns one target per artwork image currently visible in the DOM.
+	 *
+	 * Detection strategy:
+	 *   Desktop — `main img` filtered by URL invariants (pximg.net, /img-master/, not small /c/).
+	 *   Mobile  — `img.work-thumb` / `img[data-tx]` (Pixiv mobile uses no <main> or <figure>).
+	 *
+	 *   The `/c/SIZE/` filter distinguishes large artwork images from small CDN thumbnails:
+	 *     /c/250x250/ or /c/360x360/ → thumbnail (≤3 digits per dimension) → excluded
+	 *     /c/1200x1200_80_webp/      → main artwork on mobile (4 digits) → kept
+	 */
 	public findMediaTargets(): ProviderMediaTarget[] {
 		const allUrls = this.getAllImageUrls();
 		if (allUrls.length === 0) return [];
 
-		const artworkImgs = Array.from(
-			document.querySelectorAll<HTMLImageElement>('main img')
-		).filter(img => {
+		const seen = new Set<Element>();
+		const artworkImgs: HTMLImageElement[] = [];
+
+		// Desktop: artwork images are inside <main>
+		for (const img of document.querySelectorAll<HTMLImageElement>('main img')) {
+			if (seen.has(img)) continue;
 			const src = img.src;
-			if (!src || !src.includes('pximg.net')) return false;
-			if (src.includes('/c/')) return false;           // CDN thumbnail
-			if (src.includes('user-profile')) return false;  // avatar
-			if (!src.includes('/img-master/') && !src.includes('/img-original/')) return false;
-			if (img.closest('aside')) return false;          // sidebar widget
-			return true;
-		});
+			if (!src || !src.includes('pximg.net')) continue;
+			if (src.includes('user-profile')) continue;
+			if (!src.includes('/img-master/') && !src.includes('/img-original/')) continue;
+			// Reject small CDN-resized thumbnails: /c/250x250/ /c/360x360/ (≤3-digit dimension)
+			// but keep large artwork images: /c/1200x1200_80_webp/ (4-digit dimension)
+			if (/\/c\/\d{1,3}x\d{1,3}[/_]/.test(src)) continue;
+			if (img.closest('aside')) continue;
+			seen.add(img);
+			artworkImgs.push(img);
+		}
+
+		// Mobile: artwork image uses class work-thumb — no <main> or <figure> wrapper
+		for (const img of document.querySelectorAll<HTMLImageElement>('img.work-thumb, img[data-tx]')) {
+			if (seen.has(img)) continue;
+			if (img.closest('aside')) continue;
+			seen.add(img);
+			artworkImgs.push(img);
+		}
 
 		return artworkImgs.map((el, i) => ({
 			element: el,
@@ -96,7 +123,9 @@ export class Pixiv implements SPAProvider {
 		const mediaUrl = allUrls[0];
 		const hashtags = this.getPixivTags();
 		const illust = this.getPixivIllustData();
-		const thumbnailUrl = illust?.urls?.thumb ?? illust?.urls?.mini;
+		// Mobile: #meta-preload-data отсутствует → illust === null → fallback на src элемента
+		const thumbnailUrl = illust?.urls?.thumb ?? illust?.urls?.mini
+			?? (element instanceof HTMLImageElement ? element.src : undefined);
 
 		// pximg.net requires a Referer header that cannot be set from a service worker context.
 		// skipProbe=true tells MediaResolver to skip HTTP validation for these candidates.
@@ -173,10 +202,12 @@ export class Pixiv implements SPAProvider {
 			if (baseUrl) return [baseUrl];
 		}
 
-		// DOM fallback: artwork images only — exclude CDN-resized thumbnails (/c/SIZE/ prefix)
+		// DOM fallback: desktop (figure img) + mobile (img.work-thumb / img[data-tx])
 		const seen = new Set<string>();
 		const urls: string[] = [];
-		for (const img of document.querySelectorAll<HTMLImageElement>('main figure img, figure img')) {
+		for (const img of document.querySelectorAll<HTMLImageElement>(
+			'main figure img, figure img, img.work-thumb, img[data-tx]'
+		)) {
 			const src = img.src;
 			if (!src) continue;
 			if (!src.includes('/img-master/') && !src.includes('/img-original/')) continue;
@@ -191,7 +222,7 @@ export class Pixiv implements SPAProvider {
 
 	private getImageUrl(): string {
 		const imgEl = document.querySelector<HTMLImageElement>(
-			'main figure img, figure img, main img[src*="pximg.net"]'
+			'main figure img, figure img, main img[src*="pximg.net"], img.work-thumb, img[data-tx]'
 		);
 		if (imgEl?.src) return imgEl.src;
 
@@ -206,7 +237,8 @@ export class Pixiv implements SPAProvider {
 		if (h1?.textContent?.trim()) return h1.textContent.trim();
 
 		const og = document.querySelector<HTMLMetaElement>('meta[property="og:title"]');
-		return og?.content?.trim() ?? '';
+		// Strip Pixiv's " - pixiv" branding suffix added in mobile og:title
+		return (og?.content?.trim() ?? '').replace(/ - pixiv$/i, '').trim();
 	}
 
 	private getAuthorName(): string {
@@ -214,8 +246,7 @@ export class Pixiv implements SPAProvider {
 		const illust = this.getPixivIllustData();
 		if (illust?.userName) return illust.userName.trim();
 
-		// Fallback: scoped sidebar author block — safer than meta[name="author"] which
-		// can contain the site's own author tag rather than the artwork creator.
+		// Desktop fallback: scoped sidebar author block (inside <aside>).
 		const block = this.getPixivAuthorBlock();
 		if (block) {
 			const link = this.getPixivAuthorLink(block);
@@ -229,6 +260,11 @@ export class Pixiv implements SPAProvider {
 			if (avatarAlt) return avatarAlt;
 		}
 
+		// Mobile fallback: <aside> doesn't exist; find first user-profile anchor with visible text.
+		// Author section appears before recommendation grids, so first match is the artwork creator.
+		const mobileLink = this.getMobileAuthorLink();
+		if (mobileLink) return mobileLink.textContent?.trim() ?? '';
+
 		return '';
 	}
 
@@ -237,14 +273,40 @@ export class Pixiv implements SPAProvider {
 		const illust = this.getPixivIllustData();
 		if (illust?.userId) return `https://www.pixiv.net/users/${illust.userId}`;
 
-		// Fallback: first profile link inside the aside author block.
+		// Desktop fallback: first profile link inside the aside author block.
 		const link = this.getPixivAuthorLink(this.getPixivAuthorBlock());
-		if (!link) return '';
-		try {
-			return new URL(link.getAttribute('href') ?? link.href, location.origin).href;
-		} catch {
-			return link.href || '';
+		if (link) {
+			try {
+				return new URL(link.getAttribute('href') ?? link.href, location.origin).href;
+			} catch {
+				return link.href || '';
+			}
 		}
+
+		// Mobile fallback: first user-profile anchor in document order.
+		const mobileLink = this.getMobileAuthorLink()
+			?? Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href]'))
+				.find(a => this.isPixivUserProfileHref(a.getAttribute('href') ?? ''));
+		if (mobileLink) {
+			try {
+				return new URL(mobileLink.getAttribute('href') ?? '', location.origin).href;
+			} catch {}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Mobile-only: finds the first user-profile anchor that has non-empty text content.
+	 * On mobile Pixiv there is no <aside>, so we use document order — the author section
+	 * appears before recommendation grids, making the first match the artwork's creator.
+	 */
+	private getMobileAuthorLink(): HTMLAnchorElement | null {
+		return Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href]'))
+			.find(a =>
+				this.isPixivUserProfileHref(a.getAttribute('href') ?? '') &&
+				!!a.textContent?.trim()
+			) ?? null;
 	}
 
 	/**

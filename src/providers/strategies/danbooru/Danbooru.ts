@@ -4,17 +4,16 @@ import { MediaItem } from '@/models/MediaItem';
 import { MediaType } from '@/models/MediaType';
 import { MediaCandidate, MediaCandidateType } from '@/models/MediaCandidate';
 import { MediaElementNotFoundError } from '@/providers/errors';
-import { getHashtags, getMediaUrlByMediaElement } from '@/providers/utils/scraping';
+import { getHashtags, getMediaUrlByMediaElement, queryFallback } from '@/providers/utils/scraping';
 
 export class Danbooru implements StaticProvider {
 	private readonly _domain: string = 'danbooru.donmai.us';
 
 	readonly mediaSelector: string[] = [
-		'img.fit-width',
-		'video#image.fit-width',
-		'section.image-container img',  // мобайл/альтернативный layout: img внутри контейнера
-		'img#image',                    // устаревший Danbooru-селектор по ID
-		'picture img',                  // WebP <picture> без класса fit-width
+		'img#image',                        // Основной: id="image" уникален на странице поста
+		'video#image',                      // Видео-посты: <video id="image">
+		'section.image-container > picture > img', // Альтернативный layout: img внутри <picture>
+		'section.image-container img',      // Мобайл-fallback: любой img внутри контейнера
 	];
 
 	// Источник поста: <li id="post-info-source"><a rel="external noreferrer nofollow" href="URL">...</a></li>
@@ -40,9 +39,10 @@ export class Danbooru implements StaticProvider {
 	];
 
 	public collectMediaItem(): MediaItem {
-		const selector = this.mediaSelector.join(',');
-		const mediaElement = document.querySelector<MediaElement>(selector);
-		if (!mediaElement) throw new MediaElementNotFoundError(selector);
+		// Selectors tried in order — queryFallback returns first that matches,
+		// avoiding CSS union behaviour where document order wins over selector priority.
+		const mediaElement = queryFallback<MediaElement>(this.mediaSelector);
+		if (!mediaElement) throw new MediaElementNotFoundError(this.mediaSelector.join(', '));
 		const container = document.querySelector('section.image-container[data-file-url]') as HTMLElement | null;
 
 		const tagName = mediaElement.tagName.toUpperCase();

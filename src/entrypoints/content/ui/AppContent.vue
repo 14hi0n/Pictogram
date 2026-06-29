@@ -286,7 +286,14 @@ function attemptMultiLoad(provider: BaseProvider, attempt: number): void {
 
 	if (attempt < 20 && componentMounted) {
 		spaRetryHandle = setTimeout(() => attemptMultiLoad(provider, attempt + 1), 500);
+		return;
 	}
+
+	// All retries exhausted (e.g. mobile browser with different DOM structure).
+	// Fall back to single-image booru-style mode: provider may still be able to
+	// collect metadata even without a visible anchor element, showing fixed-position buttons.
+	try { mediaItem.value = provider.collectMediaItem(); } catch { return; }
+	void finishSingleInit();
 }
 
 /**
@@ -581,7 +588,6 @@ async function addToQueueForPanel(panel: PanelState): Promise<void> {
 		// No additionalMediaUrls — per-image action adds only this single image
 		await msg({ type: MSG.ADD_TO_QUEUE, data: { mediaUrl: panel.mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, mediaCandidates, thumbnailUrl } });
 		panel.isInQueue = true;
-		await msg({ type: MSG.OPEN_SIDE_PANEL });
 	} catch { /* ничего */ }
 }
 
