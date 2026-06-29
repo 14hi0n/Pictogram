@@ -59,7 +59,17 @@ module.exports = function buildCommon({ isDev }) {
 						// url: false — шрифты и статика обрабатываются CopyWebpackPlugin, не webpack'ом
 						{ loader: 'css-loader', options: { url: false } },
 						{
-							loader: 'sass-loader'
+							loader: 'sass-loader',
+							options: {
+								additionalData: function(content, loaderContext) {
+									// Auto-inject vars into Vue SFC <style lang="scss"> blocks only.
+									// Standalone .scss files (main.scss etc.) import vars themselves.
+									if (loaderContext.resourcePath.endsWith('.vue')) {
+										return `@import "${PATHS.src}/entrypoints/shared/styles/vars";\n${content}`;
+									}
+									return content;
+								}
+							}
 						}
 					]
 				},

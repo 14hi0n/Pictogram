@@ -15,20 +15,20 @@
 				<div class="card__site">{{ siteDomain }}</div>
 				<div class="card__date">{{ formattedDate }}</div>
 				<div class="card__flags">
-					<span v-if="allTags.length > 0 && hasAnyTagVar" class="flag flag--tags-on">Теги {{ enabledTags.length }}/{{ allTags.length }}</span>
-					<span v-if="effectiveChannelName" class="flag flag--channel">{{ effectiveChannelName }}</span>
-					<span v-if="isTemplateOverridden" class="flag flag--override">Свой шаблон</span>
+					<span v-if="allTags.length > 0 && hasAnyTagVar" class="card__flag card__flag--tags-on">Теги {{ enabledTags.length }}/{{ allTags.length }}</span>
+					<span v-if="effectiveChannelName" class="card__flag card__flag--channel">{{ effectiveChannelName }}</span>
+					<span v-if="isTemplateOverridden" class="card__flag card__flag--override">Свой шаблон</span>
 				</div>
 			</div>
 
 			<div class="card__controls">
-				<button class="icon-btn" :class="item.enabled ? 'icon-btn--active' : 'icon-btn--muted'" :title="item.enabled ? 'Выключить' : 'Включить'" @click.stop="$emit('toggle', item.id)">
+				<button class="card__control-btn" :class="item.enabled ? 'card__control-btn--active' : 'card__control-btn--muted'" :title="item.enabled ? 'Выключить' : 'Включить'" @click.stop="$emit('toggle', item.id)">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
 						<polyline v-if="item.enabled" points="20 6 9 17 4 12" />
 						<line v-else x1="5" y1="12" x2="19" y2="12" />
 					</svg>
 				</button>
-				<button class="icon-btn icon-btn--muted">
+				<button class="card__control-btn card__control-btn--muted">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
 						<polyline v-if="expanded" points="18 15 12 9 6 15" />
 						<polyline v-else points="6 9 12 15 18 9" />
@@ -41,11 +41,11 @@
 		<div v-if="expanded" class="card__editor">
 
 			<!-- Описание: только если {{desc}} в шаблоне -->
-			<div v-if="templateVars.hasDesc" class="editor-field">
-				<label class="editor-label">Описание</label>
+			<div v-if="templateVars.hasDesc" class="card__editor-field">
+				<label class="card__editor-label">Описание</label>
 				<textarea
 					v-model="localDescription"
-					class="editor-textarea"
+					class="card__editor-textarea"
 					placeholder="Текст для {{desc}}"
 					rows="2"
 					@input="emitUpdate"
@@ -54,37 +54,37 @@
 
 			<!-- Tags: interactive when template uses a tag variable -->
 			<template v-if="allTags.length > 0">
-				<div v-if="hasAnyTagVar" class="editor-field">
-					<div class="tag-header">
-						<label class="editor-label">Tags</label>
-						<div class="tag-bulk">
-							<button class="bulk-btn" @click="enableAllTags">Включить все</button>
-							<button class="bulk-btn" @click="disableAllTags">Выключить все</button>
+				<div v-if="hasAnyTagVar" class="card__editor-field">
+					<div class="card__tag-header">
+						<label class="card__editor-label">Tags</label>
+						<div class="card__tag-bulk">
+							<button class="card__tag-bulk-btn" @click="enableAllTags">Включить все</button>
+							<button class="card__tag-bulk-btn" @click="disableAllTags">Выключить все</button>
 						</div>
 					</div>
-					<div class="tag-chips">
+					<div class="card__tag-chips">
 						<button
 							v-for="tag in visibleTags"
 							:key="tag"
-							class="tag-chip"
-							:class="{ 'tag-chip--off': localExcludedTags.includes(tag) }"
+							class="card__tag-chip"
+							:class="{ 'card__tag-chip--off': localExcludedTags.includes(tag) }"
 							@click="toggleTag(tag)"
 						>{{ tag }}</button>
 					</div>
-					<button v-if="hiddenTagsCount > 0" class="tags-expand-btn" @click="tagsExpanded = true">
+					<button v-if="hiddenTagsCount > 0" class="card__tags-expand-btn" @click="tagsExpanded = true">
 						Показать все ({{ allTags.length }})
 					</button>
-					<button v-else-if="tagsExpanded && allTags.length > TAGS_VISIBLE" class="tags-expand-btn" @click="tagsExpanded = false">
+					<button v-else-if="tagsExpanded && allTags.length > TAGS_VISIBLE" class="card__tags-expand-btn" @click="tagsExpanded = false">
 						Скрыть
 					</button>
 				</div>
-				<p v-else-if="effectiveTemplate" class="editor-tags-hint">
+				<p v-else-if="effectiveTemplate" class="card__editor-tags-hint">
 					Теги найдены, но текущий шаблон их не использует.
 				</p>
 			</template>
 
 			<!-- Нет интерактивных элементов: подсказка -->
-			<div v-if="!hasAnyControls" class="editor-empty-hint">
+			<div v-if="!hasAnyControls" class="card__editor-empty-hint">
 				<template v-if="!effectiveTemplate">
 					Шаблон не задан. Пост будет опубликован без подписи.
 				</template>
@@ -94,32 +94,32 @@
 			</div>
 
 			<!-- Advanced / Override template -->
-			<div class="editor-advanced">
-				<button class="advanced-toggle" @click="overrideExpanded = !overrideExpanded">
+			<div class="card__editor-advanced">
+				<button class="card__editor-advanced-toggle" @click="overrideExpanded = !overrideExpanded">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0">
 						<polyline v-if="overrideExpanded" points="18 15 12 9 6 15" />
 						<polyline v-else points="6 9 12 15 18 9" />
 					</svg>
 					Advanced
 				</button>
-				<div v-if="overrideExpanded" class="editor-field" style="margin-top:6px">
-					<label class="editor-label">Override template</label>
+				<div v-if="overrideExpanded" class="card__editor-field" style="margin-top:6px">
+					<label class="card__editor-label">Override template</label>
 					<textarea
 						ref="overrideEl"
 						v-model="localOverrideTemplate"
-						class="editor-textarea"
+						class="card__editor-textarea"
 						placeholder="Empty = use channel master template"
 						rows="3"
 						@input="onOverrideInput"
 					></textarea>
-					<div class="template-vars">
-						<button v-for="v in TEMPLATE_VARS" :key="v" class="tvar-chip" @click="insertVar(v)">{{ v }}</button>
+					<div class="card__template-vars">
+						<button v-for="v in TEMPLATE_VARS" :key="v" class="card__tvar-chip" @click="insertVar(v)">{{ v }}</button>
 					</div>
-					<label class="editor-label" style="margin-top:8px">Source URL</label>
+					<label class="card__editor-label" style="margin-top:8px">Source URL</label>
 					<input
 						v-model="localSourceUrl"
 						type="url"
-						class="editor-input"
+						class="card__editor-input"
 						placeholder="https://..."
 						@blur="emitSourceUpdate"
 					/>
@@ -127,26 +127,26 @@
 			</div>
 
 			<!-- Канал -->
-			<div class="editor-field">
-				<label class="editor-label">Канал</label>
-				<select class="editor-select" :value="localChannelID || activeChatID || ''" @change="onChannelChange">
+			<div class="card__editor-field">
+				<label class="card__editor-label">Канал</label>
+				<select class="card__editor-select" :value="localChannelID || activeChatID || ''" @change="onChannelChange">
 					<option v-for="ch in channels" :key="ch.chatID" :value="ch.chatID">{{ ch.name }}</option>
 				</select>
 			</div>
 
 			<!-- Действия -->
-			<div class="editor-footer">
-				<button class="action-btn action-btn--danger" @click="$emit('remove', item.id)">
+			<div class="card__editor-footer">
+				<button class="card__action-btn card__action-btn--danger" @click="$emit('remove', item.id)">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" /></svg>
 					Удалить
 				</button>
-				<a :href="item.pageUrl" target="_blank" class="action-btn action-btn--link">
+				<a :href="item.pageUrl" target="_blank" class="card__action-btn card__action-btn--link">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
 					Открыть
 				</a>
-				<button class="action-btn action-btn--primary" :disabled="isSending" @click="$emit('send', localItemForSend)">
+				<button class="card__action-btn card__action-btn--primary" :disabled="isSending" @click="$emit('send', localItemForSend)">
 					<svg v-if="!isSending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-					<span v-if="isSending" class="action-spinner"></span>
+					<span v-if="isSending" class="card__action-spinner"></span>
 					{{ isSending ? 'Отправка...' : 'Отправить' }}
 				</button>
 			</div>
@@ -233,296 +233,301 @@ function emitSourceUpdate(): void {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .card {
-	background: #fff;
+	background: $sp-bg-card;
 	border-radius: 10px;
 	overflow: hidden;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-	border: 1px solid #ebebeb;
+	border: 1px solid $sp-border-card;
 	transition: opacity 0.2s, border-color 0.15s;
 
 	&--disabled { opacity: 0.45; }
-	&--selected { border-color: #0088cc; box-shadow: 0 0 0 2px rgba(0,136,204,0.15); }
-}
+	&--selected { border-color: $sp-primary; box-shadow: 0 0 0 2px rgba($sp-primary, 0.15); }
 
-.card__header {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 10px;
-	cursor: pointer;
-	user-select: none;
-	@media (hover: hover) { &:hover { background: #fafafa; } }
-}
-
-.card__select {
-	flex-shrink: 0;
-	display: flex;
-	align-items: center;
-	cursor: pointer;
-	padding: 2px;
-	input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: #0088cc; appearance: auto; }
-}
-
-.card__preview {
-	position: relative;
-	width: 54px;
-	height: 54px;
-	border-radius: 6px;
-	overflow: hidden;
-	flex-shrink: 0;
-	background: #eee;
-}
-
-.card__img { width: 100%; height: 100%; object-fit: cover; }
-
-.card__img-placeholder {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	height: 100%;
-	font-size: 9px;
-	color: #bbb;
-	text-align: center;
-	padding: 2px;
-	word-break: break-all;
-	background: #f5f0ff;
-}
-
-.card__meta { flex: 1; min-width: 0; }
-
-.card__site {
-	font-size: 12px;
-	font-weight: 600;
-	color: #0088cc;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.card__date { font-size: 11px; color: #bbb; }
-
-.card__flags {
-	display: flex;
-	gap: 4px;
-	margin-top: 3px;
-	flex-wrap: wrap;
-}
-
-.flag {
-	font-size: 10px;
-	padding: 1px 5px;
-	border-radius: 3px;
-	font-weight: 500;
-	&--tags-on { background: #e0f2fe; color: #0077b6; }
-	&--channel  { background: #f0f0f0; color: #666; }
-	&--override { background: #fff3e0; color: #e65100; }
-}
-
-.card__controls {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	flex-shrink: 0;
-}
-
-.icon-btn {
-	width: 28px;
-	height: 28px;
-	border: 1px solid #e0e0e0;
-	border-radius: 6px;
-	background: #f9f9f9;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: all 0.12s;
-	svg { width: 13px; height: 13px; }
-	@media (hover: hover) {
-		&:hover { background: #efefef; }
-		&--muted:hover { color: #666; }
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 10px;
+		cursor: pointer;
+		user-select: none;
+		@media (hover: hover) { &:hover { background: $sp-bg-editor; } }
 	}
-	&--active { background: #0088cc; border-color: #0088cc; color: #fff; }
-	&--muted  { color: #ccc; }
-}
 
-/* ── Редактор ── */
-.card__editor {
-	padding: 10px 12px 12px;
-	border-top: 1px solid #f0f0f0;
-	background: #fafafa;
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-}
-
-.editor-field { display: flex; flex-direction: column; gap: 6px; }
-
-.editor-label {
-	font-size: 10px;
-	font-weight: 700;
-	color: #aaa;
-	text-transform: uppercase;
-	letter-spacing: 0.4px;
-}
-
-.editor-select,
-.editor-textarea,
-.editor-input {
-	width: 100%;
-	padding: 6px 8px;
-	border: 1px solid #ddd;
-	border-radius: 6px;
-	font-size: 12px;
-	background: #fff;
-	outline: none;
-	font-family: inherit;
-	color: #333;
-	box-sizing: border-box;
-	&:focus { border-color: #0088cc; }
-}
-.editor-textarea { resize: vertical; }
-
-/* ── Тег-чипы ── */
-.tag-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.tag-bulk { display: flex; gap: 4px; }
-
-.bulk-btn {
-	background: none;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-	padding: 1px 6px;
-	font-size: 10px;
-	color: #888;
-	cursor: pointer;
-	@media (hover: hover) { &:hover { border-color: #0088cc; color: #0088cc; } }
-}
-
-.tags-expand-btn {
-	background: none;
-	border: none;
-	padding: 0;
-	font-size: 10px;
-	color: #0088cc;
-	cursor: pointer;
-	align-self: flex-start;
-	@media (hover: hover) { &:hover { text-decoration: underline; } }
-}
-
-.tag-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-
-.tag-chip {
-	font-size: 11px;
-	line-height: 1.4;
-	padding: 2px 8px;
-	border-radius: 10px;
-	border: 1px solid #c8e6fa;
-	background: #e8f4fd;
-	color: #0077b6;
-	cursor: pointer;
-	transition: all 0.12s;
-	user-select: none;
-	@media (hover: hover) {
-		&:hover { background: #d0eaf8; }
-		&--off:hover { background: #eeeeee; color: #999; }
+	&__select {
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		padding: 2px;
+		input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: $sp-primary; appearance: auto; }
 	}
-	&--off {
-		background: #f5f5f5;
-		border-color: #e0e0e0;
-		color: #bbb;
-		text-decoration: line-through;
+
+	&__preview {
+		position: relative;
+		width: 54px;
+		height: 54px;
+		border-radius: 6px;
+		overflow: hidden;
+		flex-shrink: 0;
+		background: $sp-bg-placeholder;
+	}
+
+	&__img { width: 100%; height: 100%; object-fit: cover; }
+
+	&__img-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+		font-size: 9px;
+		color: $sp-text-light;
+		text-align: center;
+		padding: 2px;
+		word-break: break-all;
+		background: $sp-chip-accent-bg;
+	}
+
+	&__meta { flex: 1; min-width: 0; }
+
+	&__site {
+		font-size: 12px;
+		font-weight: 600;
+		color: $sp-primary;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__date { font-size: 11px; color: $sp-text-light; }
+
+	&__flags {
+		display: flex;
+		gap: 4px;
+		margin-top: 3px;
+		flex-wrap: wrap;
+	}
+
+	&__flag {
+		font-size: 10px;
+		padding: 1px 5px;
+		border-radius: 3px;
+		font-weight: 500;
+		&--tags-on { background: $sp-chip-bg; color: $sp-chip-text; }
+		&--channel  { background: $sp-border-light; color: $sp-text-muted; }
+		&--override { background: #fff3e0; color: $sp-notice-icon; }
+	}
+
+	&__controls {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		flex-shrink: 0;
+	}
+
+	&__control-btn {
+		width: 28px;
+		height: 28px;
+		border: 1px solid $sp-border;
+		border-radius: 6px;
+		background: $sp-bg-editor;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.12s;
+		svg { width: 13px; height: 13px; }
+		@media (hover: hover) {
+			&:hover { background: $sp-bg-hover; }
+			&--muted:hover { color: $sp-text-muted; }
+		}
+		&--active { background: $sp-primary; border-color: $sp-primary; color: $sp-bg-card; }
+		&--muted  { color: $sp-text-faint; }
+	}
+
+	&__editor {
+		padding: 10px 12px 12px;
+		border-top: 1px solid $sp-border-light;
+		background: $sp-bg-editor;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+
+		&-field { display: flex; flex-direction: column; gap: 6px; }
+
+		&-label {
+			font-size: 10px;
+			font-weight: 700;
+			color: $sp-text-label;
+			text-transform: uppercase;
+			letter-spacing: 0.4px;
+		}
+
+		&-select,
+		&-textarea,
+		&-input {
+			width: 100%;
+			padding: 6px 8px;
+			border: 1px solid $sp-border-input;
+			border-radius: 6px;
+			font-size: 12px;
+			background: $sp-bg-card;
+			outline: none;
+			font-family: inherit;
+			color: $sp-text;
+			box-sizing: border-box;
+			&:focus { border-color: $sp-primary; }
+		}
+		&-textarea { resize: vertical; }
+
+		&-tags-hint {
+			font-size: 11px;
+			color: $sp-text-label;
+			margin: 0;
+			padding: 4px 0;
+		}
+
+		&-empty-hint {
+			font-size: 11px;
+			color: $sp-text-label;
+			padding: 6px 8px;
+			background: $sp-bg-editor;
+			border: 1px dashed $sp-border;
+			border-radius: 6px;
+		}
+
+		&-advanced {
+			display: flex;
+			flex-direction: column;
+
+			&-toggle {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				background: none;
+				border: none;
+				padding: 2px 0;
+				font-size: 11px;
+				font-weight: 600;
+				color: $sp-text-label;
+				cursor: pointer;
+				text-transform: uppercase;
+				letter-spacing: 0.4px;
+				width: fit-content;
+				@media (hover: hover) { &:hover { color: $sp-text-hint; } }
+			}
+		}
+
+		&-footer { display: flex; gap: 5px; justify-content: flex-end; }
+	}
+
+	&__tag {
+		&-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		&-bulk {
+			display: flex;
+			gap: 4px;
+
+			&-btn {
+				background: none;
+				border: 1px solid $sp-border-input;
+				border-radius: 4px;
+				padding: 1px 6px;
+				font-size: 10px;
+				color: $sp-text-hint;
+				cursor: pointer;
+				@media (hover: hover) { &:hover { border-color: $sp-primary; color: $sp-primary; } }
+			}
+		}
+
+		&-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+
+		&-chip {
+			font-size: 11px;
+			line-height: 1.4;
+			padding: 2px 8px;
+			border-radius: 10px;
+			border: 1px solid $sp-chip-border;
+			background: $sp-chip-bg;
+			color: $sp-chip-text;
+			cursor: pointer;
+			transition: all 0.12s;
+			user-select: none;
+			@media (hover: hover) {
+				&:hover { background: $sp-chip-hover; }
+				&--off:hover { background: $sp-bg-placeholder; color: $sp-text-hint; }
+			}
+			&--off {
+				background: $sp-bg-disabled;
+				border-color: $sp-border;
+				color: $sp-text-light;
+				text-decoration: line-through;
+			}
+		}
+	}
+
+	&__tags-expand-btn {
+		background: none;
+		border: none;
+		padding: 0;
+		font-size: 10px;
+		color: $sp-primary;
+		cursor: pointer;
+		align-self: flex-start;
+		@media (hover: hover) { &:hover { text-decoration: underline; } }
+	}
+
+	&__template-vars { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
+
+	&__tvar-chip {
+		font-size: 10px;
+		padding: 1px 6px;
+		border-radius: 4px;
+		border: 1px solid $sp-chip-border;
+		background: $sp-chip-bg;
+		color: $sp-chip-text;
+		cursor: pointer;
+		font-family: monospace;
+		transition: background 0.1s;
+		@media (hover: hover) { &:hover { background: $sp-chip-hover; } }
+	}
+
+	&__action-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 6px 10px;
+		border-radius: 6px;
+		border: none;
+		font-size: 11px;
+		font-weight: 600;
+		cursor: pointer;
+		text-decoration: none;
+		transition: opacity 0.15s;
+		svg { width: 12px; height: 12px; }
+		@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.8; } }
+		&:disabled { opacity: 0.55; cursor: not-allowed; }
+		&--primary { background: $sp-primary; color: $sp-bg-card; }
+		&--danger  { background: $sp-danger;  color: $sp-bg-card; }
+		&--link    { background: $sp-bg-subtle; color: #444; }
+	}
+
+	&__action-spinner {
+		width: 11px;
+		height: 11px;
+		border: 2px solid rgba(255,255,255,0.35);
+		border-top-color: $sp-bg-card;
+		border-radius: 50%;
+		animation: card-action-spin 0.7s linear infinite;
+		flex-shrink: 0;
 	}
 }
 
-/* ── Подсказка при пустом шаблоне ── */
-.editor-empty-hint {
-	font-size: 11px;
-	color: #aaa;
-	padding: 6px 8px;
-	background: #f9f9f9;
-	border: 1px dashed #e0e0e0;
-	border-radius: 6px;
-}
-
-.editor-tags-hint {
-	font-size: 11px;
-	color: #aaa;
-	margin: 0;
-	padding: 4px 0;
-}
-
-/* ── Advanced ── */
-.editor-advanced { display: flex; flex-direction: column; }
-
-.advanced-toggle {
-	display: inline-flex;
-	align-items: center;
-	gap: 4px;
-	background: none;
-	border: none;
-	padding: 2px 0;
-	font-size: 11px;
-	font-weight: 600;
-	color: #aaa;
-	cursor: pointer;
-	text-transform: uppercase;
-	letter-spacing: 0.4px;
-	width: fit-content;
-	@media (hover: hover) { &:hover { color: #888; } }
-}
-
-.template-vars { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
-
-.tvar-chip {
-	font-size: 10px;
-	padding: 1px 6px;
-	border-radius: 4px;
-	border: 1px solid #c8e6fa;
-	background: #e8f4fd;
-	color: #0077b6;
-	cursor: pointer;
-	font-family: monospace;
-	transition: background 0.1s;
-	@media (hover: hover) { &:hover { background: #d0eaf8; } }
-}
-
-/* ── Кнопки действий ── */
-.editor-footer { display: flex; gap: 5px; justify-content: flex-end; }
-
-.action-btn {
-	display: inline-flex;
-	align-items: center;
-	gap: 4px;
-	padding: 6px 10px;
-	border-radius: 6px;
-	border: none;
-	font-size: 11px;
-	font-weight: 600;
-	cursor: pointer;
-	text-decoration: none;
-	transition: opacity 0.15s;
-	svg { width: 12px; height: 12px; }
-	@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.8; } }
-	&:disabled { opacity: 0.55; cursor: not-allowed; }
-	&--primary { background: #0088cc; color: #fff; }
-	&--danger  { background: #e74c3c; color: #fff; }
-	&--link    { background: #ecf0f1; color: #444; }
-}
-
-.action-spinner {
-	width: 11px; height: 11px;
-	border: 2px solid rgba(255,255,255,0.35);
-	border-top-color: #fff;
-	border-radius: 50%;
-	animation: action-spin 0.7s linear infinite;
-	flex-shrink: 0;
-}
-@keyframes action-spin { to { transform: rotate(360deg); } }
+@keyframes card-action-spin { to { transform: rotate(360deg); } }
 </style>

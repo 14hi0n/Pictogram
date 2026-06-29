@@ -10,10 +10,10 @@
 import InstallView from './views/Install/index.vue';
 </script>
 
-<style>
+<style lang="scss">
 body {
-	background: #f8f9fa !important;
-	color: #333 !important;
+	background: $sp-bg-light !important;
+	color: $sp-text !important;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 

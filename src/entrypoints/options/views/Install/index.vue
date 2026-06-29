@@ -52,95 +52,71 @@ function prevStep(): void {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .onboarding {
 	min-height: 100vh;
-	background: #f8f9fa;
-}
+	background: $sp-bg-light;
 
-.onboarding__steps {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 0;
-	padding: 20px;
-	background: #fff;
-	border-bottom: 1px solid #e8e8e8;
-}
+	&__steps {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 0;
+		padding: 20px;
+		background: $sp-bg-card;
+		border-bottom: 1px solid $sp-border-card;
+		@media (max-width: 540px) { padding: 14px 12px; }
+	}
 
-.onboarding__step {
-	display: flex;
-	align-items: center;
-	gap: 6px;
+	&__step {
+		display: flex;
+		align-items: center;
+		gap: 6px;
 
-	& + & {
-		&::before {
-			content: '';
-			display: block;
-			width: 40px;
-			height: 1px;
-			background: #ddd;
-			margin: 0 8px;
+		& + & {
+			&::before {
+				content: '';
+				display: block;
+				width: 40px;
+				height: 1px;
+				background: $sp-border-input;
+				margin: 0 8px;
+			}
+			@media (max-width: 540px) {
+				&::before { width: 24px; margin: 0 6px; }
+			}
+		}
+
+		&-dot {
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: $sp-border;
+			color: $sp-text-hint;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 13px;
+			font-weight: 600;
+			flex-shrink: 0;
+			transition: all 0.2s;
+			.onboarding__step--active & { background: $sp-primary; color: $sp-bg-card; }
+			.onboarding__step--done &  { background: $sp-success;  color: $sp-bg-card; }
+		}
+
+		&-label {
+			font-size: 13px;
+			color: $sp-text-hint;
+			font-weight: 500;
+			.onboarding__step--active & { color: $sp-primary; }
+			.onboarding__step--done &  { color: $sp-success; }
+			@media (max-width: 540px) { display: none; }
 		}
 	}
-}
 
-.onboarding__step-dot {
-	width: 28px;
-	height: 28px;
-	border-radius: 50%;
-	background: #e0e0e0;
-	color: #999;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 13px;
-	font-weight: 600;
-	flex-shrink: 0;
-	transition: all 0.2s;
-
-	.onboarding__step--active & {
-		background: #0088cc;
-		color: #fff;
-	}
-
-	.onboarding__step--done & {
-		background: #27ae60;
-		color: #fff;
-	}
-}
-
-.onboarding__step-label {
-	font-size: 13px;
-	color: #999;
-	font-weight: 500;
-
-	.onboarding__step--active & {
-		color: #0088cc;
-	}
-
-	.onboarding__step--done & {
-		color: #27ae60;
-	}
-}
-
-.onboarding__content {
-	padding: 20px;
-}
-
-@media (max-width: 540px) {
-	.onboarding__steps {
-		padding: 14px 12px;
-	}
-	.onboarding__step-label {
-		display: none;
-	}
-	.onboarding__step + .onboarding__step::before {
-		width: 24px;
-		margin: 0 6px;
-	}
-	.onboarding__content {
-		padding: 16px 12px;
+	&__content {
+		padding: 20px;
+		@media (max-width: 540px) { padding: 16px 12px; }
 	}
 }
 </style>

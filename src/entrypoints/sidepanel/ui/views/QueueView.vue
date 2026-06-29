@@ -17,7 +17,7 @@
 					<!-- Кнопка группировки — появляется когда выбрано 2+ одиночных поста -->
 					<button
 						v-if="selectedSingleItems.length >= 2"
-						class="toolbar-btn toolbar-btn--group"
+						class="queue__toolbar-btn queue__toolbar-btn--group"
 						title="Объединить выбранные посты в один альбом"
 						@click="groupSelectedItems"
 					>
@@ -29,12 +29,12 @@
 					</button>
 
 					<button
-						class="toolbar-btn"
+						class="queue__toolbar-btn"
 						:title="selectedIds.size > 0 ? 'Отправить выбранные посты' : 'Отправить все включённые посты'"
 						:disabled="sendingAll || itemsToSend.length === 0"
 						@click="sendAll"
 					>
-						<span v-if="sendingAll" class="spinner"></span>
+						<span v-if="sendingAll" class="queue__spinner"></span>
 						<template v-else>
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px">
 								<line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
@@ -43,7 +43,7 @@
 						</template>
 					</button>
 					<button
-						class="toolbar-btn toolbar-btn--danger"
+						class="queue__toolbar-btn queue__toolbar-btn--danger"
 						:title="selectedIds.size > 0 ? 'Удалить выбранные' : 'Очистить всю очередь'"
 						@click="clearOrDeleteSelected"
 					>
@@ -488,102 +488,102 @@ function itemsWord(count: number): string {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .queue {
 	padding: 10px;
+
+	&__empty {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: 40px 20px;
+		gap: 10px;
+
+		&-icon { font-size: 40px; }
+
+		&-title {
+			font-size: 16px;
+			font-weight: 600;
+			color: $sp-text-secondary;
+		}
+
+		&-hint {
+			font-size: 13px;
+			color: $sp-text-hint;
+			line-height: 1.5;
+			max-width: 280px;
+		}
+	}
+
+	&__toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 10px;
+		gap: 8px;
+
+		&-actions {
+			display: flex;
+			gap: 6px;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+		}
+
+		&-btn {
+			padding: 5px 10px;
+			border-radius: 6px;
+			border: none;
+			font-size: 12px;
+			font-weight: 500;
+			cursor: pointer;
+			background: $sp-primary;
+			color: $sp-bg-card;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			transition: opacity 0.15s;
+
+			@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.85; } }
+			&:disabled { opacity: 0.4; cursor: not-allowed; }
+			&--danger { background: $sp-danger; }
+			&--group  { background: $sp-accent; }
+		}
+	}
+
+	&__count {
+		font-size: 13px;
+		color: $sp-text-muted;
+		font-weight: 500;
+	}
+
+	&__status {
+		padding: 8px 12px;
+		border-radius: 6px;
+		font-size: 13px;
+		margin-bottom: 10px;
+		text-align: center;
+
+		&--ok    { background: #d4edda; color: #155724; }
+		&--error { background: #f8d7da; color: #721c24; }
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__spinner {
+		display: inline-block;
+		width: 12px;
+		height: 12px;
+		border: 2px solid rgba(255, 255, 255, 0.4);
+		border-top-color: $sp-bg-card;
+		border-radius: 50%;
+		animation: queue-spin 0.7s linear infinite;
+	}
 }
 
-.queue__empty {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	padding: 40px 20px;
-	gap: 10px;
-}
-
-.queue__empty-icon { font-size: 40px; }
-
-.queue__empty-title {
-	font-size: 16px;
-	font-weight: 600;
-	color: #555;
-}
-
-.queue__empty-hint {
-	font-size: 13px;
-	color: #888;
-	line-height: 1.5;
-	max-width: 280px;
-}
-
-.queue__toolbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 10px;
-	gap: 8px;
-}
-
-.queue__count {
-	font-size: 13px;
-	color: #666;
-	font-weight: 500;
-}
-
-.queue__toolbar-actions {
-	display: flex;
-	gap: 6px;
-	flex-wrap: wrap;
-	justify-content: flex-end;
-}
-
-.toolbar-btn {
-	padding: 5px 10px;
-	border-radius: 6px;
-	border: none;
-	font-size: 12px;
-	font-weight: 500;
-	cursor: pointer;
-	background: #0088cc;
-	color: #fff;
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	transition: opacity 0.15s;
-
-	@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.85; } }
-	&:disabled { opacity: 0.4; cursor: not-allowed; }
-	&--danger { background: #e74c3c; }
-	&--group  { background: #8b5cf6; }
-}
-
-.queue__status {
-	padding: 8px 12px;
-	border-radius: 6px;
-	font-size: 13px;
-	margin-bottom: 10px;
-	text-align: center;
-
-	&--ok    { background: #d4edda; color: #155724; }
-	&--error { background: #f8d7da; color: #721c24; }
-}
-
-.queue__list {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.spinner {
-	display: inline-block;
-	width: 12px;
-	height: 12px;
-	border: 2px solid rgba(255, 255, 255, 0.4);
-	border-top-color: #fff;
-	border-radius: 50%;
-	animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes queue-spin { to { transform: rotate(360deg); } }
 </style>

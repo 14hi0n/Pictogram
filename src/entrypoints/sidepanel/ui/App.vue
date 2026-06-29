@@ -5,25 +5,25 @@
 			<span class="sp-header__title">{{ APP_NAME }}</span>
 		</header> -->
 
-		<nav class="sp-tabs">
+		<nav class="sp-app__nav">
 			<button
-				class="sp-tabs__tab"
-				:class="{ 'sp-tabs__tab--active': activeTab === 'queue' }"
+				class="sp-app__nav-tab"
+				:class="{ 'sp-app__nav-tab--active': activeTab === 'queue' }"
 				@click="activeTab = 'queue'"
 			>
-				<span class="sp-tabs__badge" v-if="queueCount > 0">{{ queueCount }}</span>
+				<span class="sp-app__nav-badge" v-if="queueCount > 0">{{ queueCount }}</span>
 				Очередь
 			</button>
 			<button
-				class="sp-tabs__tab"
-				:class="{ 'sp-tabs__tab--active': activeTab === 'settings' }"
+				class="sp-app__nav-tab"
+				:class="{ 'sp-app__nav-tab--active': activeTab === 'settings' }"
 				@click="activeTab = 'settings'"
 			>
 				Настройки
 			</button>
 		</nav>
 
-		<main class="sp-content">
+		<main class="sp-app__content">
 			<QueueView v-if="activeTab === 'queue'" @queue-changed="refreshCount" />
 			<SettingsView
 				v-if="activeTab === 'settings'"
@@ -83,11 +83,11 @@ async function checkPendingAction(): Promise<void> {
 }
 </script>
 
-<style>
+<style lang="scss">
 /* Сбрасываем тёмную тему из main.scss для side panel */
 body {
-	background: #f0f2f5 !important;
-	color: #333 !important;
+	background: $sp-bg !important;
+	color: $sp-text !important;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 	font-size: 14px;
 	height: 100vh;
@@ -116,7 +116,7 @@ a {
 }
 </style>
 
-<style scoped>
+<style scoped lang="scss">
 .sp-app {
 	display: flex;
 	flex-direction: column;
@@ -124,79 +124,74 @@ a {
 	height: 100dvh;
 	width: 100%;
 	max-width: 480px;
-}
 
-.sp-header {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 10px 14px;
-	background: #fff;
-	border-bottom: 1px solid #e0e0e0;
-	flex-shrink: 0;
-}
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 10px 14px;
+		background: $sp-bg-card;
+		border-bottom: 1px solid $sp-border;
+		flex-shrink: 0;
 
-.sp-header__logo {
-	width: 20px;
-	height: 20px;
-}
+		&-logo { width: 20px; height: 20px; }
 
-.sp-header__title {
-	font-weight: 600;
-	font-size: 15px;
-	color: #0088cc;
-}
-
-.sp-tabs {
-	display: flex;
-	background: #fff;
-	border-bottom: 2px solid #e0e0e0;
-	flex-shrink: 0;
-}
-
-.sp-tabs__tab {
-	flex: 1;
-	padding: 10px 8px;
-	min-height: 44px;
-	border: none;
-	background: transparent;
-	cursor: pointer;
-	font-size: 13px;
-	font-weight: 500;
-	color: #666;
-	position: relative;
-	transition: color 0.15s;
-
-	@media (hover: hover) {
-		&:hover { color: #0088cc; }
+		&-title {
+			font-weight: 600;
+			font-size: 15px;
+			color: $sp-primary;
+		}
 	}
 
-	&--active {
-		color: #0088cc;
-		border-bottom: 2px solid #0088cc;
-		margin-bottom: -2px;
+	&__nav {
+		display: flex;
+		background: $sp-bg-card;
+		border-bottom: 2px solid $sp-border;
+		flex-shrink: 0;
+
+		&-tab {
+			flex: 1;
+			padding: 10px 8px;
+			min-height: 44px;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-size: 13px;
+			font-weight: 500;
+			color: $sp-text-muted;
+			position: relative;
+			transition: color 0.15s;
+
+			@media (hover: hover) { &:hover { color: $sp-primary; } }
+
+			&--active {
+				color: $sp-primary;
+				border-bottom: 2px solid $sp-primary;
+				margin-bottom: -2px;
+			}
+		}
+
+		&-badge {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 18px;
+			height: 18px;
+			padding: 0 5px;
+			background: $sp-primary;
+			color: $sp-bg-card;
+			border-radius: 9px;
+			font-size: 11px;
+			font-weight: 600;
+			margin-right: 4px;
+		}
 	}
-}
 
-.sp-tabs__badge {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-width: 18px;
-	height: 18px;
-	padding: 0 5px;
-	background: #0088cc;
-	color: #fff;
-	border-radius: 9px;
-	font-size: 11px;
-	font-weight: 600;
-	margin-right: 4px;
-}
-
-.sp-content {
-	flex: 1;
-	overflow-y: auto;
-	overflow-x: hidden;
-	padding-bottom: env(safe-area-inset-bottom, 0px);
+	&__content {
+		flex: 1;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
 }
 </style>

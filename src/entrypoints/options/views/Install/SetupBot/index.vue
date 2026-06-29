@@ -58,66 +58,53 @@ async function onDone(): Promise<void> {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .setup {
 	max-width: 520px;
 	margin: 0 auto;
-}
 
-.setup__title {
-	font-size: 22px;
-	font-weight: 700;
-	color: #1a1a2e;
-	margin-bottom: 20px;
-}
-
-.setup__instructions {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	margin-bottom: 24px;
-}
-
-.setup__step-item {
-	display: flex;
-	gap: 12px;
-	align-items: flex-start;
-
-	p {
-		font-size: 14px;
-		color: #555;
-		line-height: 1.5;
-		margin: 0;
+	&__title {
+		font-size: 22px;
+		font-weight: 700;
+		color: $sp-text-title;
+		margin-bottom: 20px;
 	}
 
-	a {
-		color: #0088cc;
-		text-decoration: none;
-		@media (hover: hover) {
-			&:hover { text-decoration: underline; }
+	&__instructions {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin-bottom: 24px;
+	}
+
+	&__step {
+		&-item {
+			display: flex;
+			gap: 12px;
+			align-items: flex-start;
+			p { font-size: 14px; color: $sp-text-secondary; line-height: 1.5; margin: 0; }
+			a {
+				color: $sp-primary;
+				text-decoration: none;
+				@media (hover: hover) { &:hover { text-decoration: underline; } }
+			}
+			code { background: $sp-border-light; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+		}
+
+		&-num {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 26px;
+			height: 26px;
+			border-radius: 50%;
+			background: $sp-chip-bg;
+			color: $sp-primary;
+			font-size: 13px;
+			font-weight: 700;
+			flex-shrink: 0;
+			margin-top: 1px;
 		}
 	}
-
-	code {
-		background: #f0f0f0;
-		padding: 1px 5px;
-		border-radius: 3px;
-		font-size: 13px;
-	}
-}
-
-.setup__step-num {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 26px;
-	height: 26px;
-	border-radius: 50%;
-	background: #e8f4fd;
-	color: #0088cc;
-	font-size: 13px;
-	font-weight: 700;
-	flex-shrink: 0;
-	margin-top: 1px;
 }
 </style>

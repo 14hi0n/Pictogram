@@ -30,7 +30,7 @@
 					:disabled="!isValidToken || isFetching"
 					@click="fetchChannels"
 				>
-					<span v-if="isFetching" class="spinner"></span>
+					<span v-if="isFetching" class="flow__spinner"></span>
 					<span v-else>Найти каналы →</span>
 				</button>
 			</div>
@@ -75,7 +75,7 @@
 						:disabled="!isValidManualId || isSaving"
 						@click="addManually"
 					>
-						<span v-if="isSaving" class="spinner"></span>
+						<span v-if="isSaving" class="flow__spinner"></span>
 						<span v-else>Добавить канал</span>
 					</button>
 				</div>
@@ -122,7 +122,7 @@
 					:disabled="selectedIds.size === 0 || isSaving"
 					@click="saveChannels"
 				>
-					<span v-if="isSaving" class="spinner"></span>
+					<span v-if="isSaving" class="flow__spinner"></span>
 					<span v-else>Добавить ({{ selectedIds.size }})</span>
 				</button>
 			</div>
@@ -269,235 +269,157 @@ async function saveChannels(): Promise<void> {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .flow {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-}
 
-.flow__hint {
-	font-size: 13px;
-	color: #666;
-	line-height: 1.5;
-
-	a {
-		color: #0088cc;
-		text-decoration: none;
-
-		@media (hover: hover) {
-			&:hover { text-decoration: underline; }
+	&__hint {
+		font-size: 13px;
+		color: $sp-text-muted;
+		line-height: 1.5;
+		a {
+			color: $sp-primary;
+			text-decoration: none;
+			@media (hover: hover) { &:hover { text-decoration: underline; } }
 		}
 	}
-}
 
-.flow__field {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
+	&__field { display: flex; flex-direction: column; gap: 4px; }
 
-.flow__label {
-	font-size: 11px;
-	font-weight: 600;
-	color: #666;
-	text-transform: uppercase;
-	letter-spacing: 0.3px;
-}
-
-.flow__input {
-	width: 100%;
-	padding: 8px 10px;
-	border: 1px solid #ddd;
-	border-radius: 6px;
-	font-size: 13px;
-	outline: none;
-	font-family: monospace;
-
-	&:focus {
-		border-color: #0088cc;
-	}
-}
-
-.flow__error {
-	font-size: 11px;
-	color: #e74c3c;
-}
-
-.flow__alert {
-	padding: 10px 12px;
-	border-radius: 6px;
-	font-size: 12px;
-	line-height: 1.5;
-
-	&--error {
-		background: #fde8e8;
-		color: #c0392b;
-		border: 1px solid #f5c6cb;
+	&__label {
+		font-size: 11px;
+		font-weight: 600;
+		color: $sp-text-muted;
+		text-transform: uppercase;
+		letter-spacing: 0.3px;
 	}
 
-	&--info {
-		background: #e8f4fd;
-		color: #1a6896;
-		border: 1px solid #bee5eb;
-	}
-}
-
-.flow__channels-header {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.flow__select-all {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	font-size: 12px;
-	cursor: pointer;
-	user-select: none;
-}
-
-.flow__channel-list {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-	max-height: 300px;
-	overflow-y: auto;
-}
-
-.flow__channel-item {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 8px 10px;
-	border: 1px solid #e0e0e0;
-	border-radius: 6px;
-	cursor: pointer;
-	user-select: none;
-	transition: background 0.1s;
-
-	@media (hover: hover) {
-		&:hover { background: #f9f9f9; }
+	&__input {
+		width: 100%;
+		padding: 8px 10px;
+		border: 1px solid $sp-border-input;
+		border-radius: 6px;
+		font-size: 13px;
+		outline: none;
+		font-family: monospace;
+		&:focus { border-color: $sp-primary; }
 	}
 
-	&--selected {
-		border-color: #0088cc;
-		background: #f0f8ff;
+	&__error { font-size: 11px; color: $sp-danger; }
+
+	&__alert {
+		padding: 10px 12px;
+		border-radius: 6px;
+		font-size: 12px;
+		line-height: 1.5;
+		&--error { background: $sp-danger-bg; color: $sp-danger-dark; border: 1px solid #f5c6cb; }
+		&--info  { background: $sp-chip-bg; color: #1a6896; border: 1px solid #bee5eb; }
 	}
 
-	input[type='checkbox'] {
-		flex-shrink: 0;
+	&__channels-header { display: flex; flex-direction: column; gap: 8px; }
+
+	&__select-all {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 12px;
 		cursor: pointer;
+		user-select: none;
+	}
+
+	&__channel {
+		&-list {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			max-height: 300px;
+			overflow-y: auto;
+		}
+
+		&-item {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px 10px;
+			border: 1px solid $sp-border;
+			border-radius: 6px;
+			cursor: pointer;
+			user-select: none;
+			transition: background 0.1s;
+			@media (hover: hover) { &:hover { background: $sp-bg-editor; } }
+			&--selected { border-color: $sp-primary; background: #f0f8ff; }
+			input[type='checkbox'] { flex-shrink: 0; cursor: pointer; }
+		}
+
+		&-info { flex: 1; min-width: 0; }
+
+		&-name {
+			display: block;
+			font-size: 13px;
+			font-weight: 500;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&-meta { display: block; font-size: 11px; color: $sp-text-hint; }
+	}
+
+	&__private-badge { font-size: 12px; }
+
+	&__empty { display: flex; flex-direction: column; gap: 10px; }
+
+	&__divider {
+		font-size: 11px;
+		color: $sp-text-label;
+		text-align: center;
+		position: relative;
+		padding: 4px 0;
+		&::before, &::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			width: 30%;
+			height: 1px;
+			background: $sp-border;
+		}
+		&::before { left: 0; }
+		&::after  { right: 0; }
+	}
+
+	&__hint-small { font-size: 11px; color: $sp-text-label; margin-top: 2px; }
+
+	&__footer { display: flex; gap: 8px; justify-content: flex-end; }
+
+	&__btn {
+		padding: 7px 14px;
+		border-radius: 6px;
+		border: none;
+		font-size: 13px;
+		font-weight: 500;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		transition: opacity 0.15s;
+		@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.85; } }
+		&:disabled { opacity: 0.4; cursor: not-allowed; }
+		&--primary   { background: $sp-primary;   color: $sp-bg-card; }
+		&--secondary { background: $sp-bg-subtle; color: $sp-text;    }
+	}
+
+	&__spinner {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		border: 2px solid rgba(255, 255, 255, 0.4);
+		border-top-color: $sp-bg-card;
+		border-radius: 50%;
+		animation: flow-spin 0.7s linear infinite;
 	}
 }
 
-.flow__channel-info {
-	flex: 1;
-	min-width: 0;
-}
-
-.flow__channel-name {
-	display: block;
-	font-size: 13px;
-	font-weight: 500;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.flow__channel-meta {
-	display: block;
-	font-size: 11px;
-	color: #999;
-}
-
-.flow__private-badge {
-	font-size: 12px;
-}
-
-.flow__empty {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-}
-
-.flow__divider {
-	font-size: 11px;
-	color: #aaa;
-	text-align: center;
-	position: relative;
-	padding: 4px 0;
-
-	&::before, &::after {
-		content: '';
-		position: absolute;
-		top: 50%;
-		width: 30%;
-		height: 1px;
-		background: #e0e0e0;
-	}
-	&::before { left: 0; }
-	&::after { right: 0; }
-}
-
-.flow__hint-small {
-	font-size: 11px;
-	color: #aaa;
-	margin-top: 2px;
-}
-
-.flow__footer {
-	display: flex;
-	gap: 8px;
-	justify-content: flex-end;
-}
-
-.flow__btn {
-	padding: 7px 14px;
-	border-radius: 6px;
-	border: none;
-	font-size: 13px;
-	font-weight: 500;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	transition: opacity 0.15s;
-
-	@media (hover: hover) {
-		&:hover:not(:disabled) { opacity: 0.85; }
-	}
-
-	&:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	&--primary {
-		background: #0088cc;
-		color: #fff;
-	}
-
-	&--secondary {
-		background: #ecf0f1;
-		color: #333;
-	}
-}
-
-.spinner {
-	display: inline-block;
-	width: 14px;
-	height: 14px;
-	border: 2px solid rgba(255, 255, 255, 0.4);
-	border-top-color: #fff;
-	border-radius: 50%;
-	animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
-}
+@keyframes flow-spin { to { transform: rotate(360deg); } }
 </style>

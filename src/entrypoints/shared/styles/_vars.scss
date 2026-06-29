@@ -22,3 +22,70 @@ $border-radius: 5px;
 // container
 $container-max-width: 50vw;
 $container-min-width: 400px;
+
+// ── Light theme (Sidepanel + Options pages) ─────────────────────
+
+// Brand
+$sp-primary: #0088cc;
+$sp-primary-dark: #0077b6;
+$sp-accent: #8b5cf6;
+$sp-accent-dark: #7c3aed;
+
+// Backgrounds
+$sp-bg: #f0f2f5;
+$sp-bg-light: #f8f9fa;
+$sp-bg-card: #fff;
+$sp-bg-editor: #fafafa;
+$sp-bg-subtle: #ecf0f1;
+$sp-bg-hover: #efefef;
+$sp-bg-placeholder: #eeeeee;
+$sp-bg-disabled: #f5f5f5;
+$sp-bg-accent: #f0e8ff;
+$sp-bg-accent-soft: #fdfaff;
+
+// Text
+$sp-text-title: #1a1a2e;
+$sp-text-dark: #222;
+$sp-text: #333;
+$sp-text-secondary: #555;
+$sp-text-muted: #666;
+$sp-text-hint: #888;
+$sp-text-label: #aaa;
+$sp-text-light: #bbb;
+$sp-text-faint: #ccc;
+
+// Borders
+$sp-border: #e0e0e0;
+$sp-border-card: #e8e8e8;
+$sp-border-input: #ddd;
+$sp-border-light: #f0f0f0;
+$sp-border-accent: #c8a6f0;
+
+// Status
+$sp-success: #27ae60;
+$sp-danger: #e74c3c;
+$sp-danger-bg: #fde8e8;
+$sp-danger-dark: #c0392b;
+
+// Warning (yellow tones)
+$sp-warning-bg: #fff8e1;
+$sp-warning-border: #ffe082;
+$sp-warning-text: #7a5c00;
+
+// Notice (orange tones)
+$sp-notice-bg: #fff8f0;
+$sp-notice-border: #f0c080;
+$sp-notice-text: #7a4a00;
+$sp-notice-icon: #e65100;
+
+// Chips — blue
+$sp-chip-bg: #e8f4fd;
+$sp-chip-border: #c8e6fa;
+$sp-chip-text: #0077b6;
+$sp-chip-hover: #d0eaf8;
+
+// Chips — accent/purple
+$sp-chip-accent-bg: #f5f0ff;
+$sp-chip-accent-border: #d8b4fe;
+$sp-chip-accent-text: #7c3aed;
+$sp-chip-accent-hover: #ede9fe;

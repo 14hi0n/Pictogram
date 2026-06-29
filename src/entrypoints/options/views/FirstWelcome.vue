@@ -33,8 +33,8 @@
 		<div class="welcome__sites">
 			<strong>Поддерживаемые сайты:</strong>
 			<div class="welcome__sites-list">
-				<span class="site-badge">danbooru</span>
-				<span class="site-badge">pixiv</span>
+				<span class="welcome__sites-badge">danbooru</span>
+				<span class="welcome__sites-badge">pixiv</span>
 			</div>
 		</div>
 
@@ -49,106 +49,81 @@ import { APP_NAME } from '@/shared/constants/app';
 defineEmits<{ (e: 'next'): void }>();
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .welcome {
 	text-align: center;
 	padding: 40px 20px;
 	max-width: 500px;
 	margin: 0 auto;
-}
 
-.welcome__icon {
-	font-size: 60px;
-	margin-bottom: 16px;
-}
+	&__icon { font-size: 60px; margin-bottom: 16px; }
 
-.welcome__title {
-	font-size: 24px;
-	font-weight: 700;
-	color: #1a1a2e;
-	margin-bottom: 10px;
-}
-
-.welcome__subtitle {
-	font-size: 15px;
-	color: #666;
-	line-height: 1.6;
-	margin-bottom: 30px;
-}
-
-.welcome__features {
-	text-align: left;
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-	margin-bottom: 24px;
-}
-
-.welcome__feature {
-	display: flex;
-	gap: 12px;
-	align-items: flex-start;
-
-	strong {
-		display: block;
-		font-size: 14px;
-		color: #333;
-		margin-bottom: 2px;
+	&__title {
+		font-size: 24px;
+		font-weight: 700;
+		color: $sp-text-title;
+		margin-bottom: 10px;
 	}
 
-	p {
+	&__subtitle {
+		font-size: 15px;
+		color: $sp-text-muted;
+		line-height: 1.6;
+		margin-bottom: 30px;
+	}
+
+	&__features {
+		text-align: left;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		margin-bottom: 24px;
+	}
+
+	&__feature {
+		display: flex;
+		gap: 12px;
+		align-items: flex-start;
+		strong { display: block; font-size: 14px; color: $sp-text; margin-bottom: 2px; }
+		p { font-size: 13px; color: $sp-text-hint; margin: 0; }
+
+		&-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+	}
+
+	&__sites {
 		font-size: 13px;
-		color: #888;
-		margin: 0;
+		color: $sp-text-muted;
+		margin-bottom: 28px;
+		strong { display: block; margin-bottom: 8px; }
+
+		&-list {
+			display: flex;
+			gap: 6px;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		&-badge {
+			padding: 3px 10px;
+			background: $sp-chip-bg;
+			color: $sp-primary;
+			border-radius: 20px;
+			font-size: 12px;
+			font-weight: 500;
+		}
 	}
-}
 
-.welcome__feature-icon {
-	font-size: 22px;
-	flex-shrink: 0;
-	margin-top: 2px;
-}
-
-.welcome__sites {
-	font-size: 13px;
-	color: #666;
-	margin-bottom: 28px;
-
-	strong {
-		display: block;
-		margin-bottom: 8px;
-	}
-}
-
-.welcome__sites-list {
-	display: flex;
-	gap: 6px;
-	flex-wrap: wrap;
-	justify-content: center;
-}
-
-.site-badge {
-	padding: 3px 10px;
-	background: #e8f4fd;
-	color: #0088cc;
-	border-radius: 20px;
-	font-size: 12px;
-	font-weight: 500;
-}
-
-.welcome__btn {
-	padding: 12px 32px;
-	background: #0088cc;
-	color: #fff;
-	border: none;
-	border-radius: 8px;
-	font-size: 15px;
-	font-weight: 600;
-	cursor: pointer;
-	transition: background 0.15s;
-
-	@media (hover: hover) {
-		&:hover { background: #0077b5; }
+	&__btn {
+		padding: 12px 32px;
+		background: $sp-primary;
+		color: $sp-bg-card;
+		border: none;
+		border-radius: 8px;
+		font-size: 15px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.15s;
+		@media (hover: hover) { &:hover { background: $sp-primary-dark; } }
 	}
 }
 </style>
