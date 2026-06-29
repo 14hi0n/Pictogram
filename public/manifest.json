@@ -24,9 +24,7 @@
     "permissions": [
         "storage",
         "tabs",
-        "declarativeNetRequest"
-    ],
-    "optional_permissions": [
+        "declarativeNetRequest",
         "sidePanel"
     ],
     "host_permissions": [
@@ -35,20 +33,6 @@
         "*://i.pximg.net/*",
         "*://static.zerochan.net/*"
     ],
-    "declarative_net_request": {
-        "rule_resources": [
-            {
-                "id": "pixiv_cdn_rules",
-                "enabled": true,
-                "path": "rules/pixiv_cdn_rules.json"
-            },
-            {
-                "id": "zerochan_cdn_rules",
-                "enabled": true,
-                "path": "rules/zerochan_cdn_rules.json"
-            }
-        ]
-    },
     "web_accessible_resources": [
         {
             "resources": [

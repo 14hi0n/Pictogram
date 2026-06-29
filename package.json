@@ -45,8 +45,6 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "bootstrap": "^5.3.3",
-        "vue": "^3.5.13",
-        "vue-router": "^4.2.2"
+        "vue": "^3.5.13"
     }
 }

@@ -106,7 +106,6 @@ import { PostQueueItem } from '@/models/PostQueueItem';
 import { PostQueueGroupItem, QueueEntry, GroupMember, isGroupItem } from '@/models/PostQueueGroupItem';
 import { PostSettings } from '@/models/PostSettings';
 import { Channel } from '@/models/Channel';
-import { MediaType } from '@/models/MediaType';
 import { PostQueueManager } from '@/services/PostQueueManager';
 import { UserSettingsManager } from '@/services/UserSettingsManager';
 import { MSG } from '@/entrypoints/background/types';

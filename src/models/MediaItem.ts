@@ -13,7 +13,6 @@ export interface MediaItem {
 	mediaType: MediaType;
 	pageUrl: string;
 	extension: string;
-	tagName: string;
 	sourceUrl: string;
 	hashtags: TagItem[] | null;
 	/** Provider-supplied metadata — serialised in messages, stored on PostQueueItem */

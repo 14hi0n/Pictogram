@@ -45,8 +45,7 @@ export class Danbooru implements StaticProvider {
 		if (!mediaElement) throw new MediaElementNotFoundError(this.mediaSelector.join(', '));
 		const container = document.querySelector('section.image-container[data-file-url]') as HTMLElement | null;
 
-		const tagName = mediaElement.tagName.toUpperCase();
-		const isVideo = tagName === 'VIDEO';
+		const isVideo = mediaElement.tagName.toUpperCase() === 'VIDEO';
 		const mediaType = isVideo ? MediaType.Video : MediaType.Photo;
 
 		// The rendered URL is what the browser actually loaded — always a sample/large version
@@ -115,7 +114,6 @@ export class Danbooru implements StaticProvider {
 			mediaType,
 			pageUrl: window.location.href,
 			extension: renderedUrl.split('.').pop()?.split('?')[0] ?? '',
-			tagName,
 			sourceUrl,
 			hashtags: hashTags,
 			authorName,

@@ -26,15 +26,10 @@ chrome.action.onClicked.addListener(async (tab) => {
 		chrome.tabs.create({ url: 'sidepanel.html' });
 		return;
 	}
-	// Десктоп: запрашиваем optional-разрешение (требует жеста пользователя)
+	// Десктоп: sidePanel теперь в permissions — запрос разрешения не нужен
 	try {
-		const granted = await chrome.permissions.request({ permissions: ['sidePanel'] });
-		if (granted) {
-			await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
-			await chrome.sidePanel.open({ windowId: tab.windowId });
-		} else {
-			chrome.tabs.create({ url: 'sidepanel.html' });
-		}
+		await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+		await chrome.sidePanel.open({ windowId: tab.windowId });
 	} catch {
 		chrome.tabs.create({ url: 'sidepanel.html' });
 	}
@@ -97,6 +92,32 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 		// При первой установке открываем страницу онбординга
 		chrome.tabs.create({ url: 'option.html?install=true' });
 	}
+
+	// Регистрируем DNR-правила для инжекции Referer на CDN с hotlink-защитой.
+	// Try/catch: если браузер не поддерживает modifyHeaders (Orion) — тихо пропускаем.
+	// Статических rule_resources в manifest нет — предупреждение совместимости не появится.
+	try {
+		const MH = 'modifyHeaders' as chrome.declarativeNetRequest.RuleActionType;
+		const SET = 'set' as chrome.declarativeNetRequest.HeaderOperation;
+		const IMG = 'image' as chrome.declarativeNetRequest.ResourceType;
+		await chrome.declarativeNetRequest.updateDynamicRules({
+			removeRuleIds: [1, 2],
+			addRules: [
+				{
+					id: 1,
+					priority: 1,
+					action: { type: MH, requestHeaders: [{ header: 'Referer', operation: SET, value: 'https://www.pixiv.net/' }] },
+					condition: { urlFilter: '||i.pximg.net/*', resourceTypes: [IMG] },
+				},
+				{
+					id: 2,
+					priority: 1,
+					action: { type: MH, requestHeaders: [{ header: 'Referer', operation: SET, value: 'https://www.zerochan.net/' }] },
+					condition: { urlFilter: '||static.zerochan.net/*', resourceTypes: [IMG] },
+				},
+			],
+		});
+	} catch { /* браузер не поддерживает modifyHeaders — тихо пропускаем */ }
 
 	// Восстанавливаем бейдж после перезапуска extension
 	await restoreBadge();

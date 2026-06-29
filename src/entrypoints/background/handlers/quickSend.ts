@@ -30,7 +30,7 @@ export async function handleQuickSend(
             // Set the flag before opening so the panel reads it on mount
             await chrome.storage.local.set({ [STORAGE_KEYS.SIDE_PANEL_ACTION]: SIDE_PANEL_ACTIONS.SETUP_CHANNELS });
             const windowId = senderCtx?.tab?.windowId;
-            if (windowId) {
+            if (windowId && typeof chrome.sidePanel !== 'undefined') {
                 await chrome.sidePanel.open({ windowId }).catch(() => {});
             }
             sendResponse({ ok: false, noChannels: true, error: 'Нет настроенных каналов. Добавьте канал в настройках.' });

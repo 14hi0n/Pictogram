@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, inject, markRaw } from 'vue';
+import { ref, computed, onMounted, onUnmounted, markRaw } from 'vue';
 import { providerManager } from '@/providers/registry';
 import { MediaItem } from '@/models/MediaItem';
 import { BaseProvider } from '@/providers/interfaces/BaseProvider';
@@ -97,8 +97,6 @@ import type { MediaCandidate } from '@/models/MediaCandidate';
 import { STORAGE_KEYS } from '@/shared/constants/storage';
 import { useQueueSync } from './composables/useQueueSync';
 import { usePositioning } from './composables/usePositioning';
-
-inject<ShadowRoot>('shadowRoot');
 
 // ── Per-panel state type (multi-image mode) ────────────────────────────────────
 interface PanelState {
@@ -471,19 +469,55 @@ function handleSpaClick(): void {
 // can still add Referer on Chrome/Kiwi. Returns undefined if no URL given.
 async function resolveThumbnailUrl(url: string | undefined): Promise<string | undefined> {
 	if (!url) return undefined;
+
+	// Path 1: fetch() + FileReader — works on Chrome with host_permissions CORS bypass
+	// + declarativeNetRequest Referer injection for xmlhttprequest type.
 	try {
 		const res = await fetch(url);
-		if (!res.ok) return url;
-		const blob = await res.blob();
-		return new Promise<string>((resolve) => {
-			const reader = new FileReader();
-			reader.onload = () => resolve(reader.result as string);
-			reader.onerror = () => resolve(url);
-			reader.readAsDataURL(blob);
+		if (res.ok) {
+			const blob = await res.blob();
+			const dataUrl = await new Promise<string>((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => resolve(reader.result as string);
+				reader.onerror = () => reject();
+				reader.readAsDataURL(blob);
+			});
+			if (dataUrl) return dataUrl;
+		}
+	} catch { /* fall through */ }
+
+	// Path 2: crossOrigin image + canvas (standard web API, no extension-specific behaviour).
+	// Works when CDN responds with Access-Control-Allow-Origin for the page origin —
+	// pximg.net allows this for www.pixiv.net (required for Pixiv's own ugoira downloader).
+	// Canvas scaled to ≤250px keeps the stored base64 compact.
+	try {
+		const dataUrl = await new Promise<string>((resolve, reject) => {
+			const img = new Image();
+			img.crossOrigin = 'anonymous';
+			img.onload = () => {
+				try {
+					const MAX = 250;
+					const scale = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight, 1));
+					const canvas = document.createElement('canvas');
+					canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+					canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+					const ctx = canvas.getContext('2d');
+					if (!ctx) { reject(); return; }
+					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+					resolve(canvas.toDataURL('image/jpeg', 0.8));
+				} catch {
+					reject(); // SecurityError: canvas tainted — CDN has no CORS headers
+				}
+			};
+			img.onerror = () => reject();
+			img.src = url;
 		});
-	} catch {
-		return url;
-	}
+		if (dataUrl) return dataUrl;
+	} catch { /* fall through */ }
+
+	// Path 3: raw URL — declarativeNetRequest injects Referer for image-type requests
+	// in the sidepanel on Chrome/Kiwi.
+	return url;
 }
 
 // ── Single-image actions ───────────────────────────────────────────────────────

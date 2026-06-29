@@ -57,7 +57,6 @@ export class ZeroChan implements BaseProvider {
 			mediaType: MediaType.Photo,
 			pageUrl: window.location.href,
 			extension: mediaUrl.split('.').pop()?.split('?')[0] ?? 'jpg',
-			tagName: 'IMG',
 			sourceUrl: window.location.href,
 			hashtags,
 			authorName,

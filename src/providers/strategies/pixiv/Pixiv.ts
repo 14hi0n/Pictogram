@@ -139,7 +139,6 @@ export class Pixiv implements SPAProvider {
 			mediaType: MediaType.Photo,
 			pageUrl: window.location.href,
 			extension: mediaUrl.split('.').pop()?.split('?')[0] ?? 'jpg',
-			tagName: 'IMG',
 			sourceUrl: window.location.href,
 			hashtags,
 			title: this.getTitle(),
