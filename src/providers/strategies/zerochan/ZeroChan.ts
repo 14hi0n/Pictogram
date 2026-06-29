@@ -1,6 +1,7 @@
 import { BaseProvider } from '@/providers/interfaces/BaseProvider';
 import { MediaItem } from '@/models/MediaItem';
 import { MediaType } from '@/models/MediaType';
+import { MediaCandidate } from '@/models/MediaCandidate';
 import { MediaElementNotFoundError } from '@/providers/errors';
 import { TagItem } from '@/models/TagItem';
 import { formatToHashtag } from '@/utils/text';
@@ -43,6 +44,12 @@ export class ZeroChan implements BaseProvider {
 		const hashtags = this.getTags();
 		const { authorName, authorUrl } = this.getAuthor();
 
+		// static.zerochan.net has hotlink protection — HEAD from a service worker gets 403.
+		// skipProbe=true tells MediaResolver to skip HTTP validation for this candidate.
+		const mediaCandidates: MediaCandidate[] = [
+			{ url: mediaUrl, type: 'photo', source: 'zerochan', skipProbe: true, priority: 1 },
+		];
+
 		return {
 			element,
 			mediaUrl,
@@ -54,6 +61,7 @@ export class ZeroChan implements BaseProvider {
 			hashtags,
 			authorName,
 			authorUrl,
+			mediaCandidates,
 			thumbnailUrl,
 		};
 	}

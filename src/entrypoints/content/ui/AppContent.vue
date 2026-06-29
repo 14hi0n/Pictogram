@@ -538,8 +538,16 @@ async function handleQuickSendForPanel(panel: PanelState): Promise<void> {
 	if (panel.isSending || panel.sendDone || !sharedMetaItem) return;
 	panel.isSending = true;
 	const { mediaType, sourceUrl, hashtags, title, authorName, authorUrl } = sharedMetaItem;
-	// Multi-image panels are Pixiv-only: single candidate per image, skip HTTP validation
-	const mediaCandidates: MediaCandidate[] = [{ url: panel.mediaUrl, type: 'photo', source: 'pixiv', priority: 1 }];
+	// Inherit source/skipProbe from the provider's own candidate template so this code
+	// stays provider-agnostic (works for any multi-image provider, not just Pixiv).
+	const tpl = sharedMetaItem.mediaCandidates?.[0];
+	const mediaCandidates: MediaCandidate[] = [{
+		url: panel.mediaUrl,
+		type: tpl?.type ?? 'photo',
+		source: tpl?.source ?? 'generic',
+		skipProbe: tpl?.skipProbe,
+		priority: 1,
+	}];
 	try {
 		await msg({ type: MSG.QUICK_SEND, data: { mediaUrl: panel.mediaUrl, mediaType, sourceUrl, hashtags, title, authorName, authorUrl, mediaCandidates } });
 		panel.isSending = false;
@@ -558,8 +566,16 @@ async function toggleQueueForPanel(panel: PanelState): Promise<void> {
 async function addToQueueForPanel(panel: PanelState): Promise<void> {
 	if (!sharedMetaItem) return;
 	const { pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, mediaType, thumbnailUrl: rawThumbUrl } = sharedMetaItem;
-	// Multi-image panels are Pixiv-only: single candidate per image, skip HTTP validation
-	const mediaCandidates: MediaCandidate[] = [{ url: panel.mediaUrl, type: 'photo', source: 'pixiv', priority: 1 }];
+	// Inherit source/skipProbe from the provider's own candidate template so this code
+	// stays provider-agnostic (works for any multi-image provider, not just Pixiv).
+	const tpl = sharedMetaItem.mediaCandidates?.[0];
+	const mediaCandidates: MediaCandidate[] = [{
+		url: panel.mediaUrl,
+		type: tpl?.type ?? 'photo',
+		source: tpl?.source ?? 'generic',
+		skipProbe: tpl?.skipProbe,
+		priority: 1,
+	}];
 	const thumbnailUrl = await resolveThumbnailUrl(rawThumbUrl);
 	try {
 		// No additionalMediaUrls — per-image action adds only this single image

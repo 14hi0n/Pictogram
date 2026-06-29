@@ -1,4 +1,4 @@
-export type MediaSource = 'pixiv' | 'danbooru' | 'zerochan' | 'generic';
+export type MediaSource = string;
 export type MediaCandidateType = 'photo' | 'video' | 'gif';
 
 /** One candidate URL for a media item, with priority and source context. */
@@ -8,6 +8,12 @@ export interface MediaCandidate {
 	source: MediaSource;
 	/** Higher number = tried first. Defaults to 0. */
 	priority?: number;
+	/**
+	 * When true, MediaResolver skips HTTP probing for this candidate.
+	 * Set by providers whose CDN blocks service-worker requests
+	 * (e.g. requires Referer, hotlink protection, or no CORS headers).
+	 */
+	skipProbe?: boolean;
 }
 
 export interface ValidatedMedia {

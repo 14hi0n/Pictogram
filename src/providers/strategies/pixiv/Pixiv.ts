@@ -1,6 +1,7 @@
 import { SPAProvider, ProviderMediaTarget } from '@/providers/interfaces/SPAProvider';
 import { MediaItem } from '@/models/MediaItem';
 import { MediaType } from '@/models/MediaType';
+import { MediaCandidate } from '@/models/MediaCandidate';
 import { TagItem } from '@/models/TagItem';
 import { formatToHashtag } from '@/utils/text';
 
@@ -97,6 +98,12 @@ export class Pixiv implements SPAProvider {
 		const illust = this.getPixivIllustData();
 		const thumbnailUrl = illust?.urls?.thumb ?? illust?.urls?.mini;
 
+		// pximg.net requires a Referer header that cannot be set from a service worker context.
+		// skipProbe=true tells MediaResolver to skip HTTP validation for these candidates.
+		const mediaCandidates: MediaCandidate[] = [
+			{ url: mediaUrl, type: 'photo', source: 'pixiv', skipProbe: true, priority: 1 },
+		];
+
 		return {
 			element: element as HTMLElement,
 			mediaUrl,
@@ -110,6 +117,7 @@ export class Pixiv implements SPAProvider {
 			authorName: this.getAuthorName(),
 			authorUrl: this.getAuthorUrl(),
 			additionalMediaUrls: allUrls.slice(1),
+			mediaCandidates,
 			thumbnailUrl: thumbnailUrl || undefined,
 		};
 	}

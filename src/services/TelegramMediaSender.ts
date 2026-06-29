@@ -7,7 +7,7 @@ import { buildCaption, PostMeta } from '@/utils/telegram/buildCaption';
 import { Channel } from '@/models/Channel';
 import { PostSettings, defaultPostSettings } from '@/models/PostSettings';
 import { TagItem } from '@/models/TagItem';
-import { MediaCandidate, MediaCandidateType, MediaSource } from '@/models/MediaCandidate';
+import { MediaCandidate, MediaCandidateType } from '@/models/MediaCandidate';
 import { MediaResolver } from './MediaResolver';
 
 function resolveItemTemplate(settings: PostSettings, channelDefaultTemplate: string): string {
@@ -215,8 +215,9 @@ export class TelegramMediaSender {
 	/**
 	 * Constructs a candidate list for the resolver.
 	 * If the caller already provides candidates, they are used as-is.
-	 * Otherwise a single fallback candidate is derived from the raw mediaUrl,
-	 * with source inferred from the URL host (pximg.net → pixiv, cdn.donmai.us → danbooru).
+	 * Otherwise a single fallback candidate is derived from the raw mediaUrl.
+	 * skipProbe is inferred by URL pattern for backward-compat items (saved before
+	 * mediaCandidates was introduced) whose CDN blocks service-worker probing.
 	 */
 	private buildCandidates(
 		candidates: MediaCandidate[] | undefined,
@@ -229,13 +230,12 @@ export class TelegramMediaSender {
 			mediaType === MediaType.Video ? 'video' :
 			mediaType === MediaType.Animation ? 'gif' : 'photo';
 
-		// Infer source from URL for backward-compat items added before mediaCandidates was introduced
-		let source: MediaSource = 'generic';
-		if (mediaUrl.includes('pximg.net')) source = 'pixiv';
-		else if (mediaUrl.includes('cdn.donmai.us')) source = 'danbooru';
-		else if (mediaUrl.includes('static.zerochan.net')) source = 'zerochan';
+		// These CDNs return 403 when probed from a service worker without Referer or cookies
+		const skipProbe =
+			mediaUrl.includes('pximg.net') ||          // Pixiv CDN: requires Referer
+			mediaUrl.includes('static.zerochan.net');  // ZeroChan CDN: hotlink protection
 
-		return [{ url: mediaUrl, type, source, priority: 1 }];
+		return [{ url: mediaUrl, type, source: 'generic', skipProbe, priority: 1 }];
 	}
 
 	/**

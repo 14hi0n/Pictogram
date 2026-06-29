@@ -1,4 +1,4 @@
-import { MediaCandidate, MediaSource, ValidatedMedia } from '@/models/MediaCandidate';
+import { MediaCandidate, ValidatedMedia } from '@/models/MediaCandidate';
 
 type ProbeOutcome =
 	| { status: 'valid'; contentType: string }
@@ -12,10 +12,10 @@ type ProbeOutcome =
  *   - Sort candidates by priority (highest first).
  *   - Probe each URL with a HEAD request (falling back to a tiny GET if HEAD is blocked).
  *   - Reject URLs that return 4xx or a non-media Content-Type (HTML, ZIP).
+ *   - Candidates with skipProbe=true bypass HTTP probing entirely (set by providers whose
+ *     CDN blocks service-worker requests, e.g. requires Referer or has hotlink protection).
  *   - On network error the candidate is kept as a last-resort fallback so transient
  *     connectivity issues do not block sends that would otherwise succeed.
- *   - pximg.net (Pixiv CDN) requires a Referer header that cannot be set from a
- *     service worker; those candidates always bypass HTTP probing.
  */
 export class MediaResolver {
 	private static readonly PROBE_TIMEOUT_MS = 8_000;
@@ -50,22 +50,8 @@ export class MediaResolver {
 	}
 
 	private async probeCandidate(candidate: MediaCandidate): Promise<ProbeOutcome> {
-		const source = this.effectiveSource(candidate);
-
-		if (source === 'pixiv') {
-			// pximg.net requires Referer header forbidden in service workers — skip HTTP validation.
-			return { status: 'valid', contentType: 'image/jpeg' };
-		}
-
-		if (source === 'zerochan') {
-			// static.zerochan.net has hotlink protection — HEAD from service worker gets 403.
-			return { status: 'valid', contentType: 'image/jpeg' };
-		}
-
-		if (source === 'danbooru' && !candidate.url.includes('/original/')) {
-			// cdn.donmai.us sample/preview URLs are publicly accessible.
-			// declarativeNetRequest Referer rule applies only to image resource type,
-			// not to service worker fetch — mobile CDNs are strict about this.
+		if (candidate.skipProbe) {
+			// Provider declared this CDN cannot be probed from a service worker context.
 			return { status: 'valid', contentType: 'image/jpeg' };
 		}
 
@@ -87,28 +73,15 @@ export class MediaResolver {
 				return { status: 'rejected', reason: `content-type: ${ct}` };
 			}
 
-			// Reject Danbooru original-path URLs with large Content-Length:
-			// Telegram rejects photos > 5 MB served by URL. Data-file-url originals often exceed
-			// this; the rendered sample (priority 3) or data-large-file-url (priority 1) is correct.
-			if (
-				candidate.source === 'danbooru' &&
-				candidate.url.includes('/original/') &&
-				result.contentLength !== null &&
-				result.contentLength > 5 * 1024 * 1024
-			) {
-				return { status: 'rejected', reason: `original too large (${result.contentLength} bytes)` };
+			// Telegram URL-based sends reject files larger than 5 MB
+			if (result.contentLength !== null && result.contentLength > 5 * 1024 * 1024) {
+				return { status: 'rejected', reason: `file too large for URL send (${result.contentLength} bytes)` };
 			}
 
 			return { status: 'valid', contentType: ct };
 		} catch (e) {
 			return { status: 'network-error', reason: String(e) };
 		}
-	}
-
-	/** Overrides candidate.source based on URL pattern for backward-compat items without explicit source. */
-	private effectiveSource(candidate: MediaCandidate): MediaSource {
-		if (candidate.url.includes('pximg.net')) return 'pixiv';
-		return candidate.source;
 	}
 
 	private async probeUrl(url: string): Promise<

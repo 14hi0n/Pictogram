@@ -77,16 +77,19 @@ export class Danbooru implements StaticProvider {
 
 		const candidateType: MediaCandidateType = isVideo ? 'video' : 'photo';
 
-		// Priority order: rendered DOM image (highest) → img.src fallback → sample CDN (lowest)
+		// Priority order: rendered DOM image (highest) → img.src fallback → sample CDN (lowest).
+		// All candidates are sample/preview URLs (originals are intentionally excluded).
+		// skipProbe=true: cdn.donmai.us is accessible but declarativeNetRequest Referer rules
+		// only apply to image resource type, not service-worker fetch — probing would 403 on mobile.
 		const mediaCandidates: MediaCandidate[] = [
-			{ url: renderedUrl, type: candidateType, source: 'danbooru', priority: 3 },
+			{ url: renderedUrl, type: candidateType, source: 'danbooru', skipProbe: true, priority: 3 },
 		];
 
 		if (!isVideo) {
 			const imgSrc = (mediaElement as HTMLImageElement).src;
 			// If currentSrc (e.g. WebP from <picture>) differs from src (JPEG fallback), add both
 			if (imgSrc && imgSrc !== renderedUrl) {
-				mediaCandidates.push({ url: imgSrc, type: 'photo', source: 'danbooru', priority: 2 });
+				mediaCandidates.push({ url: imgSrc, type: 'photo', source: 'danbooru', skipProbe: true, priority: 2 });
 			}
 		}
 
@@ -94,7 +97,7 @@ export class Danbooru implements StaticProvider {
 		if (largeFileUrl && !largeFileUrl.includes('/original/') && largeFileUrl !== renderedUrl) {
 			const sampleExt = largeFileUrl.split('?')[0].split('.').pop()?.toLowerCase() ?? '';
 			const sampleType: MediaCandidateType = (sampleExt === 'mp4' || sampleExt === 'webm') ? 'video' : 'photo';
-			mediaCandidates.push({ url: largeFileUrl, type: sampleType, source: 'danbooru', priority: 1 });
+			mediaCandidates.push({ url: largeFileUrl, type: sampleType, source: 'danbooru', skipProbe: true, priority: 1 });
 		}
 
 		// data-preview-file-url is no longer present in Danbooru's HTML.
