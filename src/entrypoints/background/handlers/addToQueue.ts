@@ -18,7 +18,7 @@ const settingsManager = new UserSettingsManager();
  */
 export async function handleAddToQueue(message: AddToQueueMsg, sendResponse: SendResponse): Promise<void> {
 	try {
-		const { mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, additionalMediaUrls, mediaCandidates } = message.data;
+		const { mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, additionalMediaUrls, mediaCandidates, thumbnailUrl } = message.data;
 
 		// Collect all URLs: primary + any additional pages (multi-image artworks)
 		const allUrls: string[] = [mediaUrl, ...(Array.isArray(additionalMediaUrls) ? additionalMediaUrls : [])];
@@ -64,6 +64,7 @@ export async function handleAddToQueue(message: AddToQueueMsg, sendResponse: Sen
 				authorUrl: authorUrl || undefined,
 				// mediaCandidates apply to the primary URL only; additional Pixiv pages use URL-based source inference
 				mediaCandidates: url === mediaUrl && mediaCandidates?.length ? mediaCandidates : undefined,
+				thumbnailUrl: thumbnailUrl || undefined,
 			};
 
 			await queueManager.addItem(item);

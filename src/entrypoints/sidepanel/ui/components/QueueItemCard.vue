@@ -7,7 +7,7 @@
 			</label>
 
 			<div class="card__preview">
-				<img v-if="!imgFailed" :src="item.mediaUrl" class="card__img" :alt="siteDomain" @error="imgFailed = true" />
+				<img v-if="!imgFailed" :src="imgSrc" class="card__img" :alt="siteDomain" @error="onImgError" />
 				<div v-else class="card__img-placeholder">{{ siteDomain }}</div>
 			</div>
 
@@ -179,8 +179,13 @@ const emit = defineEmits<{
 	(e: 'select', id: string): void;
 }>();
 
+const imgSrc        = ref(props.item.thumbnailUrl ?? props.item.mediaUrl);
 const imgFailed     = ref(false);
 const localSourceUrl = ref(props.item.sourceUrl ?? '');
+
+function onImgError(): void {
+	imgFailed.value = true;
+}
 
 const siteDomain = (() => {
 	try { return new URL(props.item.pageUrl).hostname.replace('www.', ''); }
@@ -248,7 +253,7 @@ function emitSourceUpdate(): void {
 	padding: 10px;
 	cursor: pointer;
 	user-select: none;
-	&:hover { background: #fafafa; }
+	@media (hover: hover) { &:hover { background: #fafafa; } }
 }
 
 .card__select {
@@ -335,9 +340,12 @@ function emitSourceUpdate(): void {
 	justify-content: center;
 	transition: all 0.12s;
 	svg { width: 13px; height: 13px; }
-	&:hover { background: #efefef; }
+	@media (hover: hover) {
+		&:hover { background: #efefef; }
+		&--muted:hover { color: #666; }
+	}
 	&--active { background: #0088cc; border-color: #0088cc; color: #fff; }
-	&--muted  { color: #ccc; &:hover { color: #666; } }
+	&--muted  { color: #ccc; }
 }
 
 /* ── Редактор ── */
@@ -394,7 +402,7 @@ function emitSourceUpdate(): void {
 	font-size: 10px;
 	color: #888;
 	cursor: pointer;
-	&:hover { border-color: #0088cc; color: #0088cc; }
+	@media (hover: hover) { &:hover { border-color: #0088cc; color: #0088cc; } }
 }
 
 .tags-expand-btn {
@@ -405,7 +413,7 @@ function emitSourceUpdate(): void {
 	color: #0088cc;
 	cursor: pointer;
 	align-self: flex-start;
-	&:hover { text-decoration: underline; }
+	@media (hover: hover) { &:hover { text-decoration: underline; } }
 }
 
 .tag-chips { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -421,13 +429,15 @@ function emitSourceUpdate(): void {
 	cursor: pointer;
 	transition: all 0.12s;
 	user-select: none;
-	&:hover { background: #d0eaf8; }
+	@media (hover: hover) {
+		&:hover { background: #d0eaf8; }
+		&--off:hover { background: #eeeeee; color: #999; }
+	}
 	&--off {
 		background: #f5f5f5;
 		border-color: #e0e0e0;
 		color: #bbb;
 		text-decoration: line-through;
-		&:hover { background: #eeeeee; color: #999; }
 	}
 }
 
@@ -465,7 +475,7 @@ function emitSourceUpdate(): void {
 	text-transform: uppercase;
 	letter-spacing: 0.4px;
 	width: fit-content;
-	&:hover { color: #888; }
+	@media (hover: hover) { &:hover { color: #888; } }
 }
 
 .template-vars { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
@@ -480,7 +490,7 @@ function emitSourceUpdate(): void {
 	cursor: pointer;
 	font-family: monospace;
 	transition: background 0.1s;
-	&:hover { background: #d0eaf8; }
+	@media (hover: hover) { &:hover { background: #d0eaf8; } }
 }
 
 /* ── Кнопки действий ── */
@@ -499,7 +509,7 @@ function emitSourceUpdate(): void {
 	text-decoration: none;
 	transition: opacity 0.15s;
 	svg { width: 12px; height: 12px; }
-	&:hover:not(:disabled) { opacity: 0.8; }
+	@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.8; } }
 	&:disabled { opacity: 0.55; cursor: not-allowed; }
 	&--primary { background: #0088cc; color: #fff; }
 	&--danger  { background: #e74c3c; color: #fff; }

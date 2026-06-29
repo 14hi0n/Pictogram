@@ -36,4 +36,6 @@ export interface PostQueueItem {
 	authorUrl?: string;
 	/** Candidate URLs for MediaResolver (original + sample fallbacks). Absent = use mediaUrl only. */
 	mediaCandidates?: MediaCandidate[];
+	/** base64 data URL of a small thumbnail for display in the queue panel */
+	thumbnailUrl?: string;
 }

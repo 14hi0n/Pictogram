@@ -25,4 +25,6 @@ export interface MediaItem {
 	additionalMediaUrls?: string[];
 	/** Prioritised candidate URLs for MediaResolver. Falls back to [{url: mediaUrl}] if absent. */
 	mediaCandidates?: MediaCandidate[];
+	/** Small preview URL (fetched as data URL in content script for mobile CDN compat). */
+	thumbnailUrl?: string;
 }

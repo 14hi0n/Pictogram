@@ -42,12 +42,41 @@
 				<p class="flow__hint">Выбери каналы, куда бот может отправлять посты.</p>
 
 				<!-- Подсказка о пустом списке -->
-				<div v-if="foundChannels.length === 0" class="flow__alert flow__alert--info">
-					Каналы не найдены. Отправь любое сообщение в нужный канал через бота
-					(или удали старое) — это создаёт обновление, и бот «увидит» канал.
-					<br /><br />
-					<button class="flow__btn flow__btn--secondary" @click="fetchChannels">
+				<div v-if="foundChannels.length === 0" class="flow__empty">
+					<div class="flow__alert flow__alert--info">
+						Боту нужно свежее обновление от канала. Отправь любое сообщение в канал
+						через бота — потом нажми «Обновить».
+					</div>
+					<button class="flow__btn flow__btn--secondary" style="align-self:flex-start" @click="fetchChannels">
 						↻ Обновить
+					</button>
+					<div class="flow__divider">или введи ID канала вручную</div>
+					<div class="flow__field">
+						<label class="flow__label">Chat ID</label>
+						<input
+							v-model="manualChatId"
+							class="flow__input"
+							type="text"
+							placeholder="-1001234567890"
+						/>
+						<span class="flow__hint-small">Узнать ID: перешли любое сообщение из канала боту @userinfobot</span>
+					</div>
+					<div class="flow__field">
+						<label class="flow__label">Название канала</label>
+						<input
+							v-model="manualName"
+							class="flow__input"
+							type="text"
+							placeholder="Мой арт-канал"
+						/>
+					</div>
+					<button
+						class="flow__btn flow__btn--primary"
+						:disabled="!isValidManualId || isSaving"
+						@click="addManually"
+					>
+						<span v-if="isSaving" class="spinner"></span>
+						<span v-else>Добавить канал</span>
 					</button>
 				</div>
 
@@ -126,6 +155,10 @@ const fetchError = ref('');
 const foundChannels = ref<RawChannel[]>([]);
 const selectedIds = ref(new Set<string>());
 
+const manualChatId = ref('');
+const manualName = ref('');
+const isValidManualId = computed(() => /^-?\d+$/.test(manualChatId.value.trim()));
+
 const allSelected = computed(() =>
 	foundChannels.value.length > 0 && selectedIds.value.size === foundChannels.value.length
 );
@@ -172,6 +205,28 @@ function toggleSelectAll(): void {
 		selectedIds.value.clear();
 	} else {
 		foundChannels.value.forEach((ch) => selectedIds.value.add(String(ch.id)));
+	}
+}
+
+async function addManually(): Promise<void> {
+	isSaving.value = true;
+	fetchError.value = '';
+	try {
+		const channel = createChannel({
+			chatID: manualChatId.value.trim(),
+			name: manualName.value.trim() || manualChatId.value.trim(),
+			botToken: tokenInput.value,
+		});
+		await settingsManager.addChannel(channel);
+		const updated = await settingsManager.getSettings();
+		if (!updated.activeChatID && updated.channels.length > 0) {
+			await settingsManager.setActiveChat(updated.channels[0].chatID);
+		}
+		emit('done');
+	} catch (err: any) {
+		fetchError.value = 'Ошибка: ' + (err.message || '');
+	} finally {
+		isSaving.value = false;
 	}
 }
 
@@ -230,8 +285,8 @@ async function saveChannels(): Promise<void> {
 		color: #0088cc;
 		text-decoration: none;
 
-		&:hover {
-			text-decoration: underline;
+		@media (hover: hover) {
+			&:hover { text-decoration: underline; }
 		}
 	}
 }
@@ -322,8 +377,8 @@ async function saveChannels(): Promise<void> {
 	user-select: none;
 	transition: background 0.1s;
 
-	&:hover {
-		background: #f9f9f9;
+	@media (hover: hover) {
+		&:hover { background: #f9f9f9; }
 	}
 
 	&--selected {
@@ -361,6 +416,37 @@ async function saveChannels(): Promise<void> {
 	font-size: 12px;
 }
 
+.flow__empty {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.flow__divider {
+	font-size: 11px;
+	color: #aaa;
+	text-align: center;
+	position: relative;
+	padding: 4px 0;
+
+	&::before, &::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: 30%;
+		height: 1px;
+		background: #e0e0e0;
+	}
+	&::before { left: 0; }
+	&::after { right: 0; }
+}
+
+.flow__hint-small {
+	font-size: 11px;
+	color: #aaa;
+	margin-top: 2px;
+}
+
 .flow__footer {
 	display: flex;
 	gap: 8px;
@@ -379,8 +465,8 @@ async function saveChannels(): Promise<void> {
 	gap: 4px;
 	transition: opacity 0.15s;
 
-	&:hover:not(:disabled) {
-		opacity: 0.85;
+	@media (hover: hover) {
+		&:hover:not(:disabled) { opacity: 0.85; }
 	}
 
 	&:disabled {

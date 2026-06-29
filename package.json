@@ -1,6 +1,6 @@
 {
     "name": "pictogram-extension",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "license": "AGPL-3.0-or-later",
     "description": "A simple and efficient Chrome browser extension that streamlines the process of sending art to your Telegram channel through a Telegram bot. Quickly forward art from various sources directly to your Telegram channel with just one click.",
     "private": true,
@@ -10,6 +10,7 @@
         "serve": "webpack serve --mode=development --config config/webpack.config.js",
         "pack": "node pack.js",
         "repack": "npm run build && npm run pack",
+        "serve-release": "npm run repack && npx --yes serve release -p 8765",
         "typecheck": "tsc --project tsconfig.check.json",
         "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\"",
         "test": "jest"

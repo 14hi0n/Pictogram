@@ -10,7 +10,7 @@
 				<img
 					v-for="m in previewMembers"
 					:key="m.id"
-					:src="m.mediaUrl"
+					:src="getThumbSrc(m.id, m.mediaUrl)"
 					class="gcard__thumb"
 				/>
 				<div v-if="item.members.length > 4" class="gcard__more">+{{ item.members.length - 4 }}</div>
@@ -56,7 +56,7 @@
 				<div class="media-list">
 					<div v-for="(member, idx) in localMembers" :key="member.id" class="media-row">
 						<span class="media-num">{{ idx + 1 }}</span>
-						<img :src="member.mediaUrl" class="media-thumb" />
+						<img :src="getThumbSrc(member.id, member.mediaUrl)" class="media-thumb" />
 						<div class="media-reorder">
 							<button class="reorder-btn" :disabled="idx === 0" @click="moveUp(idx)" title="Переместить вверх">↑</button>
 							<button class="reorder-btn" :disabled="idx === localMembers.length - 1" @click="moveDown(idx)" title="Переместить вниз">↓</button>
@@ -213,6 +213,13 @@ const formattedDate  = new Date(props.item.addedAt).toLocaleDateString('ru-RU', 
 });
 const previewMembers = computed(() => props.item.members.slice(0, 4));
 
+const thumbSrcs   = ref<Record<string, string>>(
+	Object.fromEntries(props.item.members.map((m: GroupMember) => [m.id, m.thumbnailUrl ?? m.mediaUrl]))
+);
+function getThumbSrc(id: string, mediaUrl: string): string {
+	return thumbSrcs.value[id] ?? mediaUrl;
+}
+
 const {
 	TAGS_VISIBLE, TEMPLATE_VARS,
 	expanded, overrideExpanded, tagsExpanded, overrideEl,
@@ -277,7 +284,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	padding: 10px;
 	cursor: pointer;
 	user-select: none;
-	&:hover { background: #fafafa; }
+	@media (hover: hover) { &:hover { background: #fafafa; } }
 }
 
 .gcard__select {
@@ -361,9 +368,12 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	justify-content: center;
 	transition: all 0.12s;
 	svg { width: 13px; height: 13px; }
-	&:hover { background: #efefef; }
+	@media (hover: hover) {
+		&:hover { background: #efefef; }
+		&--muted:hover { color: #666; }
+	}
 	&--active { background: #8b5cf6; border-color: #8b5cf6; color: #fff; }
-	&--muted { color: #ccc; &:hover { color: #666; } }
+	&--muted { color: #ccc; }
 }
 
 /* ── Редактор ── */
@@ -413,7 +423,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	gap: 6px;
 	padding: 3px;
 	border-radius: 5px;
-	&:hover { background: #f5f0ff; }
+	@media (hover: hover) { &:hover { background: #f5f0ff; } }
 }
 
 .media-num {
@@ -450,7 +460,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	color: #666;
 	line-height: 1;
 	padding: 0;
-	&:hover:not(:disabled) { background: #8b5cf6; color: #fff; border-color: #8b5cf6; }
+	@media (hover: hover) { &:hover:not(:disabled) { background: #8b5cf6; color: #fff; border-color: #8b5cf6; } }
 	&:disabled { opacity: 0.3; cursor: not-allowed; }
 }
 
@@ -473,7 +483,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	display: flex;
 	align-items: center;
 	flex-shrink: 0;
-	&:hover { color: #8b5cf6; }
+	@media (hover: hover) { &:hover { color: #8b5cf6; } }
 }
 
 /* ── Тег-чипы ── */
@@ -493,7 +503,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	font-size: 10px;
 	color: #888;
 	cursor: pointer;
-	&:hover { border-color: #8b5cf6; color: #8b5cf6; }
+	@media (hover: hover) { &:hover { border-color: #8b5cf6; color: #8b5cf6; } }
 }
 
 .tags-expand-btn {
@@ -504,7 +514,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	color: #8b5cf6;
 	cursor: pointer;
 	align-self: flex-start;
-	&:hover { text-decoration: underline; }
+	@media (hover: hover) { &:hover { text-decoration: underline; } }
 }
 
 .tag-chips { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -520,13 +530,15 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	cursor: pointer;
 	transition: all 0.12s;
 	user-select: none;
-	&:hover { background: #ede9fe; }
+	@media (hover: hover) {
+		&:hover { background: #ede9fe; }
+		&--off:hover { background: #eee; color: #999; }
+	}
 	&--off {
 		background: #f5f5f5;
 		border-color: #e0e0e0;
 		color: #bbb;
 		text-decoration: line-through;
-		&:hover { background: #eee; color: #999; }
 	}
 }
 
@@ -563,7 +575,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	text-transform: uppercase;
 	letter-spacing: 0.4px;
 	width: fit-content;
-	&:hover { color: #888; }
+	@media (hover: hover) { &:hover { color: #888; } }
 }
 
 .template-vars { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
@@ -578,7 +590,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	cursor: pointer;
 	font-family: monospace;
 	transition: background 0.1s;
-	&:hover { background: #ede9fe; }
+	@media (hover: hover) { &:hover { background: #ede9fe; } }
 }
 
 /* ── Кнопки действий ── */
@@ -596,7 +608,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	cursor: pointer;
 	text-decoration: none;
 	transition: opacity 0.15s;
-	&:hover:not(:disabled) { opacity: 0.8; }
+	@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.8; } }
 	&:disabled { opacity: 0.55; cursor: not-allowed; }
 	&--primary   { background: #8b5cf6; color: #fff; }
 	&--danger    { background: #e74c3c; color: #fff; }

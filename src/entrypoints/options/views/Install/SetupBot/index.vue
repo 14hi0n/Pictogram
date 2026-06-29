@@ -93,7 +93,9 @@ async function onDone(): Promise<void> {
 	a {
 		color: #0088cc;
 		text-decoration: none;
-		&:hover { text-decoration: underline; }
+		@media (hover: hover) {
+			&:hover { text-decoration: underline; }
+		}
 	}
 
 	code {

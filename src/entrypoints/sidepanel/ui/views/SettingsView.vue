@@ -271,7 +271,7 @@ async function onChannelAdded(): Promise<void> {
 	border-radius: 4px;
 	color: #c07020;
 	padding: 0;
-	&:hover { background: #f0d8b0; }
+	@media (hover: hover) { &:hover { background: #f0d8b0; } }
 }
 
 .settings__header {
@@ -302,7 +302,7 @@ async function onChannelAdded(): Promise<void> {
 	transition: opacity 0.15s;
 
 	svg { width: 13px; height: 13px; }
-	&:hover { opacity: 0.85; }
+	@media (hover: hover) { &:hover { opacity: 0.85; } }
 }
 
 .settings__card {
@@ -345,7 +345,7 @@ async function onChannelAdded(): Promise<void> {
 	transition: all 0.12s;
 
 	svg { width: 13px; height: 13px; }
-	&:hover { background: #e8e8e8; color: #333; }
+	@media (hover: hover) { &:hover { background: #e8e8e8; color: #333; } }
 }
 
 .settings__empty {
@@ -414,10 +414,13 @@ async function onChannelAdded(): Promise<void> {
 	transition: all 0.12s;
 
 	svg { width: 14px; height: 14px; }
-	&:hover { background: #f0f0f0; color: #555; }
-
-	&--active { background: #0088cc; border-color: #0088cc; color: #fff; &:hover { background: #0077b5; } }
-	&--danger { &:hover { background: #e74c3c; border-color: #e74c3c; color: #fff; } }
+	@media (hover: hover) {
+		&:hover { background: #f0f0f0; color: #555; }
+		&--active:hover { background: #0077b5; }
+		&--danger:hover { background: #e74c3c; border-color: #e74c3c; color: #fff; }
+	}
+	&--active { background: #0088cc; border-color: #0088cc; color: #fff; }
+	&--danger { }
 }
 
 /* ── Настройки канала ── */
@@ -489,7 +492,7 @@ async function onChannelAdded(): Promise<void> {
 	cursor: pointer;
 	transition: background 0.1s;
 
-	&:hover { background: #fff3c4; }
+	@media (hover: hover) { &:hover { background: #fff3c4; } }
 }
 
 .template-hint {
@@ -517,7 +520,7 @@ async function onChannelAdded(): Promise<void> {
 	font-family: monospace;
 	transition: background 0.1s;
 
-	&:hover { background: #d0eaf8; }
+	@media (hover: hover) { &:hover { background: #d0eaf8; } }
 }
 
 .defaults-actions {
@@ -540,7 +543,7 @@ async function onChannelAdded(): Promise<void> {
 	cursor: pointer;
 	transition: opacity 0.15s;
 
-	&:hover { opacity: 0.85; }
+	@media (hover: hover) { &:hover { opacity: 0.85; } }
 }
 
 .save-hint {

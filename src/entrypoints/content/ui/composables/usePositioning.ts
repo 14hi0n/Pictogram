@@ -3,6 +3,8 @@ import { ref } from 'vue';
 export function usePositioning() {
 	const panelX = ref(0);
 	const panelY = ref(0);
+	/** True when the panel cannot be anchored to a DOM element and falls back to fixed top-right. */
+	const panelFixed = ref(false);
 	let observer: ResizeObserver | null = null;
 
 	function posFromRect(el: HTMLElement): { x: number; y: number } | null {
@@ -14,9 +16,20 @@ export function usePositioning() {
 		return { x: r.right - 50 + sx, y: r.top + 8 + sy };
 	}
 
-	function updateSingle(el: HTMLElement): void {
+	function updateSingle(el: HTMLElement | undefined): void {
+		if (!el) {
+			panelFixed.value = true;
+			return;
+		}
 		const pos = posFromRect(el);
-		if (pos) { panelX.value = pos.x; panelY.value = pos.y; }
+		if (pos) {
+			panelFixed.value = false;
+			panelX.value = pos.x;
+			panelY.value = pos.y;
+		} else {
+			// Element exists in DOM but has no visible rect — use fixed fallback
+			panelFixed.value = true;
+		}
 	}
 
 	function updatePanels<T extends { element: HTMLElement; panelX: number; panelY: number }>(
@@ -38,5 +51,5 @@ export function usePositioning() {
 		observer = null;
 	}
 
-	return { panelX, panelY, updateSingle, updatePanels, startObserving, stopObserving };
+	return { panelX, panelY, panelFixed, updateSingle, updatePanels, startObserving, stopObserving };
 }

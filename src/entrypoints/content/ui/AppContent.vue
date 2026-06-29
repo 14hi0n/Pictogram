@@ -5,7 +5,8 @@
 		<div
 			v-if="mediaItem && !isUnsupportedFormat"
 			class="aaf-panel"
-			:style="{ left: panelX + 'px', top: panelY + 'px' }"
+			:class="{ 'aaf-panel--fixed': panelFixed }"
+			:style="panelFixed ? {} : { left: panelX + 'px', top: panelY + 'px' }"
 		>
 			<button
 				class="aaf-btn aaf-btn--send"
@@ -76,7 +77,12 @@
 			</button>
 		</div>
 
+	<!-- Toast-уведомления (ошибки быстрой отправки и др.) -->
+	<div v-if="toast" class="aaf-toast" :class="'aaf-toast--' + toast.type">
+		{{ toast.message }}
 	</div>
+
+</div>
 </template>
 
 <script setup lang="ts">
@@ -111,13 +117,15 @@ const mediaItem           = ref<MediaItem | null>(null);
 const isUnsupportedFormat = ref(false);
 const isSending           = ref(false);
 const sendDone            = ref(false);
+const toast               = ref<{ message: string; type: 'error' | 'ok' } | null>(null);
+let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 // ── Multi-image mode state ─────────────────────────────────────────────────────
 const panels = ref<PanelState[]>([]);
 
 // ── Composables ────────────────────────────────────────────────────────────────
 const { isInQueue, channelName, checkUrlInQueue, checkMediaUrlInQueue, syncSingle, syncMulti, loadChannelName } = useQueueSync();
-const { panelX, panelY, updateSingle, updatePanels, startObserving, stopObserving } = usePositioning();
+const { panelX, panelY, panelFixed, updateSingle, updatePanels, startObserving, stopObserving } = usePositioning();
 
 // ── Module-level (non-reactive) ────────────────────────────────────────────────
 let storageListener: ((changes: Record<string, chrome.storage.StorageChange>, area: string) => void) | null = null;
@@ -138,6 +146,12 @@ const sendTitle = computed(() =>
 	: channelName.value ? `Отправить в ${channelName.value}`
 	: 'Отправить'
 );
+
+function showToast(message: string, type: 'error' | 'ok' = 'error'): void {
+	if (toastTimer !== null) { clearTimeout(toastTimer); toastTimer = null; }
+	toast.value = { message, type };
+	toastTimer = setTimeout(() => { toast.value = null; toastTimer = null; }, 3000);
+}
 
 function getPanelSendTitle(panel: PanelState): string {
 	if (panel.isSending) return 'Отправка...';
@@ -376,7 +390,11 @@ function handleUrlChange(): void {
 
 function updatePosition(): void {
 	let el = mediaItem.value?.element;
-	if (!el) return;
+	if (!el) {
+		// No anchor element — fall back to fixed top-right position
+		updateSingle(undefined);
+		return;
+	}
 
 	if (!document.body.contains(el) && activeProvider?.findAnchorElement) {
 		const fresh = activeProvider.findAnchorElement();
@@ -434,6 +452,33 @@ function handleSpaClick(): void {
 	}
 }
 
+// ── Thumbnail fetching ─────────────────────────────────────────────────────────
+// Fetch the CDN thumbnail in the content script context and encode it as a
+// base64 data URL so the sidepanel can display it without any CDN request.
+//
+// Danbooru CDN (cdn.donmai.us) is publicly accessible — no Referer required —
+// and returns Access-Control-Allow-Origin: *, so a standard fetch() works in
+// any browser's content script without needing Chrome-specific CORS bypass or
+// declarativeNetRequest. For other CDNs (pximg.net, etc.) that do require
+// Referer, the fetch may fail; we fall back to the raw URL so declarativeNetRequest
+// can still add Referer on Chrome/Kiwi. Returns undefined if no URL given.
+async function resolveThumbnailUrl(url: string | undefined): Promise<string | undefined> {
+	if (!url) return undefined;
+	try {
+		const res = await fetch(url);
+		if (!res.ok) return url;
+		const blob = await res.blob();
+		return new Promise<string>((resolve) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = () => resolve(url);
+			reader.readAsDataURL(blob);
+		});
+	} catch {
+		return url;
+	}
+}
+
 // ── Single-image actions ───────────────────────────────────────────────────────
 
 async function handleQuickSend(): Promise<void> {
@@ -445,8 +490,9 @@ async function handleQuickSend(): Promise<void> {
 		isSending.value = false;
 		sendDone.value = true;
 		setTimeout(() => { sendDone.value = false; }, 1800);
-	} catch {
+	} catch (err: any) {
 		isSending.value = false;
+		showToast(err?.message || 'Ошибка отправки');
 	}
 }
 
@@ -458,9 +504,10 @@ async function toggleQueue(): Promise<void> {
 
 async function addToQueue(): Promise<void> {
 	if (!mediaItem.value) return;
-	const { mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, additionalMediaUrls, mediaCandidates } = mediaItem.value;
+	const { mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, additionalMediaUrls, mediaCandidates, thumbnailUrl: rawThumbUrl } = mediaItem.value;
+	const thumbnailUrl = await resolveThumbnailUrl(rawThumbUrl);
 	try {
-		await msg({ type: MSG.ADD_TO_QUEUE, data: { mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, additionalMediaUrls, mediaCandidates } });
+		await msg({ type: MSG.ADD_TO_QUEUE, data: { mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, additionalMediaUrls, mediaCandidates, thumbnailUrl } });
 		isInQueue.value = true;
 		// await msg({ type: MSG.OPEN_SIDE_PANEL });
 	} catch { /* ничего */ }
@@ -510,12 +557,13 @@ async function toggleQueueForPanel(panel: PanelState): Promise<void> {
 
 async function addToQueueForPanel(panel: PanelState): Promise<void> {
 	if (!sharedMetaItem) return;
-	const { pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, mediaType } = sharedMetaItem;
+	const { pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, mediaType, thumbnailUrl: rawThumbUrl } = sharedMetaItem;
 	// Multi-image panels are Pixiv-only: single candidate per image, skip HTTP validation
 	const mediaCandidates: MediaCandidate[] = [{ url: panel.mediaUrl, type: 'photo', source: 'pixiv', priority: 1 }];
+	const thumbnailUrl = await resolveThumbnailUrl(rawThumbUrl);
 	try {
 		// No additionalMediaUrls — per-image action adds only this single image
-		await msg({ type: MSG.ADD_TO_QUEUE, data: { mediaUrl: panel.mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, mediaCandidates } });
+		await msg({ type: MSG.ADD_TO_QUEUE, data: { mediaUrl: panel.mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, mediaCandidates, thumbnailUrl } });
 		panel.isInQueue = true;
 		await msg({ type: MSG.OPEN_SIDE_PANEL });
 	} catch { /* ничего */ }
@@ -580,6 +628,13 @@ function msg(message: AppMessage): Promise<any> {
 	user-select: none;
 
 	&:hover { opacity: 1; }
+
+	&--fixed {
+		position: fixed !important;
+		top: 8px;
+		right: 8px;
+		left: auto !important;
+	}
 }
 
 .aaf-btn {
@@ -638,4 +693,32 @@ function msg(message: AppMessage): Promise<any> {
 }
 
 @keyframes aaf-spin { to { transform: rotate(360deg); } }
+
+.aaf-toast {
+	position: fixed;
+	bottom: 24px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 10px 16px;
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #fff;
+	pointer-events: none;
+	z-index: 2147483647;
+	white-space: nowrap;
+	max-width: calc(100vw - 32px);
+	white-space: normal;
+	text-align: center;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+	animation: aaf-toast-in 0.2s ease;
+
+	&--error { background: #e74c3c; }
+	&--ok    { background: #27ae60; }
+}
+
+@keyframes aaf-toast-in {
+	from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+	to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
 </style>

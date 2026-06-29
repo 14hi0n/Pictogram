@@ -10,8 +10,10 @@ interface PixivIllustData {
 	userId?: string;
 	pageCount?: number;
 	urls?: {
-		regular?: string;
+		mini?: string;
+		thumb?: string;
 		small?: string;
+		regular?: string;
 	};
 }
 
@@ -92,6 +94,8 @@ export class Pixiv implements SPAProvider {
 		const allUrls = this.getAllImageUrls();
 		const mediaUrl = allUrls[0];
 		const hashtags = this.getPixivTags();
+		const illust = this.getPixivIllustData();
+		const thumbnailUrl = illust?.urls?.thumb ?? illust?.urls?.mini;
 
 		return {
 			element: element as HTMLElement,
@@ -106,6 +110,7 @@ export class Pixiv implements SPAProvider {
 			authorName: this.getAuthorName(),
 			authorUrl: this.getAuthorUrl(),
 			additionalMediaUrls: allUrls.slice(1),
+			thumbnailUrl: thumbnailUrl || undefined,
 		};
 	}
 

@@ -78,8 +78,8 @@ function closeTab(): void {
 	font-weight: 500;
 	transition: opacity 0.15s;
 
-	&:hover {
-		opacity: 0.85;
+	@media (hover: hover) {
+		&:hover { opacity: 0.85; }
 	}
 }
 
@@ -114,8 +114,8 @@ function closeTab(): void {
 	cursor: pointer;
 	transition: background 0.15s;
 
-	&:hover {
-		background: #e0e0e0;
+	@media (hover: hover) {
+		&:hover { background: #e0e0e0; }
 	}
 }
 </style>

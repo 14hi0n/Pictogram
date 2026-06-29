@@ -147,8 +147,8 @@ defineEmits<{ (e: 'next'): void }>();
 	cursor: pointer;
 	transition: background 0.15s;
 
-	&:hover {
-		background: #0077b5;
+	@media (hover: hover) {
+		&:hover { background: #0077b5; }
 	}
 }
 </style>

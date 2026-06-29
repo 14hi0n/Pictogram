@@ -9,7 +9,13 @@ import { getHashtags, getMediaUrlByMediaElement } from '@/providers/utils/scrapi
 export class Danbooru implements StaticProvider {
 	private readonly _domain: string = 'danbooru.donmai.us';
 
-	readonly mediaSelector: string[] = ['img.fit-width', 'video#image.fit-width'];
+	readonly mediaSelector: string[] = [
+		'img.fit-width',
+		'video#image.fit-width',
+		'section.image-container img',  // мобайл/альтернативный layout: img внутри контейнера
+		'img#image',                    // устаревший Danbooru-селектор по ID
+		'picture img',                  // WebP <picture> без класса fit-width
+	];
 
 	// Источник поста: <li id="post-info-source"><a rel="external noreferrer nofollow" href="URL">...</a></li>
 	readonly sourceSelector: string[] = ['li#post-info-source > a[rel="external noreferrer nofollow"]'];
@@ -91,6 +97,15 @@ export class Danbooru implements StaticProvider {
 			mediaCandidates.push({ url: largeFileUrl, type: sampleType, source: 'danbooru', priority: 1 });
 		}
 
+		// data-preview-file-url is no longer present in Danbooru's HTML.
+		// Derive the 180×180 thumbnail from data-file-url, which is always present.
+		// cdn.donmai.us serves all previews at /180x180/{ab}/{cd}/{md5}.jpg.
+		// The CDN is publicly accessible (no Referer needed) and has ACAO: *.
+		const fileUrl = container?.dataset.fileUrl;
+		const previewUrl = fileUrl?.includes('cdn.donmai.us/original/')
+			? fileUrl.replace('/original/', '/180x180/').replace(/\.[^.]+$/, '.jpg')
+			: undefined;
+
 		return {
 			element: mediaElement,
 			mediaUrl: renderedUrl,
@@ -103,6 +118,7 @@ export class Danbooru implements StaticProvider {
 			authorName,
 			authorUrl,
 			mediaCandidates,
+			thumbnailUrl: previewUrl,
 		};
 	}
 

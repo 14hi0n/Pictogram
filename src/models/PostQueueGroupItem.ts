@@ -10,6 +10,7 @@ export interface GroupMember {
 	mediaType: MediaType;
 	sourceUrl: string;
 	pageUrl: string;
+	thumbnailUrl?: string;
 }
 
 /**

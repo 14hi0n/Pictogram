@@ -12,8 +12,33 @@ const queueManager = new PostQueueManager();
 // Настройка Side Panel
 // ──────────────────────────────────────────────────────────────────────────
 
-// При клике на иконку расширения открываем side panel (а не popup)
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(console.error);
+// Пытаемся настроить sidePanel, если разрешение уже выдано
+if (typeof chrome.sidePanel !== 'undefined') {
+	chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
+		// Разрешение ещё не выдано — обработается в onClicked
+	});
+}
+
+// Слушаем клик всегда: срабатывает если openPanelOnActionClick не активен
+chrome.action.onClicked.addListener(async (tab) => {
+	if (typeof chrome.sidePanel === 'undefined') {
+		// Мобильный браузер — открываем вкладку
+		chrome.tabs.create({ url: 'sidepanel.html' });
+		return;
+	}
+	// Десктоп: запрашиваем optional-разрешение (требует жеста пользователя)
+	try {
+		const granted = await chrome.permissions.request({ permissions: ['sidePanel'] });
+		if (granted) {
+			await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+			await chrome.sidePanel.open({ windowId: tab.windowId });
+		} else {
+			chrome.tabs.create({ url: 'sidepanel.html' });
+		}
+	} catch {
+		chrome.tabs.create({ url: 'sidepanel.html' });
+	}
+});
 
 // ──────────────────────────────────────────────────────────────────────────
 // Обработчики сообщений
@@ -38,9 +63,15 @@ chrome.runtime.onMessage.addListener(
 				handleSendGroupItem(message, sendResponse);
 				return true;
 
-			// Content script просит открыть side panel (когда пост уже в очереди)
+			// Content script просит открыть UI (side panel на десктопе, вкладка на мобиле)
 			case MSG.OPEN_SIDE_PANEL:
-				chrome.sidePanel.open({ windowId: _sender.tab?.windowId }).catch(console.error);
+				if (typeof chrome.sidePanel !== 'undefined') {
+					chrome.sidePanel.open({ windowId: _sender.tab?.windowId }).catch(() => {
+						chrome.tabs.create({ url: 'sidepanel.html' });
+					});
+				} else {
+					chrome.tabs.create({ url: 'sidepanel.html' });
+				}
 				sendResponse({ ok: true });
 				return false;
 		}

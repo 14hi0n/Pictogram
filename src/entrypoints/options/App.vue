@@ -21,9 +21,26 @@ a {
 	border-bottom: none !important;
 }
 
+@media (max-width: 768px) {
+	input, textarea, select {
+		font-size: 16px !important;
+	}
+}
+
 .page__wrapper {
 	border: none !important;
 	background: transparent !important;
 	min-height: auto !important;
+}
+
+@media (max-width: 540px) {
+	.page {
+		margin: 0 !important;
+	}
+	.container {
+		box-sizing: border-box !important;
+		min-width: 0 !important;
+		width: 100% !important;
+	}
 }
 </style>

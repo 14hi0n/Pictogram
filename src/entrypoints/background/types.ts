@@ -33,6 +33,8 @@ export interface MediaPayload {
 	customDescription?: string;
 	additionalMediaUrls?: string[];
 	mediaCandidates?: MediaCandidate[];
+	/** base64 data URL of a small thumbnail, fetched in content script */
+	thumbnailUrl?: string;
 }
 
 export type QuickSendMsg      = { type: typeof MSG.QUICK_SEND;       data: MediaPayload };
@@ -47,6 +49,3 @@ export type AppMessage =
 	| SendQueueItemsMsg
 	| SendGroupItemMsg
 	| OpenSidePanelMsg;
-
-/** @deprecated используй AppMessage */
-export type Message = AppMessage;

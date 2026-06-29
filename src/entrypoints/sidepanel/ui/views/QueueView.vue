@@ -275,6 +275,7 @@ async function groupSelectedItems(): Promise<void> {
 		mediaType: item.mediaType,
 		sourceUrl: item.sourceUrl,
 		pageUrl: item.pageUrl,
+		thumbnailUrl: item.thumbnailUrl,
 	}));
 
 	const groupItem: PostQueueGroupItem = {
@@ -552,7 +553,7 @@ function itemsWord(count: number): string {
 	gap: 4px;
 	transition: opacity 0.15s;
 
-	&:hover:not(:disabled) { opacity: 0.85; }
+	@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.85; } }
 	&:disabled { opacity: 0.4; cursor: not-allowed; }
 	&--danger { background: #e74c3c; }
 	&--group  { background: #8b5cf6; }

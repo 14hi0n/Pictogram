@@ -127,4 +127,20 @@ function prevStep(): void {
 .onboarding__content {
 	padding: 20px;
 }
+
+@media (max-width: 540px) {
+	.onboarding__steps {
+		padding: 14px 12px;
+	}
+	.onboarding__step-label {
+		display: none;
+	}
+	.onboarding__step + .onboarding__step::before {
+		width: 24px;
+		margin: 0 6px;
+	}
+	.onboarding__content {
+		padding: 16px 12px;
+	}
+}
 </style>

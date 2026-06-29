@@ -91,16 +91,28 @@ body {
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 	font-size: 14px;
 	height: 100vh;
+	height: 100dvh;
 	overflow: hidden;
+	margin: 0;
 }
 
 #app {
 	height: 100vh;
+	height: 100dvh;
+	display: flex;
+	justify-content: center;
 }
 
 /* Переопределяем link стиль из main.scss */
 a {
 	border-bottom: none !important;
+}
+
+/* Предотвращаем авто-зум на инпуты в мобильных браузерах (срабатывает при font-size < 16px) */
+@media (max-width: 768px) {
+	input, textarea, select {
+		font-size: 16px !important;
+	}
 }
 </style>
 
@@ -109,6 +121,9 @@ a {
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
+	height: 100dvh;
+	width: 100%;
+	max-width: 480px;
 }
 
 .sp-header {
@@ -141,7 +156,8 @@ a {
 
 .sp-tabs__tab {
 	flex: 1;
-	padding: 8px;
+	padding: 10px 8px;
+	min-height: 44px;
 	border: none;
 	background: transparent;
 	cursor: pointer;
@@ -151,8 +167,8 @@ a {
 	position: relative;
 	transition: color 0.15s;
 
-	&:hover {
-		color: #0088cc;
+	@media (hover: hover) {
+		&:hover { color: #0088cc; }
 	}
 
 	&--active {
@@ -181,5 +197,6 @@ a {
 	flex: 1;
 	overflow-y: auto;
 	overflow-x: hidden;
+	padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 </style>

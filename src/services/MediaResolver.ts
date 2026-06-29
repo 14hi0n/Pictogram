@@ -62,6 +62,13 @@ export class MediaResolver {
 			return { status: 'valid', contentType: 'image/jpeg' };
 		}
 
+		if (source === 'danbooru' && !candidate.url.includes('/original/')) {
+			// cdn.donmai.us sample/preview URLs are publicly accessible.
+			// declarativeNetRequest Referer rule applies only to image resource type,
+			// not to service worker fetch — mobile CDNs are strict about this.
+			return { status: 'valid', contentType: 'image/jpeg' };
+		}
+
 		try {
 			const result = await this.probeUrl(candidate.url);
 

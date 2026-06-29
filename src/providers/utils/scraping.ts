@@ -29,3 +29,31 @@ export function getMediaUrlByMediaElement(mediaElement: MediaElement): string {
 
 	return src;
 }
+
+/**
+ * Returns the first element matching any selector in the list, or null if none found.
+ * Tries each selector in order — use for single-element lookups with desktop/mobile fallbacks.
+ */
+export function queryFallback<T extends Element>(selectors: string[]): T | null {
+	for (const sel of selectors) {
+		try {
+			const el = document.querySelector<T>(sel);
+			if (el) return el;
+		} catch {}
+	}
+	return null;
+}
+
+/**
+ * Returns all elements matched by the first selector in the list that yields any results.
+ * Use for multi-element lookups (e.g. tag lists) where mobile and desktop use different attributes.
+ */
+export function queryAllFallback<T extends Element>(selectors: string[]): T[] {
+	for (const sel of selectors) {
+		try {
+			const els = document.querySelectorAll<T>(sel);
+			if (els.length > 0) return Array.from(els);
+		} catch {}
+	}
+	return [];
+}
