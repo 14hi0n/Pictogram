@@ -2,9 +2,14 @@
 	<div class="card" :class="{ 'card--disabled': !item.enabled, 'card--selected': selected }">
 		<!-- Шапка -->
 		<div class="card__header" @click="expanded = !expanded">
-			<label class="card__select" @click.stop title="Выбрать для отправки группой">
-				<input type="checkbox" :checked="selected" @change="$emit('select', item.id)" />
-			</label>
+			<AppCheckbox
+				class="card__select"
+				:model-value="selected ?? false"
+				variant="primary"
+				title="Выбрать для отправки группой"
+				@update:model-value="$emit('select', item.id)"
+				@click.stop
+			/>
 
 			<div class="card__preview">
 				<img v-if="!imgFailed" :src="imgSrc" class="card__img" :alt="siteDomain" @error="onImgError" />
@@ -156,6 +161,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import AppCheckbox from '@/entrypoints/shared/components/AppCheckbox.vue';
 import { PostQueueItem } from '@/models/PostQueueItem';
 import { PostSettings } from '@/models/PostSettings';
 import { Channel } from '@/models/Channel';
@@ -261,7 +267,6 @@ function emitSourceUpdate(): void {
 		align-items: center;
 		cursor: pointer;
 		padding: 2px;
-		input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: $sp-primary; appearance: auto; }
 	}
 
 	&__preview {

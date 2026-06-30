@@ -81,30 +81,26 @@
 				</div>
 
 				<template v-else>
-					<label class="flow__select-all">
-						<input
-							type="checkbox"
-							:checked="allSelected"
-							:indeterminate.prop="someSelected && !allSelected"
-							@change="toggleSelectAll"
-						/>
+					<AppCheckbox
+						class="flow__select-all"
+						:model-value="allSelected"
+						:indeterminate="someSelected && !allSelected"
+						@update:model-value="toggleSelectAll"
+					>
 						Выбрать все ({{ foundChannels.length }})
-					</label>
+					</AppCheckbox>
 				</template>
 			</div>
 
 			<div class="flow__channel-list">
-				<label
+				<AppCheckbox
 					v-for="ch in foundChannels"
 					:key="ch.id"
 					class="flow__channel-item"
 					:class="{ 'flow__channel-item--selected': selectedIds.has(String(ch.id)) }"
+					:model-value="selectedIds.has(String(ch.id))"
+					@update:model-value="toggleChannel(String(ch.id))"
 				>
-					<input
-						type="checkbox"
-						:checked="selectedIds.has(String(ch.id))"
-						@change="toggleChannel(String(ch.id))"
-					/>
 					<div class="flow__channel-info">
 						<span class="flow__channel-name">{{ ch.title }}</span>
 						<span class="flow__channel-meta">
@@ -112,7 +108,7 @@
 						</span>
 					</div>
 					<span v-if="!ch.username" class="flow__private-badge">🔒</span>
-				</label>
+				</AppCheckbox>
 			</div>
 
 			<div class="flow__footer">
@@ -132,6 +128,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import AppCheckbox from '@/entrypoints/shared/components/AppCheckbox.vue';
 import { TelegramChannelFetcher } from '@/services/TelegramChannelFetcher';
 import { UserSettingsManager } from '@/services/UserSettingsManager';
 import { createChannel } from '@/models/Channel';
@@ -350,7 +347,6 @@ async function saveChannels(): Promise<void> {
 			transition: background 0.1s;
 			@media (hover: hover) { &:hover { background: $sp-bg-editor; } }
 			&--selected { border-color: $sp-primary; background: #f0f8ff; }
-			input[type='checkbox'] { flex-shrink: 0; cursor: pointer; }
 		}
 
 		&-info { flex: 1; min-width: 0; }
