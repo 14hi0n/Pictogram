@@ -143,14 +143,16 @@
 					Advanced
 				</button>
 				<div v-if="overrideExpanded" class="group-card__editor-field" style="margin-top:6px">
-					<label class="group-card__editor-label">Override template</label>
+					<div class="group-card__editor-label-row">
+						<label class="group-card__editor-label">Override template</label>
+						<button v-if="isSyncNeeded" class="group-card__editor-sync-btn" @click="syncToGlobal">↺ Синхронизировать</button>
+					</div>
 					<textarea
 						ref="overrideEl"
-						v-model="localOverrideTemplate"
+						v-model="overrideTemplateDraft"
 						class="group-card__editor-textarea"
-						placeholder="Empty = use channel master template"
+						placeholder="Шаблон канала не задан"
 						rows="3"
-						@input="onOverrideInput"
 					></textarea>
 					<div class="group-card__template-vars">
 						<button v-for="v in TEMPLATE_VARS" :key="v" class="group-card__tvar-chip" @click="insertVar(v)">{{ v }}</button>
@@ -234,7 +236,7 @@ const {
 	effectiveChannelName, hasAnyTagVar, hasAnyControls,
 	allTags, enabledTags, visibleTags, hiddenTagsCount,
 	buildSettings, emitUpdate, toggleTag, enableAllTags, disableAllTags,
-	insertVar, onOverrideInput, onChannelChange,
+	insertVar, overrideTemplateDraft, isSyncNeeded, syncToGlobal, onChannelChange,
 } = useCardEditor(
 	props,
 	(id, settings) => emit('update-settings', id, settings),
@@ -397,6 +399,23 @@ function onMemberSourceBlur(idx: number, url: string): void {
 			color: $sp-text-label;
 			text-transform: uppercase;
 			letter-spacing: 0.4px;
+		}
+
+		&-label-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		&-sync-btn {
+			background: none;
+			border: none;
+			padding: 0;
+			font-size: 10px;
+			color: $sp-accent;
+			cursor: pointer;
+			font-weight: 600;
+			@media (hover: hover) { &:hover { text-decoration: underline; } }
 		}
 
 		&-field { display: flex; flex-direction: column; gap: 6px; }

@@ -92,6 +92,7 @@
 						@update-settings="updateSettings"
 						@update-channel="updateChannel"
 						@update-source="updateItemSource"
+						@update-meta="updateItemMeta"
 						@select="toggleSelect"
 					/>
 				</template>
@@ -162,6 +163,9 @@ function onStorageChanged(changes: Record<string, chrome.storage.StorageChange>,
 		queue.value = (changes[STORAGE_KEYS.QUEUE].newValue as QueueEntry[]) || [];
 		emit('queue-changed');
 	}
+	if (area === 'sync' && changes[STORAGE_KEYS.SETTINGS]) {
+		void loadChannels();
+	}
 }
 
 onMounted(async () => {
@@ -213,6 +217,11 @@ async function updateMembers(id: string, members: GroupMember[]): Promise<void> 
 
 async function updateItemSource(id: string, sourceUrl: string): Promise<void> {
 	await queueManager.updateItem(id, { sourceUrl });
+	await loadQueue();
+}
+
+async function updateItemMeta(id: string, meta: { authorName: string; authorUrl: string }): Promise<void> {
+	await queueManager.updateItem(id, meta);
 	await loadQueue();
 }
 

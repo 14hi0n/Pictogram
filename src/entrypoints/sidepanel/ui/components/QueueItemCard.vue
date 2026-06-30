@@ -108,14 +108,16 @@
 					Advanced
 				</button>
 				<div v-if="overrideExpanded" class="card__editor-field" style="margin-top:6px">
-					<label class="card__editor-label">Override template</label>
+					<div class="card__editor-label-row">
+						<label class="card__editor-label">Override template</label>
+						<button v-if="isSyncNeeded" class="card__editor-sync-btn" @click="syncToGlobal">↺ Синхронизировать</button>
+					</div>
 					<textarea
 						ref="overrideEl"
-						v-model="localOverrideTemplate"
+						v-model="overrideTemplateDraft"
 						class="card__editor-textarea"
-						placeholder="Empty = use channel master template"
+						placeholder="Шаблон канала не задан"
 						rows="3"
-						@input="onOverrideInput"
 					></textarea>
 					<div class="card__template-vars">
 						<button v-for="v in TEMPLATE_VARS" :key="v" class="card__tvar-chip" @click="insertVar(v)">{{ v }}</button>
@@ -127,6 +129,22 @@
 						class="card__editor-input"
 						placeholder="https://..."
 						@blur="emitSourceUpdate"
+					/>
+					<label class="card__editor-label" style="margin-top:8px">Author</label>
+					<input
+						v-model="localAuthorName"
+						type="text"
+						class="card__editor-input"
+						placeholder="Имя автора"
+						@blur="emitMetaUpdate"
+					/>
+					<label class="card__editor-label" style="margin-top:8px">Author URL</label>
+					<input
+						v-model="localAuthorUrl"
+						type="url"
+						class="card__editor-input"
+						placeholder="https://..."
+						@blur="emitMetaUpdate"
 					/>
 				</div>
 			</div>
@@ -182,12 +200,15 @@ const emit = defineEmits<{
 	(e: 'update-settings', id: string, settings: PostSettings): void;
 	(e: 'update-channel', id: string, channelID: string | null): void;
 	(e: 'update-source', id: string, sourceUrl: string): void;
+	(e: 'update-meta', id: string, meta: { authorName: string; authorUrl: string }): void;
 	(e: 'select', id: string): void;
 }>();
 
-const imgSrc        = ref(props.item.thumbnailUrl ?? props.item.mediaUrl);
-const imgFailed     = ref(false);
-const localSourceUrl = ref(props.item.sourceUrl ?? '');
+const imgSrc         = ref(props.item.thumbnailUrl ?? props.item.mediaUrl);
+const imgFailed      = ref(false);
+const localSourceUrl = ref(props.item.sourceUrl  ?? '');
+const localAuthorName = ref(props.item.authorName ?? '');
+const localAuthorUrl  = ref(props.item.authorUrl  ?? '');
 
 function onImgError(): void {
 	imgFailed.value = true;
@@ -210,7 +231,7 @@ const {
 	effectiveChannelName, hasAnyTagVar, hasAnyControls,
 	allTags, enabledTags, visibleTags, hiddenTagsCount,
 	emitUpdate, toggleTag, enableAllTags, disableAllTags,
-	insertVar, onOverrideInput, onChannelChange,
+	insertVar, overrideTemplateDraft, isSyncNeeded, syncToGlobal, onChannelChange,
 } = useCardEditor(
 	props,
 	(id, settings) => emit('update-settings', id, settings),
@@ -219,7 +240,9 @@ const {
 
 const localItemForSend = computed<PostQueueItem>(() => ({
 	...props.item,
-	sourceUrl: localSourceUrl.value,
+	sourceUrl:  localSourceUrl.value,
+	authorName: localAuthorName.value || props.item.authorName,
+	authorUrl:  localAuthorUrl.value  || props.item.authorUrl,
 	settings: {
 		customDescription:   localDescription.value,
 		captionTemplate:     localOverrideTemplate.value,
@@ -232,10 +255,19 @@ const localItemForSend = computed<PostQueueItem>(() => ({
 	},
 }));
 
-watch(() => props.item.sourceUrl, (s) => { localSourceUrl.value = s ?? ''; });
+watch(() => props.item.sourceUrl,  (v) => { localSourceUrl.value  = v ?? ''; });
+watch(() => props.item.authorName, (v) => { localAuthorName.value = v ?? ''; });
+watch(() => props.item.authorUrl,  (v) => { localAuthorUrl.value  = v ?? ''; });
 
 function emitSourceUpdate(): void {
 	emit('update-source', props.item.id, localSourceUrl.value.trim());
+}
+
+function emitMetaUpdate(): void {
+	emit('update-meta', props.item.id, {
+		authorName: localAuthorName.value.trim(),
+		authorUrl:  localAuthorUrl.value.trim(),
+	});
 }
 </script>
 
@@ -368,6 +400,23 @@ function emitSourceUpdate(): void {
 			color: $sp-text-label;
 			text-transform: uppercase;
 			letter-spacing: 0.4px;
+		}
+
+		&-label-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		&-sync-btn {
+			background: none;
+			border: none;
+			padding: 0;
+			font-size: 10px;
+			color: $sp-primary;
+			cursor: pointer;
+			font-weight: 600;
+			@media (hover: hover) { &:hover { text-decoration: underline; } }
 		}
 
 		&-select,

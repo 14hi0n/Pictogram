@@ -140,7 +140,7 @@ export function useCardEditor(
 
 	function insertVar(variable: string): void {
 		const el   = overrideEl.value;
-		const text = localOverrideTemplate.value;
+		const text = effectiveTemplate.value;  // берём отображаемый текст (наследованный или свой)
 		if (!el) {
 			localOverrideTemplate.value = text + variable;
 			localCaptionTemplateMode.value = 'custom';
@@ -155,8 +155,23 @@ export function useCardEditor(
 		nextTick(() => { el.selectionStart = el.selectionEnd = start + variable.length; el.focus(); });
 	}
 
-	function onOverrideInput(): void {
-		localCaptionTemplateMode.value = localOverrideTemplate.value.trim() ? 'custom' : 'channel_default';
+	const overrideTemplateDraft = computed({
+		get: () => effectiveTemplate.value,
+		set: (val: string) => {
+			localOverrideTemplate.value = val;
+			localCaptionTemplateMode.value = val.trim() ? 'custom' : 'channel_default';
+			emitUpdate();
+		},
+	});
+
+	const isSyncNeeded = computed(() =>
+		localCaptionTemplateMode.value === 'custom' &&
+		localOverrideTemplate.value !== (effectiveChannel.value?.defaults.captionTemplate ?? '')
+	);
+
+	function syncToGlobal(): void {
+		localOverrideTemplate.value = '';
+		localCaptionTemplateMode.value = 'channel_default';
 		emitUpdate();
 	}
 
@@ -200,7 +215,9 @@ export function useCardEditor(
 		enableAllTags,
 		disableAllTags,
 		insertVar,
-		onOverrideInput,
+		overrideTemplateDraft,
+		isSyncNeeded,
+		syncToGlobal,
 		onChannelChange,
 	};
 }
