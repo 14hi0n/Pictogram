@@ -86,7 +86,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, markRaw } from 'vue';
+import { ref, computed, inject, onMounted, onUnmounted, markRaw } from 'vue';
+import { UserSettingsManager } from '@/services/UserSettingsManager';
+import { ACCENT_PRESETS } from '@/shared/constants/theme';
 import { providerManager } from '@/providers/registry';
 import { MediaItem } from '@/models/MediaItem';
 import { BaseProvider } from '@/providers/interfaces/BaseProvider';
@@ -97,6 +99,18 @@ import type { MediaCandidate } from '@/models/MediaCandidate';
 import { STORAGE_KEYS } from '@/shared/constants/storage';
 import { useQueueSync } from './composables/useQueueSync';
 import { usePositioning } from './composables/usePositioning';
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
+const shadowRoot = inject<ShadowRoot>('shadowRoot');
+
+async function applyAccentToShadow(): Promise<void> {
+	const settings = await new UserSettingsManager().getSettings();
+	const preset = ACCENT_PRESETS.find(p => p.id === settings.accentColor) ?? ACCENT_PRESETS[0];
+	const host = shadowRoot?.host as HTMLElement | undefined;
+	if (!host) return;
+	host.style.setProperty('--sp-primary',    preset.color);
+	host.style.setProperty('--sp-on-primary', preset.onColor);
+}
 
 // ── Per-panel state type (multi-image mode) ────────────────────────────────────
 interface PanelState {
@@ -172,6 +186,7 @@ onMounted(() => {
 		urlObserver.observe(titleEl, { childList: true, characterData: true, subtree: true });
 	}
 	void init();
+	void applyAccentToShadow();
 });
 
 onUnmounted(() => {
@@ -711,9 +726,9 @@ function msg(message: AppMessage): Promise<any> {
 	&:active:not(:disabled) { transform: scale(0.88); }
 
 	&--send {
-		background: #0088cc !important;
-		color: #fff !important;
-		&:hover:not(:disabled) { background: #009fe0 !important; }
+		background: var(--sp-primary, #0088cc) !important;
+		color: var(--sp-on-primary, #fff) !important;
+		&:hover:not(:disabled) { filter: brightness(1.12); }
 		&:disabled { opacity: 0.45; cursor: not-allowed; }
 	}
 
