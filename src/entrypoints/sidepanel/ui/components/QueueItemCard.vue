@@ -72,7 +72,7 @@
 							v-for="tag in visibleTags"
 							:key="tag"
 							class="card__tag-chip"
-							:class="{ 'card__tag-chip--off': localExcludedTags.includes(tag) }"
+							:class="{ 'card__tag-chip--off': uiExcludedTags.includes(tag) }"
 							@click="toggleTag(tag)"
 						>{{ tag }}</button>
 					</div>
@@ -229,7 +229,7 @@ const {
 	localChannelID, localDescription, localExcludedTags, localOverrideTemplate,
 	effectiveTemplate, isTemplateOverridden, templateVars,
 	effectiveChannelName, hasAnyTagVar, hasAnyControls,
-	allTags, enabledTags, visibleTags, hiddenTagsCount,
+	allTags, uiExcludedTags, enabledTags, visibleTags, hiddenTagsCount,
 	emitUpdate, toggleTag, enableAllTags, disableAllTags,
 	insertVar, overrideTemplateDraft, isSyncNeeded, syncToGlobal, onChannelChange,
 } = useCardEditor(

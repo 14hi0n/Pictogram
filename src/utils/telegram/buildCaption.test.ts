@@ -224,14 +224,97 @@ describe('buildCaption — {{tags}} template model', () => {
 
 	// ── Backward compat ───────────────────────────────────────────────────────
 
-	// {{all_tags}} deprecated: renders selected (non-excluded) tags, no crash
+	// {{all_tags}} deprecated: renders selected (non-excluded) tags in manual mode
 	test('{{all_tags}} backward compat: renders selected tags using excludedTags filter', () => {
 		const result = buildCaption(simpleTags4, '', settings({
 			captionTemplate: '{{all_tags}}',
 			excludedTags: ['c', 'd'],
+			tagSelectionMode: 'manual',
 			disableLinks: true,
 		}));
 		expect(result).toBe('a b');
+	});
+
+	// Auto mode + no limit: stale excludedTags (from old {{tags:N}}) must be ignored
+	test('{{tags}} auto mode: ignores stale excludedTags, renders all tags', () => {
+		const result = buildCaption(simpleTags4, '', settings({
+			captionTemplate: '{{tags}}',
+			excludedTags: ['a', 'b'],
+			tagSelectionMode: 'auto',
+			disableLinks: true,
+		}));
+		expect(result).toBe('a b c d');
+	});
+});
+
+describe('buildCaption — {{author}} модификаторы', () => {
+	test('{{author}} с именем и ссылкой: оборачивает имя в <a>', () => {
+		const result = buildCaption([], '', settings({ captionTemplate: '{{author}}', disableLinks: true }), {
+			authorName: 'Miku', authorUrl: 'https://example.com/miku',
+		});
+		expect(result).toBe('<a href="https://example.com/miku">Miku</a>');
+	});
+
+	test('{{author}} только с именем: голое имя без <a>', () => {
+		const result = buildCaption([], '', settings({ captionTemplate: '{{author}}', disableLinks: true }), {
+			authorName: 'Miku',
+		});
+		expect(result).toBe('Miku');
+	});
+
+	test('{{author}} только со ссылкой: голая ссылка', () => {
+		const result = buildCaption([], '', settings({ captionTemplate: '{{author}}', disableLinks: true }), {
+			authorUrl: 'https://example.com/miku',
+		});
+		expect(result).toBe('https://example.com/miku');
+	});
+
+	test('{{author}} без данных: пустая строка', () => {
+		const result = buildCaption([], '', settings({ captionTemplate: '{{author}}', disableLinks: true }), {});
+		expect(result).toBe('');
+	});
+
+	test('{{author:name}} всегда возвращает только имя, даже если есть ссылка', () => {
+		const result = buildCaption([], '', settings({ captionTemplate: '{{author:name}}', disableLinks: true }), {
+			authorName: 'Miku', authorUrl: 'https://example.com/miku',
+		});
+		expect(result).toBe('Miku');
+	});
+
+	test('{{author:url}} всегда возвращает только ссылку, даже если есть имя', () => {
+		const result = buildCaption([], '', settings({ captionTemplate: '{{author:url}}', disableLinks: true }), {
+			authorName: 'Miku', authorUrl: 'https://example.com/miku',
+		});
+		expect(result).toBe('https://example.com/miku');
+	});
+
+	test('{{author_url}} больше не подставляется — остаётся буквальным текстом', () => {
+		const result = buildCaption([], '', settings({ captionTemplate: '{{author_url}}', disableLinks: true }), {
+			authorUrl: 'https://example.com/miku',
+		});
+		expect(result).toBe('{{author_url}}');
+	});
+});
+
+describe('buildCaption — {{source}} модификаторы', () => {
+	test('{{source}} без модификатора: ссылка с лейблом «источник» (поведение не меняется)', () => {
+		const result = buildCaption([], 'https://example.com', settings({ captionTemplate: '{{source}}' }));
+		expect(result).toBe('<a href="https://example.com">источник</a>');
+	});
+
+	test('{{source:url}} с одним URL: голый URL без лейбла', () => {
+		const result = buildCaption([], 'https://example.com', settings({ captionTemplate: '{{source:url}}' }));
+		expect(result).toBe('https://example.com');
+	});
+
+	test('{{source:url}} с несколькими URL (группа): через " | "', () => {
+		const result = buildCaption([], ['https://a.com', 'https://b.com'], settings({ captionTemplate: '{{source:url}}' }));
+		expect(result).toBe('https://a.com | https://b.com');
+	});
+
+	test('{{source_url}} (мёртвый алиас) больше не подставляется — остаётся буквальным текстом', () => {
+		const result = buildCaption([], 'https://example.com', settings({ captionTemplate: '{{source_url}}' }));
+		expect(result).toBe('{{source_url}}');
 	});
 });
 
@@ -251,5 +334,9 @@ describe('TEMPLATE_VARS — UI chip list', () => {
 
 	test('includes {{tags}}', () => {
 		expect((TEMPLATE_VARS as readonly string[]).includes('{{tags}}')).toBe(true);
+	});
+
+	test('does not include {{author_url}} (удалён, дублировал {{author:url}})', () => {
+		expect((TEMPLATE_VARS as readonly string[]).includes('{{author_url}}')).toBe(false);
 	});
 });

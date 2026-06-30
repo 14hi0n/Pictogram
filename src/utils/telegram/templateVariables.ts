@@ -6,7 +6,14 @@ export interface TemplateVariables {
 	hasAllTags: boolean;
 	hasSource: boolean;
 	hasAuthor: boolean;
-	hasAuthorUrl: boolean;
+}
+
+/**
+ * Builds a regex matching {{name}} or {{name:modifier}}, capturing the modifier value.
+ * Shared shape for all variable detection/parsing below.
+ */
+function variableRegex(name: string): RegExp {
+	return new RegExp(`\\{\\{${name}(?::([^}]*))?\\}\\}`, 'i');
 }
 
 /**
@@ -16,29 +23,39 @@ export interface TemplateVariables {
  * {{tags:N}}          — selected tags (first N enabled by default; N must be a positive integer)
  * {{tags:invalid}}    — treated as {{tags}} (no crash, fallback to all tags)
  * {{all_tags}}        — deprecated alias for {{tags}}; detected for UI backward compat
+ * {{author}}          — author name wrapped in a link to author_url; {{author:name}} / {{author:url}} modifiers
+ * {{source}}          — link to source labeled «источник»; {{source:url}} modifier returns the bare URL(s)
  */
-const RE_TAGS = /\{\{tags(?::[^}]*)?\}\}/i;
+const RE_TAGS = variableRegex('tags');
 const RE_ALL_TAGS = /\{\{all_?tags(?::[^}]*)?\}\}/i;
 const RE_DESC = /\{\{desc(?:ription)?\}\}/i;
-const RE_SOURCE = /\{\{source(?:_url)?\}\}/i;
-const RE_AUTHOR_URL = /\{\{author_url\}\}/i;
-const RE_AUTHOR = /\{\{author\}\}/i;
+const RE_SOURCE = variableRegex('source');
+const RE_AUTHOR = variableRegex('author');
 
 export function getTemplateVariables(template: string): TemplateVariables {
 	if (!template?.trim()) {
 		return {
 			hasDesc: false, hasTags: false, hasAllTags: false,
-			hasSource: false, hasAuthor: false, hasAuthorUrl: false,
+			hasSource: false, hasAuthor: false,
 		};
 	}
 	return {
-		hasDesc:      RE_DESC.test(template),
-		hasTags:      RE_TAGS.test(template),
-		hasAllTags:   RE_ALL_TAGS.test(template),
-		hasSource:    RE_SOURCE.test(template),
-		hasAuthor:    RE_AUTHOR.test(template),
-		hasAuthorUrl: RE_AUTHOR_URL.test(template),
+		hasDesc:    RE_DESC.test(template),
+		hasTags:    RE_TAGS.test(template),
+		hasAllTags: RE_ALL_TAGS.test(template),
+		hasSource:  RE_SOURCE.test(template),
+		hasAuthor:  RE_AUTHOR.test(template),
 	};
+}
+
+/**
+ * Returns the modifier value of the first {{name:modifier}} match, lowercased and trimmed,
+ * or null if the variable has no modifier (or isn't present at all).
+ */
+export function parseModifier(template: string, name: string): string | null {
+	const m = variableRegex(name).exec(template);
+	const mod = m?.[1]?.trim();
+	return mod ? mod.toLowerCase() : null;
 }
 
 /**
@@ -51,9 +68,9 @@ export function getTemplateVariables(template: string): TemplateVariables {
  * {{tags:0}}   → null  (non-positive → all tags)
  */
 export function parseTagsLimit(template: string): number | null {
-	const m = /\{\{tags:([^}]*)\}\}/i.exec(template);
-	if (!m) return null;
-	const n = parseInt(m[1].trim(), 10);
+	const mod = parseModifier(template, 'tags');
+	if (mod === null) return null;
+	const n = parseInt(mod, 10);
 	return Number.isInteger(n) && n > 0 ? n : null;
 }
 

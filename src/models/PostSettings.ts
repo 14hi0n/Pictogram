@@ -1,6 +1,6 @@
 export interface PostSettings {
 	customDescription: string;
-	/** Шаблон подписи: пусто = подпись не добавляется. Переменные: {{desc}}, {{tags}}, {{tags:N}}, {{author}}, {{author_url}}, {{source}} */
+	/** Шаблон подписи: пусто = подпись не добавляется. Переменные: {{desc}}, {{tags}}, {{tags:N}}, {{author}} ({{author:name}}/{{author:url}}), {{source}} ({{source:url}}) */
 	captionTemplate: string;
 	includeCharacterTags: boolean;
 	includeCopyrightTags: boolean;

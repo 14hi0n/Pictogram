@@ -2,7 +2,7 @@ import { ref, computed, watch, nextTick } from 'vue';
 import { Channel } from '@/models/Channel';
 import { PostSettings } from '@/models/PostSettings';
 import { TagItem } from '@/models/TagItem';
-import { getTemplateVariables } from '@/utils/telegram/templateVariables';
+import { getTemplateVariables, parseTagsLimit } from '@/utils/telegram/templateVariables';
 import { TEMPLATE_VARS } from '@/shared/constants/templates';
 
 export interface CardEditorItem {
@@ -80,8 +80,17 @@ export function useCardEditor(
 	);
 	const allTags = computed(() => [...characterTags.value, ...copyrightTags.value]);
 
-	const enabledTags  = computed(() => allTags.value.filter(t => !localExcludedTags.value.includes(t)));
-	const disabledTags = computed(() => allTags.value.filter(t => localExcludedTags.value.includes(t)));
+	const uiExcludedTags = computed(() => {
+		if (localTagSelectionMode.value === 'manual') return localExcludedTags.value;
+		// Auto mode: derive chip state from the effective template's limit, not from stored excludedTags
+		// (stored excludedTags may be stale if the channel template modifier was later removed).
+		const limit = parseTagsLimit(effectiveTemplate.value);
+		if (limit !== null) return allTags.value.slice(limit);
+		return [];
+	});
+
+	const enabledTags  = computed(() => allTags.value.filter(t => !uiExcludedTags.value.includes(t)));
+	const disabledTags = computed(() => allTags.value.filter(t => uiExcludedTags.value.includes(t)));
 
 	const visibleTags = computed(() => {
 		if (tagsExpanded.value || allTags.value.length <= TAGS_VISIBLE) return allTags.value;
@@ -205,6 +214,7 @@ export function useCardEditor(
 		characterTags,
 		copyrightTags,
 		allTags,
+		uiExcludedTags,
 		enabledTags,
 		disabledTags,
 		visibleTags,

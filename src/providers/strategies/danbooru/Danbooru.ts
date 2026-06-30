@@ -29,10 +29,6 @@ export class Danbooru implements StaticProvider {
 			selector: 'ul.copyright-tag-list a.search-tag, ul.copyright-tag-list li > a[href*="tags="]',
 		},
 		{
-			label: 'artist',
-			selector: 'ul.artist-tag-list a.search-tag, ul.artist-tag-list li > a[href*="tags="]',
-		},
-		{
 			label: 'general',
 			selector: 'ul.general-tag-list a.search-tag, ul.general-tag-list li > a[href*="tags="]',
 		},

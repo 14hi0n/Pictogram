@@ -12,7 +12,7 @@ export interface PostMeta {
  * Формирует HTML-подпись для Telegram-поста.
  *
  * Шаблонные переменные: {{desc}}, {{tags}}, {{tags:N}},
- * {{author}}, {{author_url}}, {{source}}.
+ * {{author}} ({{author:name}} / {{author:url}}), {{source}} ({{source:url}}).
  *
  * {{all_tags}} / {{all_tags:N}} — deprecated; rendered as {{tags}} for backward compat.
  *
@@ -85,29 +85,60 @@ function renderTemplate(
 		selectedTags = allTags.filter((t) => !excluded.has(t));
 	} else {
 		// Auto mode: apply {{tags:N}} limit from the template if present.
-		// This covers quick send (no excludedTags pre-init) and fresh queue items.
+		// No limit → all tags; excludedTags in auto mode is UI init state only
+		// and may be stale if the channel template modifier was later removed.
 		const limit = parseTagsLimit(template);
 		if (limit !== null) {
 			selectedTags = allTags.slice(0, limit);
 		} else {
-			const excluded = new Set(settings.excludedTags);
-			selectedTags = allTags.filter((t) => !excluded.has(t));
+			selectedTags = allTags;
 		}
 	}
 
-	const sourceLinks = buildSourceLinks(normalizeUrls(sourceUrl));
+	const urls = normalizeUrls(sourceUrl);
 
-	return template
-		.replace(/\{\{desc(?:ription)?\}\}/gi, settings.customDescription.trim())
-		.replace(/\{\{author_url\}\}/gi, meta.authorUrl ?? '')
-		.replace(/\{\{author\}\}/gi, meta.authorName ?? '')
+	let result = template.replace(/\{\{desc(?:ription)?\}\}/gi, settings.customDescription.trim());
+	result = substituteVar(result, 'author', (mod) => resolveAuthor(mod, meta));
+	result = substituteVar(result, 'source', (mod) => resolveSource(mod, urls));
+
+	return result
 		// {{tags}} and {{tags:N}}: render effective selected tags
 		.replace(/\{\{tags(?::[^}]*)?\}\}/gi, selectedTags.join(' '))
 		// {{all_tags}} / {{all_tags:N}}: deprecated — render selected tags for backward compat
 		.replace(/\{\{all_?tags(?::[^}]*)?\}\}/gi, selectedTags.join(' '))
-		.replace(/\{\{source(?:_url)?\}\}/gi, sourceLinks)
 		.replace(/\n{3,}/g, '\n\n')
 		.trim();
+}
+
+// ── Модификаторы ──────────────────────────────────────────────────────────────
+
+/**
+ * Заменяет {{name}} / {{name:modifier}} в шаблоне, передавая значение модификатора
+ * (или null, если он не указан) в resolver. Единая точка для переменных, чья
+ * substring-замена зависит от модификатора конкретного совпадения.
+ */
+function substituteVar(
+	template: string,
+	name: string,
+	resolve: (modifier: string | null) => string,
+): string {
+	const re = new RegExp(`\\{\\{${name}(?::([^}]*))?\\}\\}`, 'gi');
+	return template.replace(re, (_match, mod?: string) => resolve(mod ? mod.trim().toLowerCase() : null));
+}
+
+function resolveAuthor(modifier: string | null, meta: PostMeta): string {
+	const name = meta.authorName?.trim() ?? '';
+	const url  = meta.authorUrl?.trim() ?? '';
+	if (modifier === 'name') return name;
+	if (modifier === 'url')  return url;
+	if (name && url) return `<a href="${url}">${name}</a>`;
+	return name || url;
+}
+
+function resolveSource(modifier: string | null, urls: string[]): string {
+	if (urls.length === 0) return '';
+	if (modifier === 'url') return urls.join(' | ');
+	return buildSourceLinks(urls);
 }
 
 // ── Вспомогательные ──────────────────────────────────────────────────────────
