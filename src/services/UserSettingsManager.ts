@@ -1,5 +1,6 @@
 import { Channel, normalizeChannel } from '@/models/Channel';
 import { UserSettings, USER_SETTINGS_VERSION } from '@/models/UserSettings';
+import { ThemeMode, DEFAULT_THEME, DEFAULT_ACCENT } from '@/shared/constants/theme';
 
 export class UserSettingsManager {
 	private static readonly STORAGE_KEY = 'userSettings';
@@ -26,6 +27,8 @@ export class UserSettingsManager {
 			channels: (raw.channels || []).map((ch: any) => normalizeChannel(ch)),
 			activeChatID: raw.activeChatID || null,
 			setupComplete: raw.setupComplete || false,
+			theme: raw.theme ?? DEFAULT_THEME,
+			accentColor: raw.accentColor ?? DEFAULT_ACCENT,
 		};
 
 		// Если данных без версии (pre-v1) — сохраняем с версией, помечая как мигрированные
@@ -127,6 +130,18 @@ export class UserSettingsManager {
 	async setSetupComplete(complete: boolean): Promise<void> {
 		const settings = await this.getSettings();
 		settings.setupComplete = complete;
+		await this.saveSettings(settings);
+	}
+
+	async setTheme(theme: ThemeMode): Promise<void> {
+		const settings = await this.getSettings();
+		settings.theme = theme;
+		await this.saveSettings(settings);
+	}
+
+	async setAccentColor(accentId: string): Promise<void> {
+		const settings = await this.getSettings();
+		settings.accentColor = accentId;
 		await this.saveSettings(settings);
 	}
 

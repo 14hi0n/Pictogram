@@ -67,7 +67,7 @@ function closeTab(): void {
 	&__site-link {
 		padding: 5px 14px;
 		background: $sp-primary;
-		color: $sp-bg-card;
+		color: $sp-on-primary;
 		border-radius: 20px;
 		font-size: 13px;
 		text-decoration: none;

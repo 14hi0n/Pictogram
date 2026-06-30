@@ -121,6 +121,45 @@
 			</div>
 		</div>
 
+		<!-- Секция: Внешний вид -->
+		<div class="settings__appearance">
+			<div class="settings__header">
+				<h2 class="settings__title">Внешний вид</h2>
+			</div>
+
+			<div class="settings__appearance-card">
+				<!-- Переключатель темы -->
+				<div class="settings__appearance-row">
+					<span class="settings__appearance-label">Тема</span>
+					<div class="settings__theme-toggle">
+						<button
+							v-for="opt in THEME_OPTIONS"
+							:key="opt.value"
+							class="settings__theme-btn"
+							:class="{ 'settings__theme-btn--active': themeMode === opt.value }"
+							@click="setTheme(opt.value)"
+						>{{ opt.label }}</button>
+					</div>
+				</div>
+
+				<!-- Выбор акцентного цвета -->
+				<div class="settings__appearance-row">
+					<span class="settings__appearance-label">Акцент</span>
+					<div class="settings__accent-list">
+						<button
+							v-for="preset in ACCENT_PRESETS"
+							:key="preset.id"
+							class="settings__accent-btn"
+							:class="{ 'settings__accent-btn--active': accentId === preset.id }"
+							:style="{ '--accent-swatch': preset.color }"
+							:title="preset.label"
+							@click="setAccentColor(preset.id)"
+						></button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="settings__footer">
 			{{ APP_NAME }} v{{ extensionVersion }} · <a :href="PROJECT_LINKS.github" target="_blank">GitHub</a>
 		</div>
@@ -137,6 +176,16 @@ import AddChannelFlow from '../components/AddChannelFlow.vue';
 import { getExtensionVersion } from '@/shared/extension/manifest';
 import { APP_NAME, PROJECT_LINKS } from '@/shared/constants/app';
 import { TEMPLATE_VARS } from '@/shared/constants/templates';
+import { useTheme } from '@/entrypoints/shared/composables/useTheme';
+import { ACCENT_PRESETS, ThemeMode } from '@/shared/constants/theme';
+
+const { themeMode, accentId, setTheme, setAccentColor } = useTheme();
+
+const THEME_OPTIONS: Array<{ value: ThemeMode; label: string }> = [
+	{ value: 'auto',  label: 'Авто' },
+	{ value: 'light', label: 'Светлая' },
+	{ value: 'dark',  label: 'Тёмная' },
+];
 
 const props = defineProps<{ showNotice?: boolean }>();
 const emit = defineEmits<{ (e: 'dismiss-notice'): void }>();
@@ -291,7 +340,7 @@ async function onChannelAdded(): Promise<void> {
 		gap: 4px;
 		padding: 6px 12px;
 		background: $sp-primary;
-		color: $sp-bg-card;
+		color: $sp-on-primary;
 		border: none;
 		border-radius: 7px;
 		font-size: 12px;
@@ -310,7 +359,7 @@ async function onChannelAdded(): Promise<void> {
 
 		&--add {
 			padding: 12px;
-			border-color: rgba($sp-primary, 0.27);
+			border-color: var(--sp-primary-a27);
 			background: #f8fcff;
 		}
 
@@ -409,9 +458,9 @@ async function onChannelAdded(): Promise<void> {
 			@media (hover: hover) {
 				&:hover { background: $sp-border-light; color: $sp-text-secondary; }
 				&--active:hover { background: $sp-primary-dark; }
-				&--danger:hover { background: $sp-danger; border-color: $sp-danger; color: $sp-bg-card; }
+				&--danger:hover { background: $sp-danger; border-color: $sp-danger; color: $sp-on-danger; }
 			}
-			&--active { background: $sp-primary; border-color: $sp-primary; color: $sp-bg-card; }
+			&--active { background: $sp-primary; border-color: $sp-primary; color: $sp-on-primary; }
 		}
 	}
 
@@ -516,7 +565,7 @@ async function onChannelAdded(): Promise<void> {
 		gap: 5px;
 		padding: 7px 14px;
 		background: $sp-primary;
-		color: $sp-bg-card;
+		color: $sp-on-primary;
 		border: none;
 		border-radius: 7px;
 		font-size: 12px;
@@ -530,6 +579,89 @@ async function onChannelAdded(): Promise<void> {
 		font-size: 12px;
 		color: $sp-success;
 		font-weight: 500;
+	}
+
+	&__appearance {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		&-card {
+			background: $sp-bg-card;
+			border: 1px solid $sp-border-card;
+			border-radius: 10px;
+			padding: 12px;
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+		}
+
+		&-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+		}
+
+		&-label {
+			font-size: 13px;
+			font-weight: 500;
+			color: $sp-text-secondary;
+			flex-shrink: 0;
+		}
+	}
+
+	&__theme-toggle {
+		display: flex;
+		gap: 4px;
+	}
+
+	&__theme-btn {
+		padding: 5px 12px;
+		border: 1px solid $sp-border-input;
+		border-radius: 6px;
+		background: $sp-bg-editor;
+		color: $sp-text-muted;
+		font-size: 12px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.12s;
+
+		@media (hover: hover) {
+			&:hover { border-color: $sp-primary; color: $sp-primary; }
+		}
+
+		&--active {
+			background: $sp-primary;
+			border-color: $sp-primary;
+			color: $sp-on-primary;
+		}
+	}
+
+	&__accent-list {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+
+	&__accent-btn {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		border: 2px solid transparent;
+		background: var(--accent-swatch);
+		cursor: pointer;
+		transition: transform 0.12s, box-shadow 0.12s;
+		padding: 0;
+		flex-shrink: 0;
+
+		@media (hover: hover) {
+			&:hover { transform: scale(1.15); }
+		}
+
+		&--active {
+			box-shadow: 0 0 0 2px $sp-bg-card, 0 0 0 4px var(--accent-swatch);
+		}
 	}
 
 	&__footer {

@@ -1,0 +1,141 @@
+// CSS custom properties for runtime theme switching.
+// This file is imported ONLY in App.vue non-scoped <style> — not auto-injected.
+// Switching themes: set data-theme="dark" on <html>.
+// Switching accent: use JS style.setProperty() to override --sp-primary etc.
+
+:root {
+	// Brand (default: blue, overrideable via JS setProperty)
+	--sp-primary:      #0088cc;
+	--sp-primary-dark: #0077b6;
+	--sp-accent:       #8b5cf6;
+	--sp-accent-dark:  #7c3aed;
+	--sp-on-primary:   #ffffff;
+	--sp-on-accent:    #ffffff;
+	--sp-on-danger:    #ffffff;
+	--sp-on-success:   #ffffff;
+
+	// Pre-computed alpha variants (updated via JS when accent changes)
+	--sp-primary-a15: rgba(0, 136, 204, 0.15);
+	--sp-primary-a27: rgba(0, 136, 204, 0.27);
+	--sp-accent-a20:  rgba(139, 92, 246, 0.20);
+
+	// Backgrounds — light
+	--sp-bg:             #f0f2f5;
+	--sp-bg-light:       #f8f9fa;
+	--sp-bg-card:        #fff;
+	--sp-bg-editor:      #fafafa;
+	--sp-bg-subtle:      #ecf0f1;
+	--sp-bg-hover:       #efefef;
+	--sp-bg-placeholder: #eeeeee;
+	--sp-bg-disabled:    #f5f5f5;
+	--sp-bg-accent:      #f0e8ff;
+	--sp-bg-accent-soft: #fdfaff;
+
+	// Text — light
+	--sp-text-title:     #1a1a2e;
+	--sp-text-dark:      #222;
+	--sp-text:           #333;
+	--sp-text-secondary: #555;
+	--sp-text-muted:     #666;
+	--sp-text-hint:      #888;
+	--sp-text-label:     #aaa;
+	--sp-text-light:     #bbb;
+	--sp-text-faint:     #ccc;
+
+	// Borders — light
+	--sp-border:        #e0e0e0;
+	--sp-border-card:   #e8e8e8;
+	--sp-border-input:  #ddd;
+	--sp-border-light:  #f0f0f0;
+	--sp-border-accent: #c8a6f0;
+
+	// Status
+	--sp-success:     #27ae60;
+	--sp-danger:      #e74c3c;
+	--sp-danger-bg:   #fde8e8;
+	--sp-danger-dark: #c0392b;
+
+	// Warning
+	--sp-warning-bg:     #fff8e1;
+	--sp-warning-border: #ffe082;
+	--sp-warning-text:   #7a5c00;
+
+	// Notice
+	--sp-notice-bg:     #fff8f0;
+	--sp-notice-border: #f0c080;
+	--sp-notice-text:   #7a4a00;
+	--sp-notice-icon:   #e65100;
+
+	// Chips — primary (updated by JS together with accent)
+	--sp-chip-bg:     #e8f4fd;
+	--sp-chip-border: #c8e6fa;
+	--sp-chip-text:   #0077b6;
+	--sp-chip-hover:  #d0eaf8;
+
+	// Chips — structural accent/purple (fixed, not user-changeable)
+	--sp-chip-accent-bg:     #f5f0ff;
+	--sp-chip-accent-border: #d8b4fe;
+	--sp-chip-accent-text:   #7c3aed;
+	--sp-chip-accent-hover:  #ede9fe;
+}
+
+:root[data-theme="dark"] {
+	// Backgrounds — dark
+	--sp-bg:             #1a1b2e;
+	--sp-bg-light:       #1e2035;
+	--sp-bg-card:        #252640;
+	--sp-bg-editor:      #2a2b48;
+	--sp-bg-subtle:      #1f2038;
+	--sp-bg-hover:       #2f3060;
+	--sp-bg-placeholder: #2d2f52;
+	--sp-bg-disabled:    #22243a;
+	--sp-bg-accent:      #2a1f4a;
+	--sp-bg-accent-soft: #211a3d;
+
+	// Text — dark
+	--sp-text-title:     #e8eaf6;
+	--sp-text-dark:      #e2e8f0;
+	--sp-text:           #c8d0e0;
+	--sp-text-secondary: #a0aab8;
+	--sp-text-muted:     #8892a0;
+	--sp-text-hint:      #6b7590;
+	--sp-text-label:     #555d78;
+	--sp-text-light:     #444d66;
+	--sp-text-faint:     #363d58;
+
+	// Borders — dark
+	--sp-border:        #3a3d5c;
+	--sp-border-card:   #2f3250;
+	--sp-border-input:  #404368;
+	--sp-border-light:  #252744;
+	--sp-border-accent: #6b42d0;
+
+	// Status — dark
+	--sp-success:     #2ecc71;
+	--sp-danger:      #e74c3c;
+	--sp-danger-bg:   #3a1a1a;
+	--sp-danger-dark: #ff6b6b;
+
+	// Warning — dark
+	--sp-warning-bg:     #2a2300;
+	--sp-warning-border: #5a4800;
+	--sp-warning-text:   #f0c040;
+
+	// Notice — dark
+	--sp-notice-bg:     #251a0a;
+	--sp-notice-border: #7a4a00;
+	--sp-notice-text:   #f0a050;
+	--sp-notice-icon:   #ff8c00;
+
+	// Chips — primary dark defaults (updated by JS with accent)
+	--sp-chip-bg:     #1a2d3d;
+	--sp-chip-border: #1a4060;
+	--sp-chip-text:   #4db8e8;
+	--sp-chip-hover:  #1e3850;
+
+	// Chips — structural accent/purple — dark
+	--sp-chip-accent-bg:     #2a1f4a;
+	--sp-chip-accent-border: #5a3a9a;
+	--sp-chip-accent-text:   #b085f5;
+	--sp-chip-accent-hover:  #33235a;
+}

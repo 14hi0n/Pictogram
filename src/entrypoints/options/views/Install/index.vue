@@ -100,8 +100,8 @@ function prevStep(): void {
 			font-weight: 600;
 			flex-shrink: 0;
 			transition: all 0.2s;
-			.onboarding__step--active & { background: $sp-primary; color: $sp-bg-card; }
-			.onboarding__step--done &  { background: $sp-success;  color: $sp-bg-card; }
+			.onboarding__step--active & { background: $sp-primary; color: $sp-on-primary; }
+			.onboarding__step--done &  { background: $sp-success;  color: $sp-on-success; }
 		}
 
 		&-label {

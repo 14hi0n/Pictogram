@@ -41,6 +41,9 @@ import SettingsView from './views/SettingsView.vue';
 import { PostQueueManager } from '@/services/PostQueueManager';
 import { STORAGE_KEYS, SIDE_PANEL_ACTIONS } from '@/shared/constants/storage';
 import { APP_NAME } from '@/shared/constants/app';
+import { useTheme } from '@/entrypoints/shared/composables/useTheme';
+
+const { initTheme, cleanup: cleanupTheme } = useTheme();
 
 const activeTab = ref<'queue' | 'settings'>('queue');
 const queueCount = ref(0);
@@ -60,12 +63,13 @@ function onStorageChanged(changes: Record<string, chrome.storage.StorageChange>,
 }
 
 onMounted(async () => {
-	await Promise.all([refreshCount(), checkPendingAction()]);
+	await Promise.all([initTheme(), refreshCount(), checkPendingAction()]);
 	chrome.storage.onChanged.addListener(onStorageChanged);
 });
 
 onUnmounted(() => {
 	chrome.storage.onChanged.removeListener(onStorageChanged);
+	cleanupTheme();
 });
 
 async function refreshCount(): Promise<void> {
@@ -84,6 +88,8 @@ async function checkPendingAction(): Promise<void> {
 </script>
 
 <style lang="scss">
+@import '@/entrypoints/shared/styles/css-vars';
+
 /* Сбрасываем тёмную тему из main.scss для side panel */
 body {
 	background: $sp-bg !important;
@@ -179,7 +185,7 @@ a {
 			height: 18px;
 			padding: 0 5px;
 			background: $sp-primary;
-			color: $sp-bg-card;
+			color: $sp-on-primary;
 			border-radius: 9px;
 			font-size: 11px;
 			font-weight: 600;

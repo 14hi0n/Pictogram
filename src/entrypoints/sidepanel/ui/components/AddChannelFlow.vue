@@ -406,7 +406,7 @@ async function saveChannels(): Promise<void> {
 		transition: opacity 0.15s;
 		@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.85; } }
 		&:disabled { opacity: 0.4; cursor: not-allowed; }
-		&--primary   { background: $sp-primary;   color: $sp-bg-card; }
+		&--primary   { background: $sp-primary;   color: $sp-on-primary; }
 		&--secondary { background: $sp-bg-subtle; color: $sp-text;    }
 	}
 
@@ -415,7 +415,7 @@ async function saveChannels(): Promise<void> {
 		width: 14px;
 		height: 14px;
 		border: 2px solid rgba(255, 255, 255, 0.4);
-		border-top-color: $sp-bg-card;
+		border-top-color: $sp-on-primary;
 		border-radius: 50%;
 		animation: flow-spin 0.7s linear infinite;
 	}

@@ -116,7 +116,7 @@ defineEmits<{ (e: 'next'): void }>();
 	&__btn {
 		padding: 12px 32px;
 		background: $sp-primary;
-		color: $sp-bg-card;
+		color: $sp-on-primary;
 		border: none;
 		border-radius: 8px;
 		font-size: 15px;

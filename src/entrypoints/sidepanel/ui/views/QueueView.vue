@@ -538,7 +538,7 @@ function itemsWord(count: number): string {
 			font-weight: 500;
 			cursor: pointer;
 			background: $sp-primary;
-			color: $sp-bg-card;
+			color: $sp-on-primary;
 			display: flex;
 			align-items: center;
 			gap: 4px;
@@ -547,7 +547,7 @@ function itemsWord(count: number): string {
 			@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.85; } }
 			&:disabled { opacity: 0.4; cursor: not-allowed; }
 			&--danger { background: $sp-danger; }
-			&--group  { background: $sp-accent; }
+			&--group  { background: $sp-accent; color: $sp-on-accent; }
 		}
 	}
 
@@ -579,7 +579,7 @@ function itemsWord(count: number): string {
 		width: 12px;
 		height: 12px;
 		border: 2px solid rgba(255, 255, 255, 0.4);
-		border-top-color: $sp-bg-card;
+		border-top-color: $sp-on-primary;
 		border-radius: 50%;
 		animation: queue-spin 0.7s linear infinite;
 	}

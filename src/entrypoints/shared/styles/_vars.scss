@@ -24,68 +24,74 @@ $container-max-width: 50vw;
 $container-min-width: 400px;
 
 // ── Light theme (Sidepanel + Options pages) ─────────────────────
+// These variables wrap CSS custom properties so runtime theme switching works.
+// CSS custom properties are defined in _css-vars.scss (imported in App.vue only).
 
 // Brand
-$sp-primary: #0088cc;
-$sp-primary-dark: #0077b6;
-$sp-accent: #8b5cf6;
-$sp-accent-dark: #7c3aed;
+$sp-primary: var(--sp-primary);
+$sp-primary-dark: var(--sp-primary-dark);
+$sp-accent: var(--sp-accent);
+$sp-accent-dark: var(--sp-accent-dark);
+$sp-on-primary: var(--sp-on-primary);
+$sp-on-accent:  var(--sp-on-accent);
+$sp-on-danger:  var(--sp-on-danger);
+$sp-on-success: var(--sp-on-success);
 
 // Backgrounds
-$sp-bg: #f0f2f5;
-$sp-bg-light: #f8f9fa;
-$sp-bg-card: #fff;
-$sp-bg-editor: #fafafa;
-$sp-bg-subtle: #ecf0f1;
-$sp-bg-hover: #efefef;
-$sp-bg-placeholder: #eeeeee;
-$sp-bg-disabled: #f5f5f5;
-$sp-bg-accent: #f0e8ff;
-$sp-bg-accent-soft: #fdfaff;
+$sp-bg: var(--sp-bg);
+$sp-bg-light: var(--sp-bg-light);
+$sp-bg-card: var(--sp-bg-card);
+$sp-bg-editor: var(--sp-bg-editor);
+$sp-bg-subtle: var(--sp-bg-subtle);
+$sp-bg-hover: var(--sp-bg-hover);
+$sp-bg-placeholder: var(--sp-bg-placeholder);
+$sp-bg-disabled: var(--sp-bg-disabled);
+$sp-bg-accent: var(--sp-bg-accent);
+$sp-bg-accent-soft: var(--sp-bg-accent-soft);
 
 // Text
-$sp-text-title: #1a1a2e;
-$sp-text-dark: #222;
-$sp-text: #333;
-$sp-text-secondary: #555;
-$sp-text-muted: #666;
-$sp-text-hint: #888;
-$sp-text-label: #aaa;
-$sp-text-light: #bbb;
-$sp-text-faint: #ccc;
+$sp-text-title: var(--sp-text-title);
+$sp-text-dark: var(--sp-text-dark);
+$sp-text: var(--sp-text);
+$sp-text-secondary: var(--sp-text-secondary);
+$sp-text-muted: var(--sp-text-muted);
+$sp-text-hint: var(--sp-text-hint);
+$sp-text-label: var(--sp-text-label);
+$sp-text-light: var(--sp-text-light);
+$sp-text-faint: var(--sp-text-faint);
 
 // Borders
-$sp-border: #e0e0e0;
-$sp-border-card: #e8e8e8;
-$sp-border-input: #ddd;
-$sp-border-light: #f0f0f0;
-$sp-border-accent: #c8a6f0;
+$sp-border: var(--sp-border);
+$sp-border-card: var(--sp-border-card);
+$sp-border-input: var(--sp-border-input);
+$sp-border-light: var(--sp-border-light);
+$sp-border-accent: var(--sp-border-accent);
 
 // Status
-$sp-success: #27ae60;
-$sp-danger: #e74c3c;
-$sp-danger-bg: #fde8e8;
-$sp-danger-dark: #c0392b;
+$sp-success: var(--sp-success);
+$sp-danger: var(--sp-danger);
+$sp-danger-bg: var(--sp-danger-bg);
+$sp-danger-dark: var(--sp-danger-dark);
 
 // Warning (yellow tones)
-$sp-warning-bg: #fff8e1;
-$sp-warning-border: #ffe082;
-$sp-warning-text: #7a5c00;
+$sp-warning-bg: var(--sp-warning-bg);
+$sp-warning-border: var(--sp-warning-border);
+$sp-warning-text: var(--sp-warning-text);
 
 // Notice (orange tones)
-$sp-notice-bg: #fff8f0;
-$sp-notice-border: #f0c080;
-$sp-notice-text: #7a4a00;
-$sp-notice-icon: #e65100;
+$sp-notice-bg: var(--sp-notice-bg);
+$sp-notice-border: var(--sp-notice-border);
+$sp-notice-text: var(--sp-notice-text);
+$sp-notice-icon: var(--sp-notice-icon);
 
-// Chips — blue
-$sp-chip-bg: #e8f4fd;
-$sp-chip-border: #c8e6fa;
-$sp-chip-text: #0077b6;
-$sp-chip-hover: #d0eaf8;
+// Chips — primary (sync'd with accent via JS)
+$sp-chip-bg: var(--sp-chip-bg);
+$sp-chip-border: var(--sp-chip-border);
+$sp-chip-text: var(--sp-chip-text);
+$sp-chip-hover: var(--sp-chip-hover);
 
-// Chips — accent/purple
-$sp-chip-accent-bg: #f5f0ff;
-$sp-chip-accent-border: #d8b4fe;
-$sp-chip-accent-text: #7c3aed;
-$sp-chip-accent-hover: #ede9fe;
+// Chips — accent/purple (fixed structural color)
+$sp-chip-accent-bg: var(--sp-chip-accent-bg);
+$sp-chip-accent-border: var(--sp-chip-accent-border);
+$sp-chip-accent-text: var(--sp-chip-accent-text);
+$sp-chip-accent-hover: var(--sp-chip-accent-hover);

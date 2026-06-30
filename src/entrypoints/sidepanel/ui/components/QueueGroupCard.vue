@@ -274,7 +274,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	transition: opacity 0.2s, border-color 0.15s;
 
 	&--disabled { opacity: 0.45; }
-	&--selected { border-color: $sp-accent; box-shadow: 0 0 0 2px rgba($sp-accent, 0.2); }
+	&--selected { border-color: $sp-accent; box-shadow: 0 0 0 2px var(--sp-accent-a20); }
 
 	&__header {
 		display: flex;
@@ -372,7 +372,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 			&:hover { background: $sp-bg-hover; }
 			&--muted:hover { color: $sp-text-muted; }
 		}
-		&--active { background: $sp-accent; border-color: $sp-accent; color: $sp-bg-card; }
+		&--active { background: $sp-accent; border-color: $sp-accent; color: $sp-on-accent; }
 		&--muted  { color: $sp-text-faint; }
 	}
 
@@ -512,7 +512,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		color: $sp-text-muted;
 		line-height: 1;
 		padding: 0;
-		@media (hover: hover) { &:hover:not(:disabled) { background: $sp-accent; color: $sp-bg-card; border-color: $sp-accent; } }
+		@media (hover: hover) { &:hover:not(:disabled) { background: $sp-accent; color: $sp-on-accent; border-color: $sp-accent; } }
 		&:disabled { opacity: 0.3; cursor: not-allowed; }
 	}
 
@@ -619,8 +619,8 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		transition: opacity 0.15s;
 		@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.8; } }
 		&:disabled { opacity: 0.55; cursor: not-allowed; }
-		&--primary   { background: $sp-accent;    color: $sp-bg-card; }
-		&--danger    { background: $sp-danger;     color: $sp-bg-card; }
+		&--primary   { background: $sp-accent;    color: $sp-on-accent; }
+		&--danger    { background: $sp-danger;     color: $sp-on-danger; }
 		&--secondary { background: $sp-bg-accent;  color: $sp-accent-dark; }
 	}
 
@@ -628,7 +628,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		width: 11px;
 		height: 11px;
 		border: 2px solid rgba(255,255,255,0.35);
-		border-top-color: $sp-bg-card;
+		border-top-color: $sp-on-accent;
 		border-radius: 50%;
 		animation: group-card-action-spin 0.7s linear infinite;
 		flex-shrink: 0;

@@ -243,7 +243,7 @@ function emitSourceUpdate(): void {
 	transition: opacity 0.2s, border-color 0.15s;
 
 	&--disabled { opacity: 0.45; }
-	&--selected { border-color: $sp-primary; box-shadow: 0 0 0 2px rgba($sp-primary, 0.15); }
+	&--selected { border-color: $sp-primary; box-shadow: 0 0 0 2px var(--sp-primary-a15); }
 
 	&__header {
 		display: flex;
@@ -343,7 +343,7 @@ function emitSourceUpdate(): void {
 			&:hover { background: $sp-bg-hover; }
 			&--muted:hover { color: $sp-text-muted; }
 		}
-		&--active { background: $sp-primary; border-color: $sp-primary; color: $sp-bg-card; }
+		&--active { background: $sp-primary; border-color: $sp-primary; color: $sp-on-primary; }
 		&--muted  { color: $sp-text-faint; }
 	}
 
@@ -513,8 +513,8 @@ function emitSourceUpdate(): void {
 		svg { width: 12px; height: 12px; }
 		@media (hover: hover) { &:hover:not(:disabled) { opacity: 0.8; } }
 		&:disabled { opacity: 0.55; cursor: not-allowed; }
-		&--primary { background: $sp-primary; color: $sp-bg-card; }
-		&--danger  { background: $sp-danger;  color: $sp-bg-card; }
+		&--primary { background: $sp-primary; color: $sp-on-primary; }
+		&--danger  { background: $sp-danger;  color: $sp-on-danger; }
 		&--link    { background: $sp-bg-subtle; color: #444; }
 	}
 
@@ -522,7 +522,7 @@ function emitSourceUpdate(): void {
 		width: 11px;
 		height: 11px;
 		border: 2px solid rgba(255,255,255,0.35);
-		border-top-color: $sp-bg-card;
+		border-top-color: $sp-on-primary;
 		border-radius: 50%;
 		animation: card-action-spin 0.7s linear infinite;
 		flex-shrink: 0;
