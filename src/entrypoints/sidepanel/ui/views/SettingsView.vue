@@ -689,7 +689,10 @@ async function onChannelAdded(): Promise<void> {
 		transition: all 0.12s;
 
 		@media (hover: hover) {
-			&:hover { border-color: $sp-primary; color: $sp-primary; }
+			&:hover:not(&--active) { 
+				border-color: $sp-primary; 
+				color: $sp-primary;
+			}
 		}
 
 		&--active {
