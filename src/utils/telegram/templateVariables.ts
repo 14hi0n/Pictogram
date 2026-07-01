@@ -74,4 +74,4 @@ export function parseTagsLimit(template: string): number | null {
 	return Number.isInteger(n) && n > 0 ? n : null;
 }
 
-export const DEFAULT_TEMPLATE = '{{desc}}\n\n{{tags}}\n\n{{source}}';
+export const DEFAULT_TEMPLATE = '{{desc}}\n\n{{tags:3}}\n\n{{source}}';
