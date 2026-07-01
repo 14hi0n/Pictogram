@@ -282,7 +282,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	transition: opacity 0.2s, border-color 0.15s;
 
 	&--disabled { opacity: 0.45; }
-	&--selected { border-color: $sp-accent; box-shadow: 0 0 0 2px var(--sp-accent-a20); }
+	&--selected { border-color: $sp-accent; box-shadow: 0 0 0 2px $sp-accent-a20; }
 
 	&__header {
 		display: flex;
@@ -353,7 +353,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		font-weight: 500;
 		&--tags-on { background: $sp-bg-accent; color: $sp-accent-dark; }
 		&--channel  { background: $sp-border-light; color: $sp-text-muted; }
-		&--override { background: #fff3e0; color: $sp-notice-icon; }
+		&--override { background: $sp-chip-bg; color: $sp-notice-icon; }
 	}
 
 	&__controls {

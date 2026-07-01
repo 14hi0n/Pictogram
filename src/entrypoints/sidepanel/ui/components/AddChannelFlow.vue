@@ -349,7 +349,7 @@ async function saveChannels(): Promise<void> {
 			user-select: none;
 			transition: background 0.1s;
 			@media (hover: hover) { &:hover { background: $sp-bg-editor; } }
-			&--selected { border-color: $sp-primary; background: #f0f8ff; }
+			&--selected { border-color: $sp-primary; box-shadow: 0 0 0 2px $sp-primary-a15; }
 		}
 
 		&-info { flex: 1; min-width: 0; }

@@ -95,7 +95,7 @@
 						v-model="drafts[ch.chatID].captionTemplate"
 						class="settings__defaults-textarea"
 						placeholder="Введи шаблон или оставь пустым"
-						rows="4"
+						rows="8"
 					></textarea>
 					<div class="settings__template-hint">
 						<span class="settings__template-hint-label">Переменные:</span>
@@ -359,7 +359,7 @@ async function onChannelAdded(): Promise<void> {
 
 		&--add {
 			padding: 12px;
-			border-color: var(--sp-primary-a27);
+			border-color: $sp-primary-a27;
 		}
 
 		&-header {

@@ -28,10 +28,13 @@ $container-min-width: 400px;
 // CSS custom properties are defined in _css-vars.scss (imported in App.vue only).
 
 // Brand
-$sp-primary: var(--sp-primary);
+$sp-primary:      var(--sp-primary);
 $sp-primary-dark: var(--sp-primary-dark);
-$sp-accent: var(--sp-accent);
-$sp-accent-dark: var(--sp-accent-dark);
+$sp-primary-a15:  var(--sp-primary-a15);
+$sp-primary-a27:  var(--sp-primary-a27);
+$sp-accent:       var(--sp-accent);
+$sp-accent-dark:  var(--sp-accent-dark);
+$sp-accent-a20:   var(--sp-accent-a20);
 $sp-on-primary: var(--sp-on-primary);
 $sp-on-accent:  var(--sp-on-accent);
 $sp-on-danger:  var(--sp-on-danger);

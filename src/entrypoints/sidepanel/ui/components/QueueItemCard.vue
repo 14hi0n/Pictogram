@@ -52,7 +52,7 @@
 					v-model="localDescription"
 					class="card__editor-textarea"
 					placeholder="Текст для {{desc}}"
-					rows="2"
+					rows="4"
 					@input="emitUpdate"
 				></textarea>
 			</div>
@@ -117,7 +117,7 @@
 						v-model="overrideTemplateDraft"
 						class="card__editor-textarea"
 						placeholder="Шаблон канала не задан"
-						rows="3"
+						rows="8"
 					></textarea>
 					<div class="card__template-vars">
 						<button v-for="v in TEMPLATE_VARS" :key="v" class="card__tvar-chip" @click="insertVar(v)">{{ v }}</button>
@@ -281,7 +281,7 @@ function emitMetaUpdate(): void {
 	transition: opacity 0.2s, border-color 0.15s;
 
 	&--disabled { opacity: 0.45; }
-	&--selected { border-color: $sp-primary; box-shadow: 0 0 0 2px var(--sp-primary-a15); }
+	&--selected { border-color: $sp-primary; box-shadow: 0 0 0 2px $sp-primary-a15; }
 
 	&__header {
 		display: flex;
@@ -352,9 +352,9 @@ function emitMetaUpdate(): void {
 		padding: 1px 5px;
 		border-radius: 3px;
 		font-weight: 500;
-		&--tags-on { background: $sp-chip-bg; color: $sp-chip-text; }
+		&--tags-on { background: $sp-bg-accent; color: $sp-accent-dark; }
 		&--channel  { background: $sp-border-light; color: $sp-text-muted; }
-		&--override { background: #fff3e0; color: $sp-notice-icon; }
+		&--override { background: $sp-chip-bg; color: $sp-notice-icon; }
 	}
 
 	&__controls {
