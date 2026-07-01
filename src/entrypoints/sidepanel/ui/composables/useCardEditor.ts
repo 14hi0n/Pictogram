@@ -169,7 +169,7 @@ export function useCardEditor(
 		set: (val: string) => {
 			localOverrideTemplate.value = val;
 			const channelDefault = effectiveChannel.value?.defaults.captionTemplate ?? '';
-			if (!val.trim() || val === channelDefault) {
+			if (val === channelDefault) {
 				localCaptionTemplateMode.value = 'channel_default';
 			} else {
 				localCaptionTemplateMode.value = 'custom';
