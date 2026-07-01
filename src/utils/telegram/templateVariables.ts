@@ -19,12 +19,12 @@ function variableRegex(name: string): RegExp {
 /**
  * Regexes mirror the replacements in buildCaption.ts renderTemplate.
  *
- * {{tags}}            — selected tags (all enabled by default)
- * {{tags:N}}          — selected tags (first N enabled by default; N must be a positive integer)
- * {{tags:invalid}}    — treated as {{tags}} (no crash, fallback to all tags)
- * {{all_tags}}        — deprecated alias for {{tags}}; detected for UI backward compat
- * {{author}}          — author name wrapped in a link to author_url; {{author:name}} / {{author:url}} modifiers
- * {{source}}          — link to source labeled «источник»; {{source:url}} modifier returns the bare URL(s)
+ * {{tags}}            - selected tags (all enabled by default)
+ * {{tags:N}}          - selected tags (first N enabled by default; N must be a positive integer)
+ * {{tags:invalid}}    - treated as {{tags}} (no crash, fallback to all tags)
+ * {{all_tags}}        - deprecated alias for {{tags}}; detected for UI backward compat
+ * {{author}}          - author name wrapped in a link to author_url; {{author:name}} / {{author:url}} modifiers
+ * {{source}}          - link to source labeled «источник»; {{source:url}} modifier returns the bare URL(s)
  */
 const RE_TAGS = variableRegex('tags');
 const RE_ALL_TAGS = /\{\{all_?tags(?::[^}]*)?\}\}/i;

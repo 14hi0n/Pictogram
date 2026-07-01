@@ -35,7 +35,7 @@ export class Danbooru implements StaticProvider {
 	];
 
 	public collectMediaItem(): MediaItem {
-		// Selectors tried in order — queryFallback returns first that matches,
+		// Selectors tried in order - queryFallback returns first that matches,
 		// avoiding CSS union behaviour where document order wins over selector priority.
 		const mediaElement = queryFallback<MediaElement>(this.mediaSelector);
 		if (!mediaElement) throw new MediaElementNotFoundError(this.mediaSelector.join(', '));
@@ -44,7 +44,7 @@ export class Danbooru implements StaticProvider {
 		const isVideo = mediaElement.tagName.toUpperCase() === 'VIDEO';
 		const mediaType = isVideo ? MediaType.Video : MediaType.Photo;
 
-		// The rendered URL is what the browser actually loaded — always a sample/large version
+		// The rendered URL is what the browser actually loaded - always a sample/large version
 		// for big images, or the original for small ones. This is the correct URL for Telegram.
 		// data-file-url (original) is intentionally NOT used as a candidate: it can exceed
 		// Telegram's 5 MB URL-download limit and triggers "wrong type of the web page content".
@@ -52,7 +52,7 @@ export class Danbooru implements StaticProvider {
 			? getMediaUrlByMediaElement(mediaElement)
 			: this.getRenderedImageUrl(mediaElement as HTMLImageElement);
 
-		// data-large-file-url is Danbooru's explicit sample version — useful as a fallback
+		// data-large-file-url is Danbooru's explicit sample version - useful as a fallback
 		// in case the browser-rendered URL fails, but only when it's a sample (not original).
 		const largeFileUrl = container?.dataset.largeFileUrl ?? container?.dataset.sampleUrl;
 
@@ -75,7 +75,7 @@ export class Danbooru implements StaticProvider {
 		// Priority order: rendered DOM image (highest) → img.src fallback → sample CDN (lowest).
 		// All candidates are sample/preview URLs (originals are intentionally excluded).
 		// skipProbe=true: cdn.donmai.us is accessible but declarativeNetRequest Referer rules
-		// only apply to image resource type, not service-worker fetch — probing would 403 on mobile.
+		// only apply to image resource type, not service-worker fetch - probing would 403 on mobile.
 		const mediaCandidates: MediaCandidate[] = [
 			{ url: renderedUrl, type: candidateType, source: 'danbooru', skipProbe: true, priority: 3 },
 		];
@@ -88,7 +88,7 @@ export class Danbooru implements StaticProvider {
 			}
 		}
 
-		// Tertiary: data-large-file-url — only include if it is a sample (not original)
+		// Tertiary: data-large-file-url - only include if it is a sample (not original)
 		if (largeFileUrl && !largeFileUrl.includes('/original/') && largeFileUrl !== renderedUrl) {
 			const sampleExt = largeFileUrl.split('?')[0].split('.').pop()?.toLowerCase() ?? '';
 			const sampleType: MediaCandidateType = (sampleExt === 'mp4' || sampleExt === 'webm') ? 'video' : 'photo';

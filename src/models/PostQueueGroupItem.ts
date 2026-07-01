@@ -14,7 +14,7 @@ export interface GroupMember {
 }
 
 /**
- * Группа постов — отправляется в Telegram как один альбом (media group).
+ * Группа постов - отправляется в Telegram как один альбом (media group).
  * Хранится в очереди рядом с обычными PostQueueItem.
  */
 export interface PostQueueGroupItem {
@@ -22,7 +22,7 @@ export interface PostQueueGroupItem {
 	id: string;
 	/** Упорядоченный список медиа (пользователь может менять порядок) */
 	members: GroupMember[];
-	/** Оригинальные PostQueueItem — для возможности разгруппировать обратно */
+	/** Оригинальные PostQueueItem - для возможности разгруппировать обратно */
 	originalItems: PostQueueItem[];
 	/** Объединённые + дедуплицированные теги со всех постов */
 	hashtags: TagItem[];
@@ -32,7 +32,7 @@ export interface PostQueueGroupItem {
 	addedAt: number;
 }
 
-/** Любой элемент очереди — одиночный или группа */
+/** Любой элемент очереди - одиночный или группа */
 export type QueueEntry = PostQueueItem | PostQueueGroupItem;
 
 export function isGroupItem(entry: QueueEntry): entry is PostQueueGroupItem {

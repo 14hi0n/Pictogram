@@ -14,7 +14,7 @@ export interface PostMeta {
  * Шаблонные переменные: {{desc}}, {{tags}}, {{tags:N}},
  * {{author}} ({{author:name}} / {{author:url}}), {{source}} ({{source:url}}).
  *
- * {{all_tags}} / {{all_tags:N}} — deprecated; rendered as {{tags}} for backward compat.
+ * {{all_tags}} / {{all_tags:N}} - deprecated; rendered as {{tags}} for backward compat.
  *
  * {{tags:N}} initial tag selection is applied at queue creation time (addToQueue.ts),
  * so at render time both {{tags}} and {{tags:N}} simply render the non-excluded tags.
@@ -80,7 +80,7 @@ function renderTemplate(
 
 	let selectedTags: string[];
 	if (isManual) {
-		// User explicitly edited tag selection — respect their excludedTags as-is.
+		// User explicitly edited tag selection - respect their excludedTags as-is.
 		const excluded = new Set(settings.excludedTags);
 		selectedTags = allTags.filter((t) => !excluded.has(t));
 	} else {
@@ -104,7 +104,7 @@ function renderTemplate(
 	return result
 		// {{tags}} and {{tags:N}}: render effective selected tags
 		.replace(/\{\{tags(?::[^}]*)?\}\}/gi, selectedTags.join(' '))
-		// {{all_tags}} / {{all_tags:N}}: deprecated — render selected tags for backward compat
+		// {{all_tags}} / {{all_tags:N}}: deprecated - render selected tags for backward compat
 		.replace(/\{\{all_?tags(?::[^}]*)?\}\}/gi, selectedTags.join(' '))
 		.replace(/\n{3,}/g, '\n\n')
 		.trim();

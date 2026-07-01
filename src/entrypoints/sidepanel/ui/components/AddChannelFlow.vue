@@ -45,7 +45,7 @@
 				<div v-if="foundChannels.length === 0" class="flow__empty">
 					<div class="flow__alert flow__alert--info">
 						Боту нужно свежее обновление от канала. Отправь любое сообщение в канал
-						через бота — потом нажми «Обновить».
+						через бота - потом нажми «Обновить».
 					</div>
 					<button class="flow__btn flow__btn--secondary" style="align-self:flex-start" @click="fetchChannels">
 						↻ Обновить
@@ -251,7 +251,7 @@ async function saveChannels(): Promise<void> {
 			await settingsManager.addChannel(channel);
 		}
 
-		// Если активного канала нет — ставим первый добавленный
+		// Если активного канала нет - ставим первый добавленный
 		const updatedSettings = await settingsManager.getSettings();
 		if (!updatedSettings.activeChatID && updatedSettings.channels.length > 0) {
 			await settingsManager.setActiveChat(updatedSettings.channels[0].chatID);

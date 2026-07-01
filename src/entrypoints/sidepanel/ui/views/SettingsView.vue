@@ -203,7 +203,7 @@ const showAddFlow = ref(false);
 const expandedID = ref<string | null>(null);
 const savedID = ref<string | null>(null);
 
-// Черновики настроек по каналу — чтобы не мутировать оригинал до сохранения
+// Черновики настроек по каналу - чтобы не мутировать оригинал до сохранения
 const drafts = reactive<Record<string, PostSettings>>({});
 
 // Refs на textarea шаблонов по chatID

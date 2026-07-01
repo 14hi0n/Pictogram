@@ -32,7 +32,7 @@ export function getMediaUrlByMediaElement(mediaElement: MediaElement): string {
 
 /**
  * Returns the first element matching any selector in the list, or null if none found.
- * Tries each selector in order — use for single-element lookups with desktop/mobile fallbacks.
+ * Tries each selector in order - use for single-element lookups with desktop/mobile fallbacks.
  */
 export function queryFallback<T extends Element>(selectors: string[]): T | null {
 	for (const sel of selectors) {

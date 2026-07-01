@@ -52,7 +52,7 @@ export class Pixiv implements SPAProvider {
 	 * Returns one target per artwork image currently visible in the DOM.
 	 * Called on initial load and on every DOM change (via MutationObserver in AppContent).
 	 *
-	 * Detection strategy — URL-based, not DOM-structure-based:
+	 * Detection strategy - URL-based, not DOM-structure-based:
 	 *   Pixiv renders artwork images in different container structures depending on viewer
 	 *   state (single view = figure, "Show all" = li or div stacks, React version, etc.).
 	 *   Relying on <figure> or ancestor checks breaks across states.
@@ -64,15 +64,15 @@ export class Pixiv implements SPAProvider {
 	 *     ✗  src contains user-profile → author avatar
 	 *     ✗  inside <aside>            → sidebar widgets
 	 *
-	 *   Map surviving images to URL list by DOM order — Pixiv always renders pages
+	 *   Map surviving images to URL list by DOM order - Pixiv always renders pages
 	 *   top-to-bottom in the same order as the page index.
 	 */
 	/**
 	 * Returns one target per artwork image currently visible in the DOM.
 	 *
 	 * Detection strategy:
-	 *   Desktop — `main img` filtered by URL invariants (pximg.net, /img-master/, not small /c/).
-	 *   Mobile  — `img.work-thumb` / `img[data-tx]` (Pixiv mobile uses no <main> or <figure>).
+	 *   Desktop - `main img` filtered by URL invariants (pximg.net, /img-master/, not small /c/).
+	 *   Mobile  - `img.work-thumb` / `img[data-tx]` (Pixiv mobile uses no <main> or <figure>).
 	 *
 	 *   The `/c/SIZE/` filter distinguishes large artwork images from small CDN thumbnails:
 	 *     /c/250x250/ or /c/360x360/ → thumbnail (≤3 digits per dimension) → excluded
@@ -100,7 +100,7 @@ export class Pixiv implements SPAProvider {
 			artworkImgs.push(img);
 		}
 
-		// Mobile: artwork image uses class work-thumb — no <main> or <figure> wrapper
+		// Mobile: artwork image uses class work-thumb - no <main> or <figure> wrapper
 		for (const img of document.querySelectorAll<HTMLImageElement>('img.work-thumb, img[data-tx]')) {
 			if (seen.has(img)) continue;
 			if (img.closest('aside')) continue;
@@ -297,7 +297,7 @@ export class Pixiv implements SPAProvider {
 
 	/**
 	 * Mobile-only: finds the first user-profile anchor that has non-empty text content.
-	 * On mobile Pixiv there is no <aside>, so we use document order — the author section
+	 * On mobile Pixiv there is no <aside>, so we use document order - the author section
 	 * appears before recommendation grids, making the first match the artwork's creator.
 	 */
 	private getMobileAuthorLink(): HTMLAnchorElement | null {
@@ -321,7 +321,7 @@ export class Pixiv implements SPAProvider {
 	}
 
 	/**
-	 * Returns true if href points to a Pixiv user profile page only —
+	 * Returns true if href points to a Pixiv user profile page only -
 	 * excludes /artworks, /bookmarks, /request, /following, and Booth links.
 	 */
 	private isPixivUserProfileHref(href: string): boolean {

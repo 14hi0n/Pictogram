@@ -27,7 +27,7 @@ export function usePositioning() {
 			panelX.value = pos.x;
 			panelY.value = pos.y;
 		} else {
-			// Element exists in DOM but has no visible rect — use fixed fallback
+			// Element exists in DOM but has no visible rect - use fixed fallback
 			panelFixed.value = true;
 		}
 	}

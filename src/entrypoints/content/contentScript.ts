@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import AppContent from './ui/AppContent.vue';
 
 function createWrapperAndMountVue(): void {
-	// Host — кастомный элемент в body, без особых стилей (как у DeepL)
+	// Host - кастомный элемент в body, без особых стилей (как у DeepL)
 	const host = document.createElement('art-forwarder-inline-trigger');
 	const shadowRoot = host.attachShadow({ mode: 'open' });
 	document.body.appendChild(host);

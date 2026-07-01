@@ -49,8 +49,8 @@ export class TelegramMediaSender {
 
 	/**
 	 * Отправляет несколько элементов очереди.
-	 * Если элементы идут в один канал — отправляет как группу (sendMediaGroup).
-	 * Иначе — каждый по отдельности.
+	 * Если элементы идут в один канал - отправляет как группу (sendMediaGroup).
+	 * Иначе - каждый по отдельности.
 	 *
 	 * @param items - Элементы для отправки (должны быть enabled)
 	 */
@@ -111,7 +111,7 @@ export class TelegramMediaSender {
 
 		const template = channel.defaults.captionTemplate;
 		const caption = template.trim()
-			// excludedTags: [] — quick send has no per-item tag exclusions; use detected tags as-is
+			// excludedTags: [] - quick send has no per-item tag exclusions; use detected tags as-is
 			? buildCaption(hashtags, sourceUrl, { ...defaultPostSettings, ...channel.defaults, excludedTags: [] }, meta)
 			: '';
 
@@ -124,7 +124,7 @@ export class TelegramMediaSender {
 
 	/**
 	 * Отправляет группу постов как Telegram media group (альбом).
-	 * Поддерживает только photo/video. Подпись — только на первый элемент.
+	 * Поддерживает только photo/video. Подпись - только на первый элемент.
 	 * При >10 элементах разбивает на несколько групп.
 	 */
 	async sendGroupQueueItem(item: PostQueueGroupItem): Promise<void> {
@@ -318,14 +318,14 @@ export class TelegramMediaSender {
 			(i) => i.mediaType !== MediaType.Photo && i.mediaType !== MediaType.Video
 		);
 
-		// Send unsupported types (Animation, Document) individually — do not silently drop them
+		// Send unsupported types (Animation, Document) individually - do not silently drop them
 		for (const item of incompatible) {
 			await this.sendQueueItem(item);
 		}
 
 		if (compatible.length === 0) return;
 
-		// Single compatible item — use regular send instead of album
+		// Single compatible item - use regular send instead of album
 		if (compatible.length === 1) {
 			await this.sendQueueItem(compatible[0]);
 			return;

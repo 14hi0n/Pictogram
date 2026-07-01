@@ -21,7 +21,7 @@ const pixivTags: TagItem[] = [
 	{ label: 'pixiv', tags: ['#初音ミク', '#東方'] },
 ];
 
-describe('buildCaption — booru теги', () => {
+describe('buildCaption - booru теги', () => {
 	test('включает character и copyright по умолчанию', () => {
 		const result = buildCaption(booruTags, 'https://example.com', settings());
 		expect(result).toContain('#hatsune_miku');
@@ -70,7 +70,7 @@ describe('buildCaption — booru теги', () => {
 	});
 });
 
-describe('buildCaption — Pixiv теги (label: pixiv)', () => {
+describe('buildCaption - Pixiv теги (label: pixiv)', () => {
 	test('включает pixiv-теги когда includeCharacterTags=true', () => {
 		const result = buildCaption(pixivTags, 'https://pixiv.net/artworks/123', settings());
 		expect(result).toContain('#初音ミク');
@@ -94,7 +94,7 @@ describe('buildCaption — Pixiv теги (label: pixiv)', () => {
 	});
 });
 
-describe('buildCaption — пустые теги', () => {
+describe('buildCaption - пустые теги', () => {
 	test('возвращает только ссылку если тегов нет', () => {
 		const result = buildCaption([], 'https://example.com', settings());
 		expect(result).toBe('<a href="https://example.com">источник</a>');
@@ -114,7 +114,7 @@ const simpleTags5: TagItem[] = [
 	{ label: 'test', tags: ['a', 'b', 'c', 'd', 'e'] },
 ];
 
-describe('buildCaption — {{tags}} template model', () => {
+describe('buildCaption - {{tags}} template model', () => {
 
 	// ── Auto mode (no manual edits) ──────────────────────────────────────────
 
@@ -198,7 +198,7 @@ describe('buildCaption — {{tags}} template model', () => {
 
 	// ── Invalid modifiers (auto mode) ─────────────────────────────────────────
 
-	// Spec C: invalid modifier — no crash, all tags
+	// Spec C: invalid modifier - no crash, all tags
 	test('{{tags:abc}} invalid modifier: no crash, renders all tags', () => {
 		expect(() => buildCaption(simpleTags4, '', settings({
 			captionTemplate: '{{tags:abc}}',
@@ -247,7 +247,7 @@ describe('buildCaption — {{tags}} template model', () => {
 	});
 });
 
-describe('buildCaption — {{author}} модификаторы', () => {
+describe('buildCaption - {{author}} модификаторы', () => {
 	test('{{author}} с именем и ссылкой: оборачивает имя в <a>', () => {
 		const result = buildCaption([], '', settings({ captionTemplate: '{{author}}', disableLinks: true }), {
 			authorName: 'Miku', authorUrl: 'https://example.com/miku',
@@ -288,7 +288,7 @@ describe('buildCaption — {{author}} модификаторы', () => {
 		expect(result).toBe('https://example.com/miku');
 	});
 
-	test('{{author_url}} больше не подставляется — остаётся буквальным текстом', () => {
+	test('{{author_url}} больше не подставляется - остаётся буквальным текстом', () => {
 		const result = buildCaption([], '', settings({ captionTemplate: '{{author_url}}', disableLinks: true }), {
 			authorUrl: 'https://example.com/miku',
 		});
@@ -296,7 +296,7 @@ describe('buildCaption — {{author}} модификаторы', () => {
 	});
 });
 
-describe('buildCaption — {{source}} модификаторы', () => {
+describe('buildCaption - {{source}} модификаторы', () => {
 	test('{{source}} без модификатора: ссылка с лейблом «источник» (поведение не меняется)', () => {
 		const result = buildCaption([], 'https://example.com', settings({ captionTemplate: '{{source}}' }));
 		expect(result).toBe('<a href="https://example.com">источник</a>');
@@ -312,7 +312,7 @@ describe('buildCaption — {{source}} модификаторы', () => {
 		expect(result).toBe('https://a.com | https://b.com');
 	});
 
-	test('{{source_url}} (мёртвый алиас) больше не подставляется — остаётся буквальным текстом', () => {
+	test('{{source_url}} (мёртвый алиас) больше не подставляется - остаётся буквальным текстом', () => {
 		const result = buildCaption([], 'https://example.com', settings({ captionTemplate: '{{source_url}}' }));
 		expect(result).toBe('{{source_url}}');
 	});
@@ -327,7 +327,7 @@ describe('parseTagsLimit', () => {
 	test('empty string returns null', () => expect(parseTagsLimit('')).toBeNull());
 });
 
-describe('TEMPLATE_VARS — UI chip list', () => {
+describe('TEMPLATE_VARS - UI chip list', () => {
 	test('does not include {{all_tags}}', () => {
 		expect((TEMPLATE_VARS as readonly string[]).includes('{{all_tags}}')).toBe(false);
 	});

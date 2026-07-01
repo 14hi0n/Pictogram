@@ -15,7 +15,7 @@ export interface MediaItem {
 	extension: string;
 	sourceUrl: string;
 	hashtags: TagItem[] | null;
-	/** Provider-supplied metadata — serialised in messages, stored on PostQueueItem */
+	/** Provider-supplied metadata - serialised in messages, stored on PostQueueItem */
 	title?: string;
 	authorName?: string;
 	authorUrl?: string;

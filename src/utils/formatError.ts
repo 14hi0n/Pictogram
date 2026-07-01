@@ -2,7 +2,7 @@
  * Converts an unknown thrown value to a readable string for console logging.
  *
  * Standard Error instances are NOT safely JSON.stringify-able (all properties
- * are non-enumerable — JSON.stringify(new Error('x')) === '{}').
+ * are non-enumerable - JSON.stringify(new Error('x')) === '{}').
  * This function handles that, plus plain objects, strings, and everything else.
  */
 export function formatError(err: unknown): string {

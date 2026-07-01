@@ -43,7 +43,7 @@ describe('mergeTags', () => {
 		const result = mergeTags(items);
 		const chars = result.find(g => g.label === 'character')?.tags ?? [];
 
-		// #miku встречается в обоих — должна быть один раз
+		// #miku встречается в обоих - должна быть один раз
 		expect(chars.filter(t => t === '#miku')).toHaveLength(1);
 		expect(chars).toContain('#reimu');
 		expect(chars).toContain('#marisa');

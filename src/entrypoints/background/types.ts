@@ -20,7 +20,7 @@ export const MSG = {
 	OPEN_SIDE_PANEL: 'OPEN_SIDE_PANEL',
 } as const;
 
-/** Payload для QUICK_SEND и ADD_TO_QUEUE — всё из MediaItem кроме DOM-полей */
+/** Payload для QUICK_SEND и ADD_TO_QUEUE - всё из MediaItem кроме DOM-полей */
 export interface MediaPayload {
 	mediaUrl: string;
 	mediaType: MediaType;

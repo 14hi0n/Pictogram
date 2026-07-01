@@ -56,7 +56,7 @@ module.exports = function buildCommon({ isDev }) {
 					test: /\.(scss|css)$/,
 					use: [
 						MiniCssExtractPlugin.loader,
-						// url: false — шрифты и статика обрабатываются CopyWebpackPlugin, не webpack'ом
+						// url: false - шрифты и статика обрабатываются CopyWebpackPlugin, не webpack'ом
 						{ loader: 'css-loader', options: { url: false } },
 						{
 							loader: 'sass-loader',
@@ -107,7 +107,7 @@ module.exports = function buildCommon({ isDev }) {
 						transform(content) {
 							const manifest = JSON.parse(content.toString());
 							// In development, add contentScript.js.map to web_accessible_resources
-							// as a precaution — map files are dev-only and must not ship in production.
+							// as a precaution - map files are dev-only and must not ship in production.
 							if (isDev) {
 								for (const entry of manifest.web_accessible_resources || []) {
 									if (!entry.resources.includes('contentScript.js.map')) {

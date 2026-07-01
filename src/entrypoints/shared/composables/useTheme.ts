@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { ThemeMode, AccentPreset, ACCENT_PRESETS, DEFAULT_THEME, DEFAULT_ACCENT } from '@/shared/constants/theme';
 import { UserSettingsManager } from '@/services/UserSettingsManager';
 
-// Singleton state — shared across all useTheme() calls in the same page
+// Singleton state - shared across all useTheme() calls in the same page
 const settingsManager = new UserSettingsManager();
 const themeMode = ref<ThemeMode>(DEFAULT_THEME);
 const accentId = ref<string>(DEFAULT_ACCENT);

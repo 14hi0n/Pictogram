@@ -31,7 +31,7 @@ export class UserSettingsManager {
 			accentColor: raw.accentColor ?? DEFAULT_ACCENT,
 		};
 
-		// Если данных без версии (pre-v1) — сохраняем с версией, помечая как мигрированные
+		// Если данных без версии (pre-v1) - сохраняем с версией, помечая как мигрированные
 		if (!raw.schemaVersion) {
 			await chrome.storage.sync.set({ [UserSettingsManager.STORAGE_KEY]: settings });
 		}

@@ -14,7 +14,7 @@
 			<div class="queue__toolbar">
 				<span class="queue__count">{{ queue.length }} {{ itemsWord(queue.length) }}</span>
 				<div class="queue__toolbar-actions">
-					<!-- Кнопка группировки — появляется когда выбрано 2+ одиночных поста -->
+					<!-- Кнопка группировки - появляется когда выбрано 2+ одиночных поста -->
 					<button
 						v-if="selectedSingleItems.length >= 2"
 						class="queue__toolbar-btn queue__toolbar-btn--group"
@@ -133,10 +133,10 @@ const selectedIds = ref<Set<string>>(new Set());
 // IDs элементов, которые сейчас в процессе отправки (per-item loading guard)
 const sendingIds = reactive(new Set<string>());
 
-// Очередь в обратном порядке (новые сверху) — только для отображения
+// Очередь в обратном порядке (новые сверху) - только для отображения
 const displayQueue = computed(() => [...queue.value].reverse());
 
-// Все включённые элементы (одиночные + группы) — для кнопки «Отправить всё»
+// Все включённые элементы (одиночные + группы) - для кнопки «Отправить всё»
 const enabledItems = computed(() => queue.value.filter((e) => e.enabled));
 
 // Выбранные одиночные посты (для кнопки «Группировать»)
@@ -144,7 +144,7 @@ const selectedSingleItems = computed(() =>
 	queue.value.filter((e): e is PostQueueItem => !isGroupItem(e) && selectedIds.value.has(e.id))
 );
 
-// Что будет отправлено: если есть выбор — только выбранные, иначе все включённые
+// Что будет отправлено: если есть выбор - только выбранные, иначе все включённые
 const itemsToSend = computed(() =>
 	selectedIds.value.size > 0
 		? queue.value.filter((e) => selectedIds.value.has(e.id))
@@ -314,7 +314,7 @@ async function groupSelectedItems(): Promise<void> {
 	emit('queue-changed');
 	showStatus(
 		differentTemplates
-			? `Сгруппировано ${items.length} постов. Шаблоны отличались — использован шаблон канала.`
+			? `Сгруппировано ${items.length} постов. Шаблоны отличались - использован шаблон канала.`
 			: `Сгруппировано ${items.length} постов`,
 		'ok'
 	);
@@ -460,7 +460,7 @@ async function clearOrDeleteSelected(): Promise<void> {
 		await loadQueue();
 		emit('queue-changed');
 	} else {
-		// Ничего не выбрано — очищаем всё
+		// Ничего не выбрано - очищаем всё
 		if (!confirm('Очистить всю очередь?')) return;
 		await queueManager.clearQueue();
 		queue.value = [];

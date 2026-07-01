@@ -68,7 +68,7 @@ export class MediaResolver {
 
 			const ct = result.contentType;
 
-			// Definite non-media responses — HTML login pages, ZIP archives
+			// Definite non-media responses - HTML login pages, ZIP archives
 			if (ct === 'text/html' || ct === 'text/plain' || ct === 'application/zip') {
 				return { status: 'rejected', reason: `content-type: ${ct}` };
 			}
@@ -95,7 +95,7 @@ export class MediaResolver {
 			let response = await fetch(url, { method: 'HEAD', signal: controller.signal });
 
 			if (response.status === 405 || response.status === 501) {
-				// HEAD not allowed by server — use a minimal range GET instead
+				// HEAD not allowed by server - use a minimal range GET instead
 				response = await fetch(url, {
 					method: 'GET',
 					headers: { Range: 'bytes=0-255' },

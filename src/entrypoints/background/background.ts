@@ -15,18 +15,18 @@ const queueManager = new PostQueueManager();
 // Пытаемся настроить sidePanel, если разрешение уже выдано
 if (typeof chrome.sidePanel !== 'undefined') {
 	chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
-		// Разрешение ещё не выдано — обработается в onClicked
+		// Разрешение ещё не выдано - обработается в onClicked
 	});
 }
 
 // Слушаем клик всегда: срабатывает если openPanelOnActionClick не активен
 chrome.action.onClicked.addListener(async (tab) => {
 	if (typeof chrome.sidePanel === 'undefined') {
-		// Мобильный браузер — переходим на существующую вкладку или открываем новую
+		// Мобильный браузер - переходим на существующую вкладку или открываем новую
 		openOrFocusMobileTab();
 		return;
 	}
-	// Десктоп: sidePanel теперь в permissions — запрос разрешения не нужен
+	// Десктоп: sidePanel теперь в permissions - запрос разрешения не нужен
 	try {
 		await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 		await chrome.sidePanel.open({ windowId: tab.windowId });
@@ -94,8 +94,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 	}
 
 	// Регистрируем DNR-правила для инжекции Referer на CDN с hotlink-защитой.
-	// Try/catch: если браузер не поддерживает modifyHeaders (Orion) — тихо пропускаем.
-	// Статических rule_resources в manifest нет — предупреждение совместимости не появится.
+	// Try/catch: если браузер не поддерживает modifyHeaders (Orion) - тихо пропускаем.
+	// Статических rule_resources в manifest нет - предупреждение совместимости не появится.
 	try {
 		const MH = 'modifyHeaders' as chrome.declarativeNetRequest.RuleActionType;
 		const SET = 'set' as chrome.declarativeNetRequest.HeaderOperation;
@@ -117,7 +117,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 				},
 			],
 		});
-	} catch { /* браузер не поддерживает modifyHeaders — тихо пропускаем */ }
+	} catch { /* браузер не поддерживает modifyHeaders - тихо пропускаем */ }
 
 	// Восстанавливаем бейдж после перезапуска extension
 	await restoreBadge();

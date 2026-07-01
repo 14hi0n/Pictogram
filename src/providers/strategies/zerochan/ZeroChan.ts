@@ -15,7 +15,7 @@ export class ZeroChan implements BaseProvider {
 	public matches(url: URL): boolean {
 		const host = url.hostname;
 		if (host !== 'www.zerochan.net' && host !== 'zerochan.net') return false;
-		// Только страницы постов: /743034 — исключаем галереи и прочее
+		// Только страницы постов: /743034 - исключаем галереи и прочее
 		return /^\/\d+$/.test(url.pathname);
 	}
 
@@ -45,7 +45,7 @@ export class ZeroChan implements BaseProvider {
 		const hashtags = this.getTags();
 		const { authorName, authorUrl } = this.getAuthor();
 
-		// static.zerochan.net has hotlink protection — HEAD from a service worker gets 403.
+		// static.zerochan.net has hotlink protection - HEAD from a service worker gets 403.
 		// skipProbe=true tells MediaResolver to skip HTTP validation for this candidate.
 		const mediaCandidates: MediaCandidate[] = [
 			{ url: mediaUrl, type: 'photo', source: 'zerochan', skipProbe: true, priority: 1 },
@@ -113,7 +113,7 @@ export class ZeroChan implements BaseProvider {
 	}
 
 	private getAuthor(): { authorName?: string; authorUrl?: string } {
-		// Студия/автор — li.studio > a с data-tag; работает и на десктопе, и на мобайле
+		// Студия/автор - li.studio > a с data-tag; работает и на десктопе, и на мобайле
 		const studioLink = document.querySelector<HTMLAnchorElement>(
 			'#tags li.studio a[href][data-tag], #tags li[data-type="studio"] a[href][data-tag]'
 		);

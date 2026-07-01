@@ -411,7 +411,7 @@ function handleUrlChange(): void {
 function updatePosition(): void {
 	let el = mediaItem.value?.element;
 	if (!el) {
-		// No anchor element — fall back to fixed top-right position
+		// No anchor element - fall back to fixed top-right position
 		updateSingle(undefined);
 		return;
 	}
@@ -433,7 +433,7 @@ function updateAllPanelPositions(): void {
 
 /**
  * Watch `main` for any DOM change and debounce a scanTargets() call.
- * This is the primary mechanism for detecting new images after "Show all" —
+ * This is the primary mechanism for detecting new images after "Show all" -
  * more reliable than a fixed-delay setTimeout because React's render time varies.
  * childList+subtree catches node insertion; attributes/src catches lazy-src swaps.
  */
@@ -476,7 +476,7 @@ function handleSpaClick(): void {
 // Fetch the CDN thumbnail in the content script context and encode it as a
 // base64 data URL so the sidepanel can display it without any CDN request.
 //
-// Danbooru CDN (cdn.donmai.us) is publicly accessible — no Referer required —
+// Danbooru CDN (cdn.donmai.us) is publicly accessible - no Referer required -
 // and returns Access-Control-Allow-Origin: *, so a standard fetch() works in
 // any browser's content script without needing Chrome-specific CORS bypass or
 // declarativeNetRequest. For other CDNs (pximg.net, etc.) that do require
@@ -485,7 +485,7 @@ function handleSpaClick(): void {
 async function resolveThumbnailUrl(url: string | undefined): Promise<string | undefined> {
 	if (!url) return undefined;
 
-	// Path 1: fetch() + FileReader — works on Chrome with host_permissions CORS bypass
+	// Path 1: fetch() + FileReader - works on Chrome with host_permissions CORS bypass
 	// + declarativeNetRequest Referer injection for xmlhttprequest type.
 	try {
 		const res = await fetch(url);
@@ -502,7 +502,7 @@ async function resolveThumbnailUrl(url: string | undefined): Promise<string | un
 	} catch { /* fall through */ }
 
 	// Path 2: crossOrigin image + canvas (standard web API, no extension-specific behaviour).
-	// Works when CDN responds with Access-Control-Allow-Origin for the page origin —
+	// Works when CDN responds with Access-Control-Allow-Origin for the page origin -
 	// pximg.net allows this for www.pixiv.net (required for Pixiv's own ugoira downloader).
 	// Canvas scaled to ≤250px keeps the stored base64 compact.
 	try {
@@ -521,7 +521,7 @@ async function resolveThumbnailUrl(url: string | undefined): Promise<string | un
 					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 					resolve(canvas.toDataURL('image/jpeg', 0.8));
 				} catch {
-					reject(); // SecurityError: canvas tainted — CDN has no CORS headers
+					reject(); // SecurityError: canvas tainted - CDN has no CORS headers
 				}
 			};
 			img.onerror = () => reject();
@@ -530,7 +530,7 @@ async function resolveThumbnailUrl(url: string | undefined): Promise<string | un
 		if (dataUrl) return dataUrl;
 	} catch { /* fall through */ }
 
-	// Path 3: raw URL — declarativeNetRequest injects Referer for image-type requests
+	// Path 3: raw URL - declarativeNetRequest injects Referer for image-type requests
 	// in the sidepanel on Chrome/Kiwi.
 	return url;
 }
@@ -634,7 +634,7 @@ async function addToQueueForPanel(panel: PanelState): Promise<void> {
 	}];
 	const thumbnailUrl = await resolveThumbnailUrl(rawThumbUrl);
 	try {
-		// No additionalMediaUrls — per-image action adds only this single image
+		// No additionalMediaUrls - per-image action adds only this single image
 		await msg({ type: MSG.ADD_TO_QUEUE, data: { mediaUrl: panel.mediaUrl, mediaType, pageUrl, sourceUrl, hashtags, title, authorName, authorUrl, customDescription, mediaCandidates, thumbnailUrl } });
 		panel.isInQueue = true;
 	} catch { /* ничего */ }

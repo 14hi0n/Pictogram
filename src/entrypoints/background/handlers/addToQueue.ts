@@ -83,7 +83,7 @@ export async function handleAddToQueue(message: AddToQueueMsg, sendResponse: Sen
 
 /**
  * Обновляет бейдж иконки расширения с количеством элементов в очереди.
- * При 0 — очищает бейдж.
+ * При 0 - очищает бейдж.
  */
 async function updateBadge(count: number): Promise<void> {
 	chrome.action.setBadgeText({ text: count > 0 ? String(count) : '' });
