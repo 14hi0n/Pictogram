@@ -509,16 +509,16 @@ function itemsWord(count: number): string {
 		padding: 40px 20px;
 		gap: 10px;
 
-		&-icon { font-size: 40px; }
+		&-icon { font-size: 2.857rem; }
 
 		&-title {
-			font-size: 16px;
+			font-size: 1.143rem;
 			font-weight: 600;
 			color: $sp-text-secondary;
 		}
 
 		&-hint {
-			font-size: 13px;
+			font-size: 0.929rem;
 			color: $sp-text-hint;
 			line-height: 1.5;
 			max-width: 280px;
@@ -543,7 +543,7 @@ function itemsWord(count: number): string {
 			padding: 5px 10px;
 			border-radius: 6px;
 			border: none;
-			font-size: 12px;
+			font-size: 0.857rem;
 			font-weight: 500;
 			cursor: pointer;
 			background: $sp-primary;
@@ -561,7 +561,7 @@ function itemsWord(count: number): string {
 	}
 
 	&__count {
-		font-size: 13px;
+		font-size: 0.929rem;
 		color: $sp-text-muted;
 		font-weight: 500;
 	}
@@ -569,7 +569,7 @@ function itemsWord(count: number): string {
 	&__status {
 		padding: 8px 12px;
 		border-radius: 6px;
-		font-size: 13px;
+		font-size: 0.929rem;
 		margin-bottom: 10px;
 		text-align: center;
 

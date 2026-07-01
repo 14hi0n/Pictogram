@@ -303,8 +303,8 @@ function emitMetaUpdate(): void {
 
 	&__preview {
 		position: relative;
-		width: 54px;
-		height: 54px;
+		width: $sp-thumb-size;
+		height: $sp-thumb-size;
 		border-radius: 6px;
 		overflow: hidden;
 		flex-shrink: 0;
@@ -319,7 +319,7 @@ function emitMetaUpdate(): void {
 		justify-content: center;
 		width: 100%;
 		height: 100%;
-		font-size: 9px;
+		font-size: 0.643rem;
 		color: $sp-text-light;
 		text-align: center;
 		padding: 2px;
@@ -330,7 +330,7 @@ function emitMetaUpdate(): void {
 	&__meta { flex: 1; min-width: 0; }
 
 	&__site {
-		font-size: 12px;
+		font-size: 0.857rem;
 		font-weight: 600;
 		color: $sp-primary;
 		white-space: nowrap;
@@ -338,7 +338,7 @@ function emitMetaUpdate(): void {
 		text-overflow: ellipsis;
 	}
 
-	&__date { font-size: 11px; color: $sp-text-light; }
+	&__date { font-size: 0.786rem; color: $sp-text-light; }
 
 	&__flags {
 		display: flex;
@@ -348,7 +348,7 @@ function emitMetaUpdate(): void {
 	}
 
 	&__flag {
-		font-size: 10px;
+		font-size: 0.714rem;
 		padding: 1px 5px;
 		border-radius: 3px;
 		font-weight: 500;
@@ -395,7 +395,7 @@ function emitMetaUpdate(): void {
 		&-field { display: flex; flex-direction: column; gap: 6px; }
 
 		&-label {
-			font-size: 10px;
+			font-size: 0.714rem;
 			font-weight: 700;
 			color: $sp-text-label;
 			text-transform: uppercase;
@@ -412,7 +412,7 @@ function emitMetaUpdate(): void {
 			background: none;
 			border: none;
 			padding: 0;
-			font-size: 10px;
+			font-size: 0.714rem;
 			color: $sp-primary;
 			cursor: pointer;
 			font-weight: 600;
@@ -426,7 +426,7 @@ function emitMetaUpdate(): void {
 			padding: 6px 8px;
 			border: 1px solid $sp-border-input;
 			border-radius: 6px;
-			font-size: 12px;
+			font-size: 0.857rem;
 			background: $sp-bg-card;
 			outline: none;
 			font-family: inherit;
@@ -437,14 +437,14 @@ function emitMetaUpdate(): void {
 		&-textarea { resize: vertical; }
 
 		&-tags-hint {
-			font-size: 11px;
+			font-size: 0.786rem;
 			color: $sp-text-label;
 			margin: 0;
 			padding: 4px 0;
 		}
 
 		&-empty-hint {
-			font-size: 11px;
+			font-size: 0.786rem;
 			color: $sp-text-label;
 			padding: 6px 8px;
 			background: $sp-bg-editor;
@@ -463,7 +463,7 @@ function emitMetaUpdate(): void {
 				background: none;
 				border: none;
 				padding: 2px 0;
-				font-size: 11px;
+				font-size: 0.786rem;
 				font-weight: 600;
 				color: $sp-text-label;
 				cursor: pointer;
@@ -493,7 +493,7 @@ function emitMetaUpdate(): void {
 				border: 1px solid $sp-border-input;
 				border-radius: 4px;
 				padding: 1px 6px;
-				font-size: 10px;
+				font-size: 0.714rem;
 				color: $sp-text-hint;
 				cursor: pointer;
 				@media (hover: hover) { &:hover { border-color: $sp-primary; color: $sp-primary; } }
@@ -503,7 +503,7 @@ function emitMetaUpdate(): void {
 		&-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 
 		&-chip {
-			font-size: 11px;
+			font-size: $sp-font-tags;
 			line-height: 1.4;
 			padding: 2px 8px;
 			border-radius: 10px;
@@ -530,7 +530,7 @@ function emitMetaUpdate(): void {
 		background: none;
 		border: none;
 		padding: 0;
-		font-size: 10px;
+		font-size: 0.714rem;
 		color: $sp-primary;
 		cursor: pointer;
 		align-self: flex-start;
@@ -540,7 +540,7 @@ function emitMetaUpdate(): void {
 	&__template-vars { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
 
 	&__tvar-chip {
-		font-size: 10px;
+		font-size: 0.714rem;
 		padding: 1px 6px;
 		border-radius: 4px;
 		border: 1px solid $sp-chip-border;
@@ -559,7 +559,7 @@ function emitMetaUpdate(): void {
 		padding: 6px 10px;
 		border-radius: 6px;
 		border: none;
-		font-size: 11px;
+		font-size: 0.786rem;
 		font-weight: 600;
 		cursor: pointer;
 		text-decoration: none;

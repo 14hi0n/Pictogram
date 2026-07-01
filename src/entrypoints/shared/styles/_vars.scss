@@ -27,6 +27,11 @@ $container-min-width: 400px;
 // These variables wrap CSS custom properties so runtime theme switching works.
 // CSS custom properties are defined in _css-vars.scss (imported in App.vue only).
 
+// Sizes
+$sp-font-base:  var(--sp-font-base);
+$sp-font-tags:  var(--sp-font-tags);
+$sp-thumb-size: var(--sp-thumb-size);
+
 // Brand
 $sp-primary:      var(--sp-primary);
 $sp-primary-dark: var(--sp-primary-dark);

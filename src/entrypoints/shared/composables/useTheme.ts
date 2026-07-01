@@ -4,8 +4,11 @@ import { UserSettingsManager } from '@/services/UserSettingsManager';
 
 // Singleton state - shared across all useTheme() calls in the same page
 const settingsManager = new UserSettingsManager();
-const themeMode = ref<ThemeMode>(DEFAULT_THEME);
-const accentId = ref<string>(DEFAULT_ACCENT);
+const themeMode  = ref<ThemeMode>(DEFAULT_THEME);
+const accentId   = ref<string>(DEFAULT_ACCENT);
+const fontBase   = ref(100);
+const fontTags   = ref(100);
+const thumbSize  = ref(100);
 let mediaQuery: MediaQueryList | null = null;
 
 function resolveEffective(mode: ThemeMode): 'light' | 'dark' {
@@ -42,6 +45,13 @@ function applyToDom(mode: ThemeMode, accent: string): void {
 	s.setProperty('--sp-on-primary',  isDark ? preset.onColorDark    : preset.onColor);
 }
 
+function applySizesToDom(fb: number, ft: number, ts: number): void {
+	const s = document.documentElement.style;
+	s.setProperty('--sp-font-base',  `${14 * fb / 100}px`);
+	s.setProperty('--sp-font-tags',  `${(11 / 14 * ft / 100).toFixed(4)}rem`);
+	s.setProperty('--sp-thumb-size', `${54 * ts / 100}px`);
+}
+
 function onSystemThemeChange(): void {
 	if (themeMode.value === 'auto') {
 		applyToDom('auto', accentId.value);
@@ -51,10 +61,14 @@ function onSystemThemeChange(): void {
 export function useTheme() {
 	async function initTheme(): Promise<void> {
 		const settings = await settingsManager.getSettings();
-		themeMode.value = settings.theme;
-		accentId.value = settings.accentColor;
+		themeMode.value  = settings.theme;
+		accentId.value   = settings.accentColor;
+		fontBase.value   = settings.fontBase  ?? 100;
+		fontTags.value   = settings.fontTags  ?? 100;
+		thumbSize.value  = settings.thumbSize ?? 100;
 
 		applyToDom(themeMode.value, accentId.value);
+		applySizesToDom(fontBase.value, fontTags.value, thumbSize.value);
 
 		mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 		mediaQuery.addEventListener('change', onSystemThemeChange);
@@ -72,9 +86,30 @@ export function useTheme() {
 		await settingsManager.setAccentColor(id);
 	}
 
+	async function setFontBase(size: number): Promise<void> {
+		fontBase.value = size;
+		document.documentElement.style.setProperty('--sp-font-base', `${14 * size / 100}px`);
+		await settingsManager.setFontBase(size);
+	}
+
+	async function setFontTags(size: number): Promise<void> {
+		fontTags.value = size;
+		document.documentElement.style.setProperty('--sp-font-tags', `${(11 / 14 * size / 100).toFixed(4)}rem`);
+		await settingsManager.setFontTags(size);
+	}
+
+	async function setThumbSize(size: number): Promise<void> {
+		thumbSize.value = size;
+		document.documentElement.style.setProperty('--sp-thumb-size', `${54 * size / 100}px`);
+		await settingsManager.setThumbSize(size);
+	}
+
 	function cleanup(): void {
 		mediaQuery?.removeEventListener('change', onSystemThemeChange);
 	}
 
-	return { themeMode, accentId, initTheme, setTheme, setAccentColor, cleanup };
+	return {
+		themeMode, accentId, fontBase, fontTags, thumbSize,
+		initTheme, setTheme, setAccentColor, setFontBase, setFontTags, setThumbSize, cleanup,
+	};
 }

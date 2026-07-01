@@ -66,6 +66,11 @@
 	--sp-notice-text:   #7a4a00;
 	--sp-notice-icon:   #e65100;
 
+	// Sizes (updated via JS, theme-independent)
+	--sp-font-base:  14px;
+	--sp-font-tags:  0.7857rem;
+	--sp-thumb-size: 54px;
+
 	// Chips - primary (updated by JS together with accent)
 	--sp-chip-bg:     #e8f4fd;
 	--sp-chip-border: #c8e6fa;

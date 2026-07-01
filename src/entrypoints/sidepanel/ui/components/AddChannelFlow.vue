@@ -273,7 +273,7 @@ async function saveChannels(): Promise<void> {
 	gap: 12px;
 
 	&__hint {
-		font-size: 13px;
+		font-size: 0.929rem;
 		color: $sp-text-muted;
 		line-height: 1.5;
 		a {
@@ -286,7 +286,7 @@ async function saveChannels(): Promise<void> {
 	&__field { display: flex; flex-direction: column; gap: 4px; }
 
 	&__label {
-		font-size: 11px;
+		font-size: 0.786rem;
 		font-weight: 600;
 		color: $sp-text-muted;
 		text-transform: uppercase;
@@ -299,7 +299,7 @@ async function saveChannels(): Promise<void> {
 		border-radius: 6px;
 		font-family: monospace;
 		padding: 7px 9px;
-		font-size: 12px;
+		font-size: 0.857rem;
 		outline: none;
 		color: $sp-text;
 		background: $sp-bg-card;
@@ -307,12 +307,12 @@ async function saveChannels(): Promise<void> {
 		&:focus { border-color: $sp-primary; }
 	}
 
-	&__error { font-size: 11px; color: $sp-danger; }
+	&__error { font-size: 0.786rem; color: $sp-danger; }
 
 	&__alert {
 		padding: 10px 12px;
 		border-radius: 6px;
-		font-size: 12px;
+		font-size: 0.857rem;
 		line-height: 1.5;
 		&--error { background: $sp-danger-bg; color: $sp-danger-dark; border: 1px solid #f5c6cb; }
 		&--info  { background: $sp-chip-bg; color: #1a6896; border: 1px solid #bee5eb; }
@@ -324,7 +324,7 @@ async function saveChannels(): Promise<void> {
 		display: flex;
 		align-items: center;
 		gap: 6px;
-		font-size: 12px;
+		font-size: 0.857rem;
 		cursor: pointer;
 		user-select: none;
 	}
@@ -356,22 +356,22 @@ async function saveChannels(): Promise<void> {
 
 		&-name {
 			display: block;
-			font-size: 13px;
+			font-size: 0.929rem;
 			font-weight: 500;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
 
-		&-meta { display: block; font-size: 11px; color: $sp-text-hint; }
+		&-meta { display: block; font-size: 0.786rem; color: $sp-text-hint; }
 	}
 
-	&__private-badge { font-size: 12px; }
+	&__private-badge { font-size: 0.857rem; }
 
 	&__empty { display: flex; flex-direction: column; gap: 10px; }
 
 	&__divider {
-		font-size: 11px;
+		font-size: 0.786rem;
 		color: $sp-text-label;
 		text-align: center;
 		position: relative;
@@ -388,7 +388,7 @@ async function saveChannels(): Promise<void> {
 		&::after  { right: 0; }
 	}
 
-	&__hint-small { font-size: 11px; color: $sp-text-label; margin-top: 2px; }
+	&__hint-small { font-size: 0.786rem; color: $sp-text-label; margin-top: 2px; }
 
 	&__footer { display: flex; gap: 8px; justify-content: flex-end; }
 
@@ -396,7 +396,7 @@ async function saveChannels(): Promise<void> {
 		padding: 7px 14px;
 		border-radius: 6px;
 		border: none;
-		font-size: 13px;
+		font-size: 0.929rem;
 		font-weight: 500;
 		cursor: pointer;
 		display: flex;

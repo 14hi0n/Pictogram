@@ -160,6 +160,43 @@
 			</div>
 		</div>
 
+		<!-- Секция: Размеры -->
+		<div class="settings__appearance">
+			<div class="settings__header">
+				<h2 class="settings__title">Размеры</h2>
+			</div>
+
+			<div class="settings__appearance-card">
+				<div class="settings__appearance-row">
+					<span class="settings__appearance-label">Шрифт UI</span>
+					<div class="settings__size-control">
+						<button class="settings__size-btn" @click="setFontBase(fontBase - 1)">−</button>
+						<input v-if="editingField === 'fontBase'" ref="editInput" v-model="editingValue" class="settings__size-input" type="number" @blur="commitEdit('fontBase')" @keydown.enter="commitEdit('fontBase')" @keydown.escape="editingField = null" />
+						<span v-else class="settings__size-value" @click="startEdit('fontBase', fontBase)">{{ fontBase }}%</span>
+						<button class="settings__size-btn" @click="setFontBase(fontBase + 1)">+</button>
+					</div>
+				</div>
+				<div class="settings__appearance-row">
+					<span class="settings__appearance-label">Шрифт тегов</span>
+					<div class="settings__size-control">
+						<button class="settings__size-btn" @click="setFontTags(fontTags - 1)">−</button>
+						<input v-if="editingField === 'fontTags'" ref="editInput" v-model="editingValue" class="settings__size-input" type="number" @blur="commitEdit('fontTags')" @keydown.enter="commitEdit('fontTags')" @keydown.escape="editingField = null" />
+						<span v-else class="settings__size-value" @click="startEdit('fontTags', fontTags)">{{ fontTags }}%</span>
+						<button class="settings__size-btn" @click="setFontTags(fontTags + 1)">+</button>
+					</div>
+				</div>
+				<div class="settings__appearance-row">
+					<span class="settings__appearance-label">Миниатюры</span>
+					<div class="settings__size-control">
+						<button class="settings__size-btn" @click="setThumbSize(thumbSize - 1)">−</button>
+						<input v-if="editingField === 'thumbSize'" ref="editInput" v-model="editingValue" class="settings__size-input" type="number" @blur="commitEdit('thumbSize')" @keydown.enter="commitEdit('thumbSize')" @keydown.escape="editingField = null" />
+						<span v-else class="settings__size-value" @click="startEdit('thumbSize', thumbSize)">{{ thumbSize }}%</span>
+						<button class="settings__size-btn" @click="setThumbSize(thumbSize + 1)">+</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="settings__footer">
 			{{ APP_NAME }} v{{ extensionVersion }} · <a :href="PROJECT_LINKS.github" target="_blank">GitHub</a>
 		</div>
@@ -179,7 +216,31 @@ import { TEMPLATE_VARS } from '@/shared/constants/templates';
 import { useTheme } from '@/entrypoints/shared/composables/useTheme';
 import { ACCENT_PRESETS, ThemeMode } from '@/shared/constants/theme';
 
-const { themeMode, accentId, setTheme, setAccentColor } = useTheme();
+const { themeMode, accentId, fontBase, fontTags, thumbSize, setTheme, setAccentColor, setFontBase, setFontTags, setThumbSize } = useTheme();
+
+type SizeField = 'fontBase' | 'fontTags' | 'thumbSize';
+const editingField = ref<SizeField | null>(null);
+const editingValue = ref('');
+const editInput = ref<HTMLInputElement | null>(null);
+
+async function startEdit(field: SizeField, currentValue: number): Promise<void> {
+	editingField.value = field;
+	editingValue.value = String(currentValue);
+	await nextTick();
+	editInput.value?.select();
+	editInput.value?.focus();
+}
+
+function commitEdit(field: SizeField): void {
+	if (editingField.value !== field) return;
+	const val = parseInt(editingValue.value, 10);
+	if (!isNaN(val)) {
+		if (field === 'fontBase') setFontBase(val);
+		else if (field === 'fontTags') setFontTags(val);
+		else setThumbSize(val);
+	}
+	editingField.value = null;
+}
 
 const THEME_OPTIONS: Array<{ value: ThemeMode; label: string }> = [
 	{ value: 'auto',  label: 'Авто' },
@@ -299,7 +360,7 @@ async function onChannelAdded(): Promise<void> {
 		background: $sp-notice-bg;
 		border: 1px solid $sp-notice-border;
 		border-radius: 8px;
-		font-size: 12px;
+		font-size: 0.857rem;
 		color: $sp-notice-text;
 		line-height: 1.4;
 		span { flex: 1; }
@@ -329,7 +390,7 @@ async function onChannelAdded(): Promise<void> {
 	}
 
 	&__title {
-		font-size: 14px;
+		font-size: 1rem;
 		font-weight: 700;
 		color: $sp-text-dark;
 	}
@@ -343,7 +404,7 @@ async function onChannelAdded(): Promise<void> {
 		color: $sp-on-primary;
 		border: none;
 		border-radius: 7px;
-		font-size: 12px;
+		font-size: 0.857rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: opacity 0.15s;
@@ -369,7 +430,7 @@ async function onChannelAdded(): Promise<void> {
 			margin-bottom: 10px;
 
 			&-title {
-				font-size: 13px;
+				font-size: 0.929rem;
 				font-weight: 600;
 				color: $sp-text;
 			}
@@ -396,10 +457,10 @@ async function onChannelAdded(): Promise<void> {
 		text-align: center;
 		padding: 32px 20px;
 		color: $sp-text-light;
-		p { font-size: 13px; margin-bottom: 4px; }
+		p { font-size: 0.929rem; margin-bottom: 4px; }
 
-		&-icon { font-size: 36px; margin-bottom: 8px; }
-		&-hint { font-size: 12px; }
+		&-icon { font-size: 2.571rem; margin-bottom: 8px; }
+		&-hint { font-size: 0.857rem; }
 	}
 
 	&__channel {
@@ -411,7 +472,7 @@ async function onChannelAdded(): Promise<void> {
 		&-info { flex: 1; min-width: 0; }
 
 		&-name {
-			font-size: 13px;
+			font-size: 0.929rem;
 			font-weight: 500;
 			color: $sp-text-dark;
 			display: flex;
@@ -421,7 +482,7 @@ async function onChannelAdded(): Promise<void> {
 		}
 
 		&-badge {
-			font-size: 10px;
+			font-size: 0.714rem;
 			padding: 1px 5px;
 			border-radius: 3px;
 			font-weight: 600;
@@ -429,7 +490,7 @@ async function onChannelAdded(): Promise<void> {
 		}
 
 		&-id {
-			font-size: 10px;
+			font-size: 0.714rem;
 			color: $sp-text-faint;
 			font-family: monospace;
 			margin-top: 1px;
@@ -472,7 +533,7 @@ async function onChannelAdded(): Promise<void> {
 		gap: 8px;
 
 		&-title {
-			font-size: 10px;
+			font-size: 0.714rem;
 			font-weight: 700;
 			color: $sp-text-label;
 			text-transform: uppercase;
@@ -489,7 +550,7 @@ async function onChannelAdded(): Promise<void> {
 			padding: 7px 9px;
 			border: 1px solid $sp-border-input;
 			border-radius: 6px;
-			font-size: 12px;
+			font-size: 0.857rem;
 			font-family: inherit;
 			resize: vertical;
 			outline: none;
@@ -507,7 +568,7 @@ async function onChannelAdded(): Promise<void> {
 			background: $sp-warning-bg;
 			border: 1px solid $sp-warning-border;
 			border-radius: 6px;
-			font-size: 12px;
+			font-size: 0.857rem;
 			color: $sp-warning-text;
 		}
 
@@ -517,7 +578,7 @@ async function onChannelAdded(): Promise<void> {
 			border: 1px solid #f0c040;
 			border-radius: 5px;
 			background: $sp-bg-card;
-			font-size: 11px;
+			font-size: 0.786rem;
 			font-weight: 600;
 			color: $sp-warning-text;
 			cursor: pointer;
@@ -540,14 +601,14 @@ async function onChannelAdded(): Promise<void> {
 		margin-top: 2px;
 
 		&-label {
-			font-size: 10px;
+			font-size: 0.714rem;
 			color: $sp-text-light;
 			font-weight: 600;
 		}
 	}
 
 	&__tvar {
-		font-size: 10px;
+		font-size: 0.714rem;
 		padding: 1px 6px;
 		border-radius: 4px;
 		border: 1px solid $sp-chip-border;
@@ -568,7 +629,7 @@ async function onChannelAdded(): Promise<void> {
 		color: $sp-on-primary;
 		border: none;
 		border-radius: 7px;
-		font-size: 12px;
+		font-size: 0.857rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: opacity 0.15s;
@@ -576,7 +637,7 @@ async function onChannelAdded(): Promise<void> {
 	}
 
 	&__save-hint {
-		font-size: 12px;
+		font-size: 0.857rem;
 		color: $sp-success;
 		font-weight: 500;
 	}
@@ -604,7 +665,7 @@ async function onChannelAdded(): Promise<void> {
 		}
 
 		&-label {
-			font-size: 13px;
+			font-size: 0.929rem;
 			font-weight: 500;
 			color: $sp-text-secondary;
 			flex-shrink: 0;
@@ -622,7 +683,7 @@ async function onChannelAdded(): Promise<void> {
 		border-radius: 6px;
 		background: $sp-bg-editor;
 		color: $sp-text-muted;
-		font-size: 12px;
+		font-size: 0.857rem;
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.12s;
@@ -664,8 +725,70 @@ async function onChannelAdded(): Promise<void> {
 		}
 	}
 
+	&__size-control {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	&__size-btn {
+		width: 28px;
+		height: 28px;
+		border: 1px solid $sp-border-input;
+		border-radius: 6px;
+		background: $sp-bg-editor;
+		color: $sp-text;
+		font-size: 1.143rem;
+		line-height: 1;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.12s;
+		flex-shrink: 0;
+
+		@media (hover: hover) {
+			&:hover:not(:disabled) { border-color: $sp-primary; color: $sp-primary; }
+		}
+
+		&:disabled { opacity: 0.35; cursor: not-allowed; }
+	}
+
+	&__size-value {
+		min-width: 36px;
+		text-align: center;
+		font-size: 0.929rem;
+		font-weight: 600;
+		color: $sp-text;
+		font-variant-numeric: tabular-nums;
+		cursor: pointer;
+		border-radius: 4px;
+		padding: 1px 4px;
+		@media (hover: hover) { &:hover { color: $sp-primary; } }
+	}
+
+	&__size-input {
+		width: 52px;
+		text-align: center;
+		font-size: 0.929rem;
+		font-weight: 600;
+		color: $sp-text;
+		font-variant-numeric: tabular-nums;
+		font-family: inherit;
+		border: 1px solid $sp-primary;
+		border-radius: 4px;
+		background: $sp-bg-card;
+		outline: none;
+		padding: 0 2px;
+		height: 22px;
+		&::-webkit-outer-spin-button,
+		&::-webkit-inner-spin-button { -webkit-appearance: none; }
+		-moz-appearance: textfield;
+		appearance: textfield;
+	}
+
 	&__footer {
-		font-size: 11px;
+		font-size: 0.786rem;
 		color: $sp-text-faint;
 		text-align: center;
 		padding: 4px 0 8px;

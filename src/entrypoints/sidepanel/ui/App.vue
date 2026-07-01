@@ -91,11 +91,12 @@ async function checkPendingAction(): Promise<void> {
 @import '@/entrypoints/shared/styles/css-vars';
 
 /* Сбрасываем тёмную тему из main.scss для side panel */
+html { font-size: $sp-font-base; }
+
 body {
 	background: $sp-bg !important;
 	color: $sp-text !important;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-	font-size: 14px;
 	height: 100vh;
 	height: 100dvh;
 	overflow: hidden;
@@ -162,7 +163,7 @@ a {
 			border: none;
 			background: transparent;
 			cursor: pointer;
-			font-size: 13px;
+			font-size: 0.929rem;
 			font-weight: 500;
 			color: $sp-text-muted;
 			position: relative;
@@ -187,7 +188,7 @@ a {
 			background: $sp-primary;
 			color: $sp-on-primary;
 			border-radius: 9px;
-			font-size: 11px;
+			font-size: 0.786rem;
 			font-weight: 600;
 			margin-right: 4px;
 		}

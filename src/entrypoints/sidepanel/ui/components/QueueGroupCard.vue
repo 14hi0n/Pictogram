@@ -322,7 +322,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		border-radius: 3px;
 		background: $sp-bg-accent;
 		color: $sp-accent;
-		font-size: 10px;
+		font-size: 0.714rem;
 		font-weight: 700;
 		display: flex;
 		align-items: center;
@@ -332,12 +332,12 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	&__meta { flex: 1; min-width: 0; }
 
 	&__title {
-		font-size: 12px;
+		font-size: 0.857rem;
 		font-weight: 700;
 		color: $sp-accent;
 	}
 
-	&__date { font-size: 11px; color: $sp-text-light; }
+	&__date { font-size: 0.786rem; color: $sp-text-light; }
 
 	&__flags {
 		display: flex;
@@ -347,7 +347,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	}
 
 	&__flag {
-		font-size: 10px;
+		font-size: 0.714rem;
 		padding: 1px 5px;
 		border-radius: 3px;
 		font-weight: 500;
@@ -394,7 +394,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		&-section { display: flex; flex-direction: column; gap: 6px; }
 
 		&-label {
-			font-size: 10px;
+			font-size: 0.714rem;
 			font-weight: 700;
 			color: $sp-text-label;
 			text-transform: uppercase;
@@ -411,7 +411,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 			background: none;
 			border: none;
 			padding: 0;
-			font-size: 10px;
+			font-size: 0.714rem;
 			color: $sp-accent;
 			cursor: pointer;
 			font-weight: 600;
@@ -426,7 +426,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 			padding: 6px 8px;
 			border: 1px solid $sp-border-input;
 			border-radius: 6px;
-			font-size: 12px;
+			font-size: 0.857rem;
 			background: $sp-bg-card;
 			outline: none;
 			font-family: inherit;
@@ -437,14 +437,14 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		}
 
 		&-tags-hint {
-			font-size: 11px;
+			font-size: 0.786rem;
 			color: $sp-text-label;
 			margin: 0;
 			padding: 4px 0;
 		}
 
 		&-empty-hint {
-			font-size: 11px;
+			font-size: 0.786rem;
 			color: $sp-text-label;
 			padding: 6px 8px;
 			background: $sp-bg-editor;
@@ -463,7 +463,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 				background: none;
 				border: none;
 				padding: 2px 0;
-				font-size: 11px;
+				font-size: 0.786rem;
 				font-weight: 600;
 				color: $sp-text-label;
 				cursor: pointer;
@@ -492,7 +492,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		&-num {
 			width: 16px;
 			text-align: center;
-			font-size: 10px;
+			font-size: 0.714rem;
 			color: $sp-text-label;
 			font-weight: 700;
 			flex-shrink: 0;
@@ -529,7 +529,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		border-radius: 4px;
 		background: $sp-bg-card;
 		cursor: pointer;
-		font-size: 11px;
+		font-size: 0.786rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -546,7 +546,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		padding: 3px 6px;
 		border: 1px solid $sp-chip-accent-border;
 		border-radius: 5px;
-		font-size: 11px;
+		font-size: 0.786rem;
 		background: $sp-bg-accent-soft;
 		outline: none;
 		color: $sp-text-secondary;
@@ -570,7 +570,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 				border: 1px solid $sp-border-input;
 				border-radius: 4px;
 				padding: 1px 6px;
-				font-size: 10px;
+				font-size: 0.714rem;
 				color: $sp-text-hint;
 				cursor: pointer;
 				@media (hover: hover) { &:hover { border-color: $sp-accent; color: $sp-accent; } }
@@ -580,7 +580,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		&-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 
 		&-chip {
-			font-size: 11px;
+			font-size: $sp-font-tags;
 			line-height: 1.4;
 			padding: 2px 8px;
 			border-radius: 10px;
@@ -607,7 +607,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		background: none;
 		border: none;
 		padding: 0;
-		font-size: 10px;
+		font-size: 0.714rem;
 		color: $sp-accent;
 		cursor: pointer;
 		align-self: flex-start;
@@ -617,7 +617,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 	&__template-vars { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
 
 	&__tvar-chip {
-		font-size: 10px;
+		font-size: 0.714rem;
 		padding: 1px 6px;
 		border-radius: 4px;
 		border: 1px solid $sp-chip-accent-border;
@@ -636,7 +636,7 @@ function onMemberSourceBlur(idx: number, url: string): void {
 		padding: 6px 10px;
 		border-radius: 6px;
 		border: none;
-		font-size: 11px;
+		font-size: 0.786rem;
 		font-weight: 600;
 		cursor: pointer;
 		text-decoration: none;

@@ -1,7 +1,7 @@
 import { Channel } from './Channel';
 import { ThemeMode } from '@/shared/constants/theme';
 
-export const USER_SETTINGS_VERSION = 2;
+export const USER_SETTINGS_VERSION = 4;
 
 export interface UserSettings {
 	/** Версия схемы - используется для будущих миграций */
@@ -14,4 +14,10 @@ export interface UserSettings {
 	theme: ThemeMode;
 	/** ID акцентного пресета (см. ACCENT_PRESETS в theme.ts) */
 	accentColor: string;
+	/** Масштаб базового шрифта UI в % (100 = оригинал 14px) */
+	fontBase: number;
+	/** Масштаб шрифта тег-чипов в % (100 = оригинал ~11px) */
+	fontTags: number;
+	/** Масштаб превью одиночного поста в % (100 = оригинал 54px) */
+	thumbSize: number;
 }

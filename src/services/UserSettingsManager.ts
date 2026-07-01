@@ -22,6 +22,12 @@ export class UserSettingsManager {
 		const data = await chrome.storage.sync.get(UserSettingsManager.STORAGE_KEY);
 		const raw = data[UserSettingsManager.STORAGE_KEY] || {};
 
+		// v3 хранил fontBase/fontTags/thumbSize в px, v4 хранит в %
+		const isPreV4 = (raw.schemaVersion ?? 0) < 4;
+		const fontBase  = isPreV4 && raw.fontBase  !== undefined ? Math.round((raw.fontBase  / 14) * 100) : (raw.fontBase  ?? 100);
+		const fontTags  = isPreV4 && raw.fontTags  !== undefined ? Math.round((raw.fontTags  / 11) * 100) : (raw.fontTags  ?? 100);
+		const thumbSize = isPreV4 && raw.thumbSize !== undefined ? Math.round((raw.thumbSize / 54) * 100) : (raw.thumbSize ?? 100);
+
 		const settings: UserSettings = {
 			schemaVersion: USER_SETTINGS_VERSION,
 			channels: (raw.channels || []).map((ch: any) => normalizeChannel(ch)),
@@ -29,6 +35,9 @@ export class UserSettingsManager {
 			setupComplete: raw.setupComplete || false,
 			theme: raw.theme ?? DEFAULT_THEME,
 			accentColor: raw.accentColor ?? DEFAULT_ACCENT,
+			fontBase,
+			fontTags,
+			thumbSize,
 		};
 
 		// Если данных без версии (pre-v1) - сохраняем с версией, помечая как мигрированные
@@ -142,6 +151,24 @@ export class UserSettingsManager {
 	async setAccentColor(accentId: string): Promise<void> {
 		const settings = await this.getSettings();
 		settings.accentColor = accentId;
+		await this.saveSettings(settings);
+	}
+
+	async setFontBase(size: number): Promise<void> {
+		const settings = await this.getSettings();
+		settings.fontBase = size;
+		await this.saveSettings(settings);
+	}
+
+	async setFontTags(size: number): Promise<void> {
+		const settings = await this.getSettings();
+		settings.fontTags = size;
+		await this.saveSettings(settings);
+	}
+
+	async setThumbSize(size: number): Promise<void> {
+		const settings = await this.getSettings();
+		settings.thumbSize = size;
 		await this.saveSettings(settings);
 	}
 
