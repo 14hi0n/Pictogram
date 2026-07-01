@@ -1,28 +1,28 @@
 <template>
 	<div class="welcome">
-		<!-- <div class="welcome__icon">🍈</div> -->
+		<!-- <div class="welcome__icon"></div> -->
 		<h1 class="welcome__title">{{ APP_NAME }}</h1>
 		<p class="welcome__subtitle">
-			Расширение для быстрой отправки артов в ТГ.
+			Расширение для быстрой отправки артов в твой Телеграм канал.
 		</p>
 
 		<div class="welcome__features">
 			<div class="welcome__feature">
-				<!-- <span class="welcome__feature-icon">⚡</span> -->
+				<!-- <span class="welcome__feature-icon"></span> -->
 				<div>
 					<strong>Быстрая отправка</strong>
 					<p>Одна кнопка рядом с изображением и арт уже в канале.</p>
 				</div>
 			</div>
 			<div class="welcome__feature">
-				<!-- <span class="welcome__feature-icon">📋</span> -->
+				<!-- <span class="welcome__feature-icon"></span> -->
 				<div>
 					<strong>Очередь постов</strong>
 					<p>Добавляй в очередь, редактируй теги и описание перед отправкой.</p>
 				</div>
 			</div>
 			<div class="welcome__feature">
-				<!-- <span class="welcome__feature-icon">🤖</span> -->
+				<!-- <span class="welcome__feature-icon"></span> -->
 				<div>
 					<strong>Через бота</strong>
 					<p>Используется только Bot API, без входа в аккаунт.</p>
@@ -35,6 +35,7 @@
 			<div class="welcome__sites-list">
 				<span class="welcome__sites-badge">danbooru</span>
 				<span class="welcome__sites-badge">pixiv</span>
+				<span class="welcome__sites-badge">zerochan</span>
 			</div>
 		</div>
 

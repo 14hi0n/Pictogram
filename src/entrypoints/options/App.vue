@@ -7,10 +7,18 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
 import InstallView from './views/Install/index.vue';
+import { useTheme } from '@/entrypoints/shared/composables/useTheme';
+
+const { initTheme, cleanup } = useTheme();
+onMounted(initTheme);
+onUnmounted(cleanup);
 </script>
 
 <style lang="scss">
+@import '@/entrypoints/shared/styles/css-vars';
+
 body {
 	background: $sp-bg-light !important;
 	color: $sp-text !important;
