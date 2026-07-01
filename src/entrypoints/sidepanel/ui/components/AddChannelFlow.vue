@@ -295,12 +295,15 @@ async function saveChannels(): Promise<void> {
 
 	&__input {
 		width: 100%;
-		padding: 8px 10px;
 		border: 1px solid $sp-border-input;
 		border-radius: 6px;
-		font-size: 13px;
-		outline: none;
 		font-family: monospace;
+		padding: 7px 9px;
+		font-size: 12px;
+		outline: none;
+		color: $sp-text;
+		background: $sp-bg-card;
+		box-sizing: border-box;
 		&:focus { border-color: $sp-primary; }
 	}
 

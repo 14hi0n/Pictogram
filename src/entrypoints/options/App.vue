@@ -21,11 +21,11 @@ a {
 	border-bottom: none !important;
 }
 
-@media (max-width: 768px) {
-	input, textarea, select {
-		font-size: 16px !important;
-	}
-}
+// @media (max-width: 768px) {
+// 	input, textarea, select {
+// 		font-size: 16px !important;
+// 	}
+// }
 
 .page__wrapper {
 	border: none !important;

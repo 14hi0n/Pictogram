@@ -115,11 +115,11 @@ a {
 }
 
 /* Предотвращаем авто-зум на инпуты в мобильных браузерах (срабатывает при font-size < 16px) */
-@media (max-width: 768px) {
-	input, textarea, select {
-		font-size: 16px !important;
-	}
-}
+// @media (max-width: 768px) {
+// 	input, textarea, select {
+// 		font-size: 16px !important;
+// 	}
+// }
 </style>
 
 <style scoped lang="scss">

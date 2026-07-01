@@ -360,7 +360,6 @@ async function onChannelAdded(): Promise<void> {
 		&--add {
 			padding: 12px;
 			border-color: var(--sp-primary-a27);
-			background: #f8fcff;
 		}
 
 		&-header {
@@ -496,6 +495,7 @@ async function onChannelAdded(): Promise<void> {
 			outline: none;
 			color: $sp-text;
 			background: $sp-bg-card;
+			box-sizing: border-box;
 			&:focus { border-color: $sp-primary; }
 		}
 
